@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZMT WORLD SPIN - FIXED ACCURACY</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #6366f1; --gold: #f59e0b; --silver: #94a3b8; --bronze: #b45309; --dark: #0f172a; }
+        body { font-family: 'Poppins', sans-serif; background: var(--dark); color: white; margin: 0; padding: 15px; }
+        .card { background: rgba(255,255,255,0.05); backdrop-filter: blur(15px); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        
+        /* Podium System */
+        .podium { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+        .win-card { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-radius: 12px; font-weight: 800; border: 1px solid rgba(255,255,255,0.1); }
+        .rank-1 { background: linear-gradient(90deg, #f59e0b, #fbbf24); color: #451a03; border: 2px solid #fff; box-shadow: 0 0 15px rgba(245, 158, 11, 0.5); }
+        .rank-2 { background: linear-gradient(90deg, #94a3b8, #cbd5e1); color: #1e293b; }
+        .rank-3 { background: linear-gradient(90deg, #b45309, #d97706); color: #fff; }
+        .rank-normal { background: rgba(255,255,255,0.05); font-weight: 400; font-size: 13px; }
+
+        /* Accurate Wheel */
+        .wheel-wrap { position: relative; width: 320px; height: 320px; margin: 30px auto; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #fff; transition: transform 5s cubic-bezier(0.1, 0, 0.1, 1); }
+        .needle { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 20px solid transparent; border-right: 20px solid transparent; border-top: 40px solid #ef4444; z-index: 100; filter: drop-shadow(0 4px 5px #000); }
+
+        input, select { width: 100%; padding: 12px; margin: 6px 0; border-radius: 10px; border: none; background: rgba(255,255,255,0.1); color: white; outline: none; }
+        .btn-main { width: 100%; padding: 15px; background: var(--primary); color: white; border-radius: 12px; border: none; font-weight: 800; cursor: pointer; margin-top: 10px; }
+        .btn-spin { background: #10b981; font-size: 18px; }
+        .tab-bar { display: flex; gap: 15px; margin-bottom: 15px; border-bottom: 1px solid #334155; }
+        .tab-link { background: none; border: none; color: gray; cursor: pointer; padding: 10px; font-weight: 600; }
+        .tab-link.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+    </style>
+</head>
+<body>
+
+<div id="userSide">
+    <div class="card">
+        <h2>Global Giveaway 🌍</h2>
+        <input type="text" id="uName" placeholder="Nama Lengkap">
+        <select id="uCountry">
+            <option value="62" selected>🇮🇩 Indonesia (+62)</option>
+            <option value="1">🇺🇸 USA (+1)</option>
+            <option value="55">🇧🇷 Brazil (+55)</option>
+            <option value="91">🇮🇳 India (+91)</option>
+            <option value="60">🇲🇾 Malaysia (+60)</option>
+            <option value="84">🇻🇳 Vietnam (+84)</option>
+            <option value="65">🇸🇬 Singapore (+65)</option>
+            <option value="44">🇬🇧 UK (+44)</option>
+            <option value="61">🇦🇺 Australia (+61)</option>
+            <option value="81">🇯🇵 Japan (+81)</option>
+        </select>
+        <input type="number" id="uWA" placeholder="812xxxxx">
+        <button class="btn-main" onclick="regUser()">DAFTAR SEKARANG</button>
+        <p onclick="toAdmin()" style="font-size:9px; opacity:0.1; text-align:center; margin-top:20px; cursor:pointer;">ADMIN</p>
+    </div>
+
+    <div class="card">
+        <h2 style="color:var(--gold);">🏆 DAFTAR PEMENANG</h2>
+        <div id="podiumList" class="podium"></div>
+    </div>
+</div>
+
+<div id="adminSide" style="display:none;">
+    <div class="card">
+        <div class="tab-bar">
+            <button class="tab-link active" onclick="goTab('s')">Spin</button>
+            <button class="tab-link" onclick="goTab('d')">Data</button>
+            <button class="tab-link" onclick="goTab('r')">Reset</button>
+        </div>
+
+        <div id="tab-s">
+            <div class="wheel-wrap">
+                <div class="needle"></div>
+                <canvas id="wheel" width="500" height="500"></canvas>
+            </div>
+            <button id="spinBtn" class="btn-main btn-spin" onclick="spinAction()">PUTAR RODA!</button>
+            <p id="wheelLabel" style="text-align:center; color:var(--gold); font-size:12px; margin-top:10px;"></p>
+            <div id="antreanAdmin"></div>
+        </div>
+
+        <div id="tab-d" style="display:none;">
+            <h3>Kontak Pemenang</h3>
+            <div id="adminWinnerList"></div>
+        </div>
+
+        <div id="tab-r" style="display:none;">
+            <button onclick="clearPath('antrean')" style="background:orange; width:100%; padding:15px; margin-bottom:10px; border-radius:10px; border:none; color:white; font-weight:bold;">RESET ANTREAN</button>
+            <button onclick="clearPath('pemenang')" style="background:red; width:100%; padding:15px; border-radius:10px; border:none; color:white; font-weight:bold;">RESET PEMENANG</button>
+            <button onclick="location.reload()" style="width:100%; background:none; border:none; color:gray; margin-top:20px;">LOGOUT</button>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove, set } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
+        authDomain: "spinanberhadiahzmt.firebaseapp.com",
+        databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "spinanberhadiahzmt",
+        appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    let listRoda = [];
+    let rotasiSekarang = 0;
+
+    window.regUser = () => {
+        const n = document.getElementById('uName').value;
+        const w = document.getElementById('uWA').value;
+        const c = document.getElementById('uCountry').value;
+        if(!n || !w) return Swal.fire("Isi semua data!");
+        let cleanWA = w.replace(/\D/g, '');
+        if (cleanWA.startsWith('0')) cleanWA = cleanWA.slice(1);
+        push(ref(db, 'antrean'), { nama: n, wa: c + cleanWA });
+        Swal.fire("Berhasil!", "Nama kamu sudah masuk antrean.", "success");
+        document.getElementById('uName').value=""; document.getElementById('uWA').value="";
+    };
+
+    onValue(ref(db, 'pemenang'), (s) => {
+        const pod = document.getElementById('podiumList'); pod.innerHTML = "";
+        const adm = document.getElementById('adminWinnerList'); adm.innerHTML = "";
+        let winners = [];
+        s.forEach(c => { winners.push(c.val()); }); // Tidak di-reverse biar urutan daftar tetap (Juara 1 tetap Juara 1)
+
+        winners.forEach((d, i) => {
+            let rankClass = (i == 0) ? 'rank-1' : (i == 1) ? 'rank-2' : (i == 2) ? 'rank-3' : 'rank-normal';
+            let rankText = (i == 0) ? '🥇 Juara 1' : (i == 1) ? '🥈 Juara 2' : (i == 2) ? '🥉 Juara 3' : `#${i+1}`;
+            let sensor = "+" + d.wa.substring(0, d.wa.length - 4) + "****";
+            
+            pod.innerHTML += `<div class="win-card ${rankClass}"><span>${rankText}</span><span>${d.nama} (${sensor})</span></div>`;
+            adm.innerHTML += `<div class="win-card rank-normal" style="margin-bottom:5px;"><span>${d.nama}</span><a href="https://wa.me/${d.wa}" target="_blank" style="color:#25d366; text-decoration:none;">Chat WA</a></div>`;
+        });
+    });
+
+    window.toAdmin = async () => {
+        const { value: p } = await Swal.fire({ title: 'Pass', input: 'password' });
+        if(p === 'zmt') { 
+            document.getElementById('userSide').style.display='none'; 
+            document.getElementById('adminSide').style.display='block';
+            initAdmin();
+        }
+    };
+
+    function initAdmin() {
+        onValue(ref(db, 'antrean'), (s) => {
+            const list = document.getElementById('antreanAdmin'); list.innerHTML = "";
+            s.forEach(c => {
+                const d = c.val();
+                list.innerHTML += `<div class="win-card rank-normal" style="margin-top:5px;"><span>${d.nama}</span><button onclick="addToWheel('${d.nama}','${d.wa}')" style="background:var(--primary); color:white; border:none; padding:5px 10px; border-radius:5px;">ADD</button></div>`;
+            });
+        });
+    }
+
+    window.addToWheel = (n, w) => { 
+        listRoda.push({nama: n, wa: w}); 
+        document.getElementById('wheelLabel').innerText = "Roda: " + listRoda.map(x=>x.nama).join(", ");
+        draw(); 
+    };
+
+    function draw() {
+        const c = document.getElementById('wheel'); const ctx = c.getContext('2d');
+        const len = listRoda.length || 1; const arc = (2 * Math.PI) / len;
+        ctx.clearRect(0,0,500,500);
+        for(let i=0; i<len; i++) {
+            ctx.beginPath(); ctx.fillStyle = `hsl(${i * (360/len)}, 70%, 50%)`;
+            ctx.moveTo(250, 250); ctx.arc(250, 250, 240, i * arc, (i+1) * arc); ctx.fill();
+            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc/2);
+            ctx.fillStyle = "white"; ctx.font = "bold 20px Poppins"; ctx.fillText(listRoda[i]?.nama || "READY", 100, 10); ctx.restore();
+        }
+    }
+
+    window.spinAction = () => {
+        if(listRoda.length < 2) return Swal.fire("Minimal 2 orang di roda!");
+        document.getElementById('spinBtn').disabled = true;
+        const randSpin = Math.floor(Math.random() * 360) + 3600; 
+        rotasiSekarang += randSpin;
+        
+        // CSS rotate ke arah kanan, Canvas rotate ke arah kanan. Harus sinkron.
+        document.getElementById('wheel').style.transform = `rotate(${rotasiSekarang}deg)`;
+
+        setTimeout(() => {
+            const anglePerItem = 360 / listRoda.length;
+            // Koreksi sudut penunjuk (Jarum di atas = -90 derajat dari titik nol canvas di kanan)
+            const actualRot = (rotasiSekarang % 360);
+            const winnerIdx = Math.floor((360 - (actualRot % 360) + 270) % 360 / anglePerItem);
+            const winner = listRoda[winnerIdx];
+
+            Swal.fire("MENANG!", winner.nama, "success");
+            push(ref(db, 'pemenang'), winner); // Menyimpan di Firebase (urutan push = urutan menang)
+            
+            // Eliminasi
+            listRoda.splice(winnerIdx, 1);
+            document.getElementById('wheelLabel').innerText = "Roda: " + listRoda.map(x=>x.nama).join(", ");
+            draw();
+            document.getElementById('spinBtn').disabled = false;
+        }, 5000);
+    };
+
+    window.goTab = (t) => {
+        document.getElementById('tab-s').style.display = t=='s'?'block':'none';
+        document.getElementById('tab-d').style.display = t=='d'?'block':'none';
+        document.getElementById('tab-r').style.display = t=='r'?'block':'none';
+    };
+
+    window.clearPath = (p) => { if(confirm("Hapus "+p+"?")) remove(ref(db, p)); };
+    draw();
+</script>
+</body>
+</html>
