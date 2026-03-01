@@ -7,36 +7,50 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #6366f1; --g: #f59e0b; --d: #060b18; --glass: rgba(255,255,255,0.08); --err: #ef4444; --succ: #10b981; }
+        :root { --p: #6366f1; --g: #f59e0b; --d: #060b18; --glass: rgba(255,255,255,0.12); --err: #ef4444; --succ: #10b981; }
+        
         * { -webkit-tap-highlight-color: transparent; outline: none !important; user-select: none; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--d); color: white; margin: 0; padding: 15px; min-height: 100vh; overflow-x: hidden; }
-        
-        #gate { position: fixed; inset: 0; background: var(--d); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        #app { display: none; }
 
-        .card { background: var(--glass); backdrop-filter: blur(25px); padding: 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
-        input { width: 100%; padding: 15px 20px; margin: 8px 0; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; font-family: inherit; }
-        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; font-family: inherit; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+        /* BACKGROUND GERAK (Nebula Wave) */
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            margin: 0; padding: 15px; min-height: 100vh; 
+            overflow-x: hidden; color: white;
+            background: linear-gradient(45deg, #060b18, #1e1b4b, #312e81, #060b18);
+            background-size: 400% 400%;
+            animation: nebula 15s ease infinite;
+        }
+        @keyframes nebula {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        #gate { position: fixed; inset: 0; background: rgba(6,11,24,0.95); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+        #app { display: none; position: relative; z-index: 1; }
+
+        .card { background: var(--glass); backdrop-filter: blur(25px); padding: 25px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.3); }
         
-        /* Style Tombol Mati */
-        .btn:disabled { background: #1e293b !important; color: #475569 !important; cursor: not-allowed; box-shadow: none !important; transform: none !important; }
+        input { width: 100%; padding: 16px 22px; margin: 10px 0; border-radius: 50px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: white; font-size: 14px; transition: 0.3s; }
+        input:focus { border-color: var(--p); background: rgba(0,0,0,0.6); }
+
+        .btn { width: 100%; padding: 16px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.4s; font-family: inherit; display: flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: 1px; }
+        .btn:active { transform: scale(0.92); }
+        .btn:disabled { background: #334155 !important; color: #64748b !important; cursor: not-allowed; opacity: 0.5; }
+        .btn-p { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4); }
         
-        .btn-p { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2); }
-        .marquee { background: rgba(99, 102, 241, 0.2); padding: 8px 0; font-size: 11px; font-weight: 800; border-radius: 12px; margin-bottom: 15px; overflow: hidden; white-space: nowrap; }
-        .marquee span { display: inline-block; padding-left: 100%; animation: scroll 20s linear infinite; color: var(--g); }
+        .marquee { background: rgba(99, 102, 241, 0.15); padding: 10px 0; font-size: 11px; font-weight: 800; border-radius: 15px; margin-bottom: 20px; overflow: hidden; }
+        .marquee span { display: inline-block; padding-left: 100%; animation: scroll 20s linear infinite; color: var(--g); text-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
         @keyframes scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
 
-        .w-wrap { position: relative; width: 260px; height: 260px; margin: 20px auto; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; transition: 5s cubic-bezier(0.1,0,0.1,1); }
-        .needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: var(--err); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        .w-wrap { position: relative; width: 280px; height: 280px; margin: 25px auto; filter: drop-shadow(0 0 20px rgba(99,102,241,0.3)); }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; transition: 5s cubic-bezier(0.1, 0, 0.1, 1); border: 8px solid rgba(255,255,255,0.1); }
+        .needle { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 35px; height: 45px; background: var(--err); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
         
-        .chat-box { height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 20px; }
-        .msg { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 12px; }
-        .msg.me { align-self: flex-end; background: var(--p); }
-        .msg.other { align-self: flex-start; background: #334155; }
-        .pill { padding: 10px 15px; background: var(--glass); border-radius: 50px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; border: 1px solid rgba(255,255,255,0.05); }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
-        .on { background: var(--succ); } .off { background: var(--err); }
+        .pill { padding: 12px 18px; background: var(--glass); border-radius: 50px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; font-size: 13px; border: 1px solid rgba(255,255,255,0.1); }
+        .status-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+        .on { background: var(--succ); box-shadow: 0 0 10px var(--succ); }
+        .off { background: var(--err); box-shadow: 0 0 10px var(--err); }
     </style>
 </head>
 <body>
@@ -45,76 +59,88 @@
 <audio id="sWin" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
 
 <div id="gate">
-    <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
-        <h2 style="color: var(--p); margin: 0; letter-spacing: 2px;">ZMT EVENT</h2>
-        <p style="font-size: 10px; opacity: 0.4; margin-bottom: 30px;">V0.0.3 (BETA)</p>
+    <div class="card" style="width: 100%; max-width: 380px; text-align: center;">
+        <h2 style="color: var(--p); margin: 0; letter-spacing: 3px; font-weight: 800;">ZMT EVENT</h2>
+        <p id="verLabel" style="font-size: 11px; opacity: 0.5; margin-bottom: 30px;">V0.0.3 (BETA)</p>
+        
         <div id="loginUserBox">
-            <input type="text" id="userInput" placeholder="Username">
+            <input type="text" id="userInput" placeholder="Username (Huruf & Angka)">
             <input type="password" id="passInput" placeholder="Password">
-            <button class="btn btn-p" onclick="authNow('user')">MASUK / DAFTAR</button>
-            <p onclick="switchGate('admin')" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">MODE ADMIN</p>
+            <button class="btn btn-p" id="btnLoginUser" onclick="authNow('user')">MASUK / DAFTAR</button>
+            <p onclick="switchGate('admin')" style="margin-top:25px; font-size:11px; opacity:0.4; cursor:pointer; text-decoration: underline;">PANEL ADMIN</p>
         </div>
+
         <div id="loginAdminBox" style="display:none;">
             <input type="password" id="adminKeyInput" placeholder="Secret Key">
-            <button class="btn btn-p" style="background:var(--g); color:black;" onclick="authNow('admin')">VERIFY ADMIN</button>
-            <p onclick="switchGate('user')" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">KEMBALI</p>
+            <button class="btn btn-p" style="background:var(--g); color:black;" id="btnLoginAdmin" onclick="authNow('admin')">VERIFIKASI ADMIN</button>
+            <p onclick="switchGate('user')" style="margin-top:25px; font-size:11px; opacity:0.4; cursor:pointer;">KEMBALI</p>
         </div>
     </div>
 </div>
 
 <div id="app">
-    <div class="marquee"><span id="infoText">MENGHUBUNGKAN...</span></div>
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding: 0 5px;">
+    <div class="marquee"><span id="infoText">MENGHUBUNGKAN KE SYSTEM ZMT...</span></div>
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; padding: 0 10px;">
         <div>
-            <b id="displayUser" style="color:var(--p); font-size: 16px;"></b>
-            <div style="font-size: 10px; opacity: 0.6;"><span id="statusDot" class="status-dot"></span> Reg: <span id="statusText">...</span></div>
+            <b id="displayUser" style="color:var(--p); font-size: 18px; text-transform: uppercase;"></b>
+            <div style="font-size: 11px; opacity: 0.7; margin-top: 4px;">
+                <span id="statusDot" class="status-dot"></span> Pendaftaran: <b id="statusText">...</b>
+            </div>
         </div>
-        <button onclick="handleLogout()" style="background:none; border:1.5px solid var(--err); color:var(--err); padding:6px 15px; border-radius:50px; font-size:10px; font-weight:800;">LOGOUT</button>
+        <button onclick="handleLogout()" style="background:rgba(239, 68, 68, 0.1); border:1px solid var(--err); color:var(--err); padding:8px 18px; border-radius:50px; font-size:11px; font-weight:800;">LOGOUT</button>
     </div>
 
     <div id="uiUser" style="display:none;">
-        <div id="joinSection" class="card">
-            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:12px;">
-                <span>Peserta: <b id="userCount">0</b></span>
-                <span>Slot: <b id="userLimit">0</b></span>
+        <div id="joinSection" class="card" style="text-align: center;">
+            <div style="display:flex; justify-content:center; gap:20px; font-size:12px; margin-bottom:15px; opacity:0.8;">
+                <span>ANTREAN: <b id="userCount" style="color:var(--g)">0</b></span>
+                <span>MAKSIMAL: <b id="userLimit">0</b></span>
             </div>
-            <button class="btn btn-p" id="btnJoin" onclick="joinSpin()">IKUT SPIN SEKARANG</button>
+            <button class="btn btn-p" id="btnJoin" onclick="joinSpin()">GABUNG SPIN SEKARANG</button>
         </div>
-        <div id="winInbox" class="card" style="display:none; border: 2px solid var(--g);">
-            <h3 style="color:var(--g); font-size:14px; margin:0 0 10px 0;">🎉 MENANG! CHAT ADMIN:</h3>
+        
+        <div id="winInbox" class="card" style="display:none; border: 2px solid var(--g); background: rgba(245, 158, 11, 0.1);">
+            <h3 style="color:var(--g); font-size:16px; margin:0 0 15px 0; text-align:center;">🏆 ANDA MENANG! HUBUNGI ADMIN</h3>
             <div id="chatBoxUser" class="chat-box"></div>
-            <div style="display:flex; gap:8px; margin-top:12px;">
-                <input type="text" id="msgUser" placeholder="Tulis..." style="margin:0;">
-                <button class="btn btn-p" style="width:70px;" onclick="sendChat('user')">KIRIM</button>
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <input type="text" id="msgUser" placeholder="Kirim pesan ke Admin..." style="margin:0;">
+                <button class="btn btn-p" style="width:80px;" onclick="sendChat('user')">KIRIM</button>
             </div>
         </div>
-        <div class="card"><h4 style="margin:0 0 10px 0; font-size:13px; opacity:0.5;">LIST PEMENANG</h4><div id="winListUser"></div></div>
+
+        <div class="card">
+            <h4 style="margin:0 0 15px 0; font-size:14px; opacity:0.6; text-transform: uppercase; letter-spacing: 1px;">Pemenang Sebelumnya</h4>
+            <div id="winListUser"></div>
+        </div>
     </div>
 
     <div id="uiAdmin" style="display:none;">
         <div class="card">
-            <div style="display:flex; gap:5px; margin-bottom:12px;">
-                <button class="btn" style="background:var(--succ); font-size:9px; color:white; height:35px;" onclick="setCfg('regStatus', true)">BUKA REG</button>
-                <button class="btn" style="background:var(--err); font-size:9px; color:white; height:35px;" onclick="setCfg('regStatus', false)">TUTUP REG</button>
+            <div style="display:flex; gap:8px; margin-bottom:15px;">
+                <button class="btn" style="background:var(--succ); font-size:10px; color:white; flex:1;" onclick="setCfg('regStatus', true)">BUKA</button>
+                <button class="btn" style="background:var(--err); font-size:10px; color:white; flex:1;" onclick="setCfg('regStatus', false)">TUTUP</button>
             </div>
-            <input type="text" placeholder="Ganti Running Text..." onchange="setCfg('info', this.value)" style="font-size:12px;">
-            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:10px;">
-                <span style="font-size:11px;">LIMIT SLOT:</span>
-                <input type="number" id="inpLimit" style="width:80px; margin:0; padding:8px;" onchange="setCfg('limit', parseInt(this.value))">
+            <input type="text" placeholder="Ganti Running Text..." onchange="setCfg('info', this.value)">
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-top:15px;">
+                <span style="font-size:12px; font-weight:800;">LIMIT PESERTA:</span>
+                <input type="number" id="inpLimit" style="width:100px; margin:0; padding:10px;" onchange="setCfg('limit', parseInt(this.value))">
             </div>
         </div>
+
         <div class="card" style="text-align:center;">
             <div class="w-wrap"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
-            <button class="btn btn-p" id="btnSpin" onclick="doSpin()">PUTAR RODA SEKARANG</button>
-            <div id="adminQList" style="margin-top:15px; font-size:11px; color:var(--g); font-weight:600;"></div>
+            <button class="btn btn-p" id="btnSpin" onclick="doSpin()" style="margin-top:10px;">MULAI ACAK PEMENANG</button>
+            <div id="adminQList" style="margin-top:20px; font-size:12px; color:var(--g); font-weight:600; line-height:1.6;"></div>
         </div>
-        <button class="btn" style="background:var(--err); color:white; font-size:10px;" onclick="resetDB()">HARD RESET (ADMIN GAK KEPENTAL)</button>
+
+        <button class="btn" style="background:rgba(239, 68, 68, 0.2); color:var(--err); border:1px solid var(--err); font-size:11px;" onclick="resetDB()">HARD RESET (ADMIN STAY)</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, set, get, off as offFB } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, set, get } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
     const ADMIN_KEY = "zmtxxx";
     const firebaseConfig = {
@@ -135,20 +161,25 @@
     };
 
     window.authNow = async (role) => {
+        const btn = role === 'admin' ? document.getElementById('btnLoginAdmin') : document.getElementById('btnLoginUser');
+        btn.disabled = true; // Anti Spam Click
+
         if (role === 'admin') {
-            if (document.getElementById('adminKeyInput').value === ADMIN_KEY) startApp("MASTER_ADMIN");
-            else Swal.fire("Key Salah!");
+            const key = document.getElementById('adminKeyInput').value;
+            if (key === ADMIN_KEY) startApp("MASTER_ADMIN");
+            else { Swal.fire("Key Salah!"); btn.disabled = false; }
         } else {
             const u = document.getElementById('userInput').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
             const p = document.getElementById('passInput').value.trim();
-            if (!u || !p) return Swal.fire("Lengkapi data!");
+            if (!u || !p) { Swal.fire("Isi Username & Password!"); btn.disabled = false; return; }
+
             const userSnap = await get(ref(db, `auth/${u}`));
             if (userSnap.exists()) {
                 if (userSnap.val().pw === p) startApp(u);
-                else Swal.fire("Password salah!");
+                else { Swal.fire("Password salah!"); btn.disabled = false; }
             } else {
                 const regSnap = await get(ref(db, 'config/regStatus'));
-                if (regSnap.exists() && !regSnap.val()) return Swal.fire("Pendaftaran Tutup!");
+                if (regSnap.exists() && !regSnap.val()) { Swal.fire("Pendaftaran Tutup!"); btn.disabled = false; return; }
                 await set(ref(db, `auth/${u}`), { pw: p });
                 startApp(u);
             }
@@ -158,18 +189,16 @@
     function startApp(userId) {
         myID = userId;
         localStorage.setItem('zmt_sess', userId);
-        document.getElementById('gate').style.display = 'none';
+        document.getElementById('gate').style.setProperty('display', 'none', 'important');
         document.getElementById('app').style.display = 'block';
         document.getElementById('displayUser').innerText = (userId === "MASTER_ADMIN") ? "🛡️ ADMIN" : "@" + userId;
 
         loadGlobal();
         if (userId === "MASTER_ADMIN") {
             document.getElementById('uiAdmin').style.display = 'block';
-            document.getElementById('uiUser').style.display = 'none';
             runAdminLogic();
         } else {
             document.getElementById('uiUser').style.display = 'block';
-            document.getElementById('uiAdmin').style.display = 'none';
             runUserLogic();
         }
     }
@@ -180,19 +209,17 @@
     window.handleLogout = () => { localStorage.clear(); location.reload(); };
 
     function loadGlobal() {
-        // --- ADMIN PROTECTION (ANTI PENTAL) ---
         onValue(ref(db, 'config/wipeTrigger'), (s) => { 
-            if(s.val() && myID !== "MASTER_ADMIN") {
-                handleLogout(); 
-            }
+            if(s.val() && myID !== "MASTER_ADMIN") handleLogout(); 
         });
 
         onValue(ref(db, 'config'), (s) => {
             const d = s.val() || {};
-            document.getElementById('infoText').innerText = d.info || "ZMT HUB";
-            document.getElementById('statusText').innerText = d.regStatus ? "BUKA" : "TUTUP";
+            document.getElementById('infoText').innerText = d.info || "ZMT EVENT";
+            document.getElementById('statusText').innerText = d.regStatus ? "DIBUKA" : "DITUTUP";
             document.getElementById('statusDot').className = "status-dot " + (d.regStatus ? "on" : "off");
             document.getElementById('userLimit').innerText = d.limit || 20;
+            if(myID === "MASTER_ADMIN") document.getElementById('inpLimit').value = d.limit || 20;
         });
     }
 
@@ -202,22 +229,24 @@
             if (s.exists()) s.forEach(c => { count++; if(c.val().u === myID) joined = true; });
             document.getElementById('userCount').innerText = count;
             
-            // --- ANTI DOUBLE DAFTAR (HARD LOCK) ---
             const btn = document.getElementById('btnJoin');
             if(joined) {
-                btn.innerText = "DAFTAR BERHASIL ✅";
+                btn.innerText = "ANTREAN ANDA TERDAFTAR ✅";
                 btn.disabled = true;
             } else {
-                btn.innerText = "IKUT SPIN SEKARANG";
+                btn.innerText = "GABUNG SPIN SEKARANG";
                 btn.disabled = false;
             }
         });
+
         onValue(ref(db, 'wins'), (s) => {
             let imWin = false;
-            if (s.exists()) s.forEach(c => { if(c.val().u === myID) imWin = true; });
-            if(imWin) document.getElementById('winInbox').style.display = 'block';
             const list = document.getElementById('winListUser'); list.innerHTML = "";
-            if(s.exists()) s.forEach(c => { list.innerHTML += `<div class="pill"><span>@${c.val().u}</span> 🏆</div>`; });
+            if (s.exists()) s.forEach(c => { 
+                if(c.val().u === myID) imWin = true;
+                list.innerHTML += `<div class="pill"><span>@${c.val().u}</span> 🏆</div>`;
+            });
+            if(imWin) document.getElementById('winInbox').style.display = 'block';
         });
     }
 
@@ -227,7 +256,7 @@
         let c = 0; if(qSnap.exists()) qSnap.forEach(() => c++);
         if(c >= (lSnap.val() || 20)) return Swal.fire("Slot Penuh!");
         await push(ref(db, 'q'), { u: myID });
-        Swal.fire({ icon: 'success', title: 'Berhasil Masuk Antrean!', timer: 1500 });
+        Swal.fire({ icon: 'success', title: 'Berhasil Gabung!', timer: 1500 });
     };
 
     function runAdminLogic() {
@@ -235,7 +264,7 @@
             wheelItems = []; const list = document.getElementById('adminQList');
             if (s.exists()) {
                 let n = []; s.forEach(c => { wheelItems.push({u: c.val().u, key: c.key}); n.push("@"+c.val().u); });
-                list.innerText = "Antrean: " + n.join(", ");
+                list.innerText = "PESERTA: " + n.join(", ");
             } else list.innerText = "Antrean Kosong";
             draw();
         });
@@ -243,310 +272,20 @@
 
     window.setCfg = (k, v) => set(ref(db, `config/${k}`), v);
 
-    window.draw = () => {
-        const canvas = document.getElementById('wheel'); const ctx = canvas.getContext('2d');
-        const n = wheelItems.length || 1; const arc = (2 * Math.PI) / n;
-        ctx.clearRect(0,0,500,500);
-        for(let i=0; i<n; i++) {
-            ctx.beginPath(); ctx.fillStyle = `hsl(${i * (360/n)}, 70%, 50%)`;
-            ctx.moveTo(250, 250); ctx.arc(250, 250, 240, i * arc, (i+1) * arc); ctx.fill();
-            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc/2);
-            ctx.fillStyle = "#fff"; ctx.font = "bold 22px sans-serif"; ctx.fillText(wheelItems[i]?.u || "ZMT", 100, 10); ctx.restore();
-        }
-    }
-
-    window.doSpin = () => {
-        if(wheelItems.length < 2) return Swal.fire("Min 2 Orang!");
-        rot += Math.floor(Math.random() * 360) + 3600;
-        document.getElementById('wheel').style.transform = `rotate(${rot}deg)`;
-        let tick = setInterval(() => { document.getElementById('sTick').currentTime = 0; document.getElementById('sTick').play(); }, 120);
-        setTimeout(async () => {
-            clearInterval(tick); document.getElementById('sWin').play();
-            const idx = Math.floor((360 - (rot % 360) + 270) % 360 / (360 / wheelItems.length));
-            const winner = wheelItems[idx];
-            await push(ref(db, 'wins'), { u: winner.u });
-            await remove(ref(db, `q/${winner.key}`));
-            Swal.fire("Winner: @" + winner.u);
-        }, 5000);
-    };
-
-    window.resetDB = async () => {
-        if(confirm("WIPE DATA USER & AKUN? (ADMIN TIDAK AKAN KELUAR)")) {
-            await set(ref(db, 'config/wipeTrigger'), true);
-            await remove(ref(db, 'q')); await remove(ref(db, 'wins')); await remove(ref(db, 'auth'));
-            setTimeout(() => { set(ref(db, 'config/wipeTrigger'), false); }, 2000);
-        }
-    }
-</script>
-</body>
-</html><audio id="sTick" src="https://www.soundjay.com/buttons/sounds/button-20.mp3"></audio>
-<audio id="sWin" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
-
-<div id="gate">
-    <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
-        <h2 style="color: var(--p); margin: 0; letter-spacing: 2px;">ZMT HUB</h2>
-        <p style="font-size: 10px; opacity: 0.4; margin-bottom: 30px;">V0.0.7 (STABLE RELEASE)</p>
-        
-        <div id="loginUserBox">
-            <input type="text" id="userInput" placeholder="Username">
-            <input type="password" id="passInput" placeholder="Password">
-            <button class="btn btn-p" onclick="authNow('user')">MASUK / DAFTAR</button>
-            <p onclick="switchGate('admin')" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">MODE ADMIN</p>
-        </div>
-
-        <div id="loginAdminBox" style="display:none;">
-            <input type="password" id="adminKeyInput" placeholder="Secret Key">
-            <button class="btn btn-p" style="background:var(--g); color:black;" onclick="authNow('admin')">VERIFY ADMIN</button>
-            <p onclick="switchGate('user')" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">KEMBALI KE USER</p>
-        </div>
-    </div>
-</div>
-
-<div id="app">
-    <div class="marquee"><span id="infoText">MENGHUBUNGKAN...</span></div>
-    
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; padding: 0 5px;">
-        <div>
-            <b id="displayUser" style="color:var(--p); font-size: 16px;"></b>
-            <div style="font-size: 10px; opacity: 0.6;"><span id="statusDot" class="status-dot"></span> Admin: <span id="statusText">...</span></div>
-        </div>
-        <button onclick="handleLogout()" style="background:none; border:1.5px solid var(--err); color:var(--err); padding:6px 15px; border-radius:50px; font-size:10px; font-weight:800;">KELUAR</button>
-    </div>
-
-    <div id="uiUser" style="display:none;">
-        <div id="joinSection" class="card">
-            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:12px;">
-                <span>Peserta: <b id="userCount">0</b></span>
-                <span>Slot: <b id="userLimit">0</b></span>
-            </div>
-            <button class="btn btn-p" id="btnJoin" onclick="joinSpin()">IKUT SPIN SEKARANG</button>
-        </div>
-
-        <div id="winInbox" class="card" style="display:none; border: 2px solid var(--g);">
-            <h3 style="color:var(--g); font-size:14px; margin:0 0 10px 0;">🎉 ANDA MENANG! CHAT ADMIN:</h3>
-            <div id="chatBoxUser" class="chat-box"></div>
-            <div style="display:flex; gap:8px; margin-top:12px;">
-                <input type="text" id="msgUser" placeholder="Ketik pesan..." style="margin:0;">
-                <button class="btn btn-p" style="width:70px;" onclick="sendChat('user')">KIRIM</button>
-            </div>
-        </div>
-
-        <div class="card">
-            <h4 style="margin:0 0 10px 0; font-size:13px; opacity:0.5;">LIST PEMENANG</h4>
-            <div id="winListUser"></div>
-        </div>
-    </div>
-
-    <div id="uiAdmin" style="display:none;">
-        <div class="card">
-            <div style="display:flex; gap:5px; margin-bottom:12px;">
-                <button class="btn" style="background:var(--succ); font-size:9px; color:white; height:35px;" onclick="setCfg('adOnline', true)">ONLINE</button>
-                <button class="btn" style="background:var(--err); font-size:9px; color:white; height:35px;" onclick="setCfg('adOnline', false)">OFFLINE</button>
-                <button class="btn" style="background:var(--p); font-size:9px; color:white; height:35px;" onclick="setCfg('regStatus', true)">BUKA</button>
-                <button class="btn" style="background:#444; font-size:9px; color:white; height:35px;" onclick="setCfg('regStatus', false)">TUTUP</button>
-            </div>
-            <input type="text" placeholder="Update info running text..." onchange="setCfg('info', this.value)" style="font-size:12px;">
-        </div>
-
-        <div class="card" style="text-align:center;">
-            <div class="w-wrap"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
-            <button class="btn btn-p" id="btnSpin" onclick="doSpin()">PUTAR RODA SEKARANG</button>
-            <div id="adminQList" style="margin-top:15px; font-size:11px; color:var(--g); font-weight:600;"></div>
-        </div>
-
-        <div class="card">
-            <h3 style="font-size:14px; margin-top:0;">CHATS PEMENANG</h3>
-            <div id="adminChatList"></div>
-            <div id="activeChatAdmin" style="display:none; margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
-                <b id="targetChatName" style="font-size:13px; color:var(--p);"></b>
-                <div id="chatBoxAdmin" class="chat-box"></div>
-                <div style="display:flex; gap:8px; margin-top:10px;">
-                    <input type="text" id="msgAdmin" placeholder="Balas..." style="margin:0;">
-                    <button class="btn btn-p" style="width:70px;" onclick="sendChat('admin')">BALAS</button>
-                </div>
-            </div>
-        </div>
-        <button class="btn" style="background:var(--err); color:white; font-size:10px; opacity:0.5;" onclick="resetDB()">WIPE ALL DATA</button>
-    </div>
-</div>
-
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, set, get, off as offFB } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
-
-    const ADMIN_KEY = "zmtxxx";
-    const firebaseConfig = {
-        apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
-        authDomain: "spinanberhadiahzmt.firebaseapp.com",
-        databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "spinanberhadiahzmt",
-        appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
-    };
-
-    const appFB = initializeApp(firebaseConfig);
-    const db = getDatabase(appFB);
-    let myID = ""; let wheelItems = []; let rot = 0; let activeT = ""; let chatUnsub = null;
-
-    // --- NAVIGASI ENGINE (NO RELOAD) ---
-    window.switchGate = (mode) => {
-        document.getElementById('loginUserBox').style.display = mode === 'user' ? 'block' : 'none';
-        document.getElementById('loginAdminBox').style.display = mode === 'admin' ? 'block' : 'none';
-    };
-
-    window.authNow = async (role) => {
-        if (role === 'admin') {
-            if (document.getElementById('adminKeyInput').value === ADMIN_KEY) startApp("MASTER_ADMIN");
-            else Swal.fire("Key Salah!");
-        } else {
-            const u = document.getElementById('userInput').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-            const p = document.getElementById('passInput').value.trim();
-            if (!u || !p) return Swal.fire("Lengkapi data!");
-
-            const regSnap = await get(ref(db, 'config/regStatus'));
-            if (regSnap.exists() && !regSnap.val()) return Swal.fire("Pendaftaran Tutup!");
-
-            const userSnap = await get(ref(db, `auth/${u}`));
-            if (userSnap.exists()) {
-                if (userSnap.val().pw === p) startApp(u);
-                else Swal.fire("Password salah!");
-            } else {
-                await set(ref(db, `auth/${u}`), { pw: p });
-                startApp(u);
-            }
-        }
-    };
-
-    function startApp(userId) {
-        myID = userId;
-        localStorage.setItem('zmt_sess', userId);
-        
-        // Visual Switch (INSTANT)
-        document.getElementById('gate').setAttribute('style', 'display:none !important');
-        document.getElementById('app').style.display = 'block';
-        document.getElementById('displayUser').innerText = (userId === "MASTER_ADMIN") ? "🛡️ ADMIN" : "@" + userId;
-
-        loadGlobal();
-        if (userId === "MASTER_ADMIN") {
-            document.getElementById('uiAdmin').style.display = 'block';
-            document.getElementById('uiUser').style.display = 'none';
-            runAdminLogic();
-        } else {
-            document.getElementById('uiUser').style.display = 'block';
-            document.getElementById('uiAdmin').style.display = 'none';
-            runUserLogic();
-        }
-    }
-
-    // Auto-login on load
-    const saved = localStorage.getItem('zmt_sess');
-    if (saved) startApp(saved);
-
-    window.handleLogout = () => { localStorage.clear(); location.reload(); };
-
-    // --- FIREBASE LOGIC ---
-    function loadGlobal() {
-        onValue(ref(db, 'config'), (s) => {
-            const d = s.val() || {};
-            document.getElementById('infoText').innerText = d.info || "WELCOME TO ZMT HUB!";
-            document.getElementById('statusText').innerText = d.adOnline ? "ONLINE" : "OFFLINE";
-            document.getElementById('statusDot').className = "status-dot " + (d.adOnline ? "on" : "off");
-            document.getElementById('userLimit').innerText = d.limit || 20;
-        });
-        onValue(ref(db, 'config/wipeTrigger'), (s) => { if(s.val() && myID !== "MASTER_ADMIN") handleLogout(); });
-    }
-
-    function runUserLogic() {
-        onValue(ref(db, 'q'), (s) => {
-            let count = 0; let joined = false;
-            if (s.exists()) s.forEach(c => { count++; if(c.val().u === myID) joined = true; });
-            document.getElementById('userCount').innerText = count;
-            const btn = document.getElementById('btnJoin');
-            btn.innerText = joined ? "SUDAH TERDAFTAR ✅" : "IKUT SPIN SEKARANG";
-            btn.disabled = joined;
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            const list = document.getElementById('winListUser'); list.innerHTML = "";
-            let imWin = false;
-            if (s.exists()) s.forEach(c => {
-                if(c.val().u === myID) imWin = true;
-                list.innerHTML += `<div class="pill"><span>@${c.val().u}</span> 🏆</div>`;
-            });
-            if(imWin) {
-                document.getElementById('winInbox').style.display = 'block';
-                document.getElementById('joinSection').style.display = 'none';
-                initChat(myID, 'chatBoxUser');
-            }
-        });
-    }
-
-    window.joinSpin = async () => {
-        const qSnap = await get(ref(db, 'q'));
-        const lSnap = await get(ref(db, 'config/limit'));
-        let c = 0; if(qSnap.exists()) qSnap.forEach(() => c++);
-        if(c < (lSnap.val() || 20)) push(ref(db, 'q'), { u: myID });
-    };
-
-    function runAdminLogic() {
-        onValue(ref(db, 'q'), (s) => {
-            wheelItems = []; const list = document.getElementById('adminQList');
-            if (s.exists()) {
-                let n = []; s.forEach(c => { wheelItems.push({u: c.val().u, key: c.key}); n.push("@"+c.val().u); });
-                list.innerText = "Antrean: " + n.join(", ");
-            } else list.innerText = "Belum Ada Peserta";
-            draw();
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            const list = document.getElementById('adminChatList'); list.innerHTML = "";
-            if (s.exists()) s.forEach(c => {
-                list.innerHTML += `<div class="pill"><span>@${c.val().u}</span> <button onclick="openChat('${c.val().u}')" style="background:var(--p); color:white; border:none; padding:5px 12px; border-radius:10px; font-size:10px; cursor:pointer;">CHAT</button></div>`;
-            });
-        });
-    }
-
-    window.setCfg = (k, v) => set(ref(db, `config/${k}`), v);
-
-    window.openChat = (target) => {
-        activeT = target;
-        document.getElementById('activeChatAdmin').style.display = 'block';
-        document.getElementById('targetChatName').innerText = "Chatting with @" + target;
-        initChat(target, 'chatBoxAdmin');
-    };
-
-    function initChat(target, boxId) {
-        if(chatUnsub) offFB(ref(db, `chats/${activeT || myID}`));
-        chatUnsub = onValue(ref(db, `chats/${target}`), (s) => {
-            const box = document.getElementById(boxId); box.innerHTML = "";
-            if (s.exists()) s.forEach(c => {
-                const isMe = c.val().sender === myID;
-                box.innerHTML += `<div class="msg ${isMe?'me':'other'}">${c.val().txt}</div>`;
-            });
-            box.scrollTop = box.scrollHeight;
-        });
-    }
-
-    window.sendChat = (role) => {
-        const inp = document.getElementById(role==='admin'?'msgAdmin':'msgUser');
-        const txt = inp.value.trim(); if(!txt) return;
-        const target = (role==='admin') ? activeT : myID;
-        push(ref(db, `chats/${target}`), { sender: myID, txt: txt });
-        inp.value = "";
-    };
-
-    // --- WHEEL SYSTEM ---
     function draw() {
         const canvas = document.getElementById('wheel'); const ctx = canvas.getContext('2d');
         const n = wheelItems.length || 1; const arc = (2 * Math.PI) / n;
         ctx.clearRect(0,0,500,500);
         for(let i=0; i<n; i++) {
-            ctx.beginPath(); ctx.fillStyle = `hsl(${i * (360/n)}, 70%, 50%)`;
+            ctx.beginPath(); ctx.fillStyle = `hsl(${i * (360/n)}, 75%, 55%)`;
             ctx.moveTo(250, 250); ctx.arc(250, 250, 240, i * arc, (i+1) * arc); ctx.fill();
             ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc/2);
-            ctx.fillStyle = "#fff"; ctx.font = "bold 22px sans-serif"; ctx.fillText(wheelItems[i]?.u || "ZMT", 100, 10); ctx.restore();
+            ctx.fillStyle = "#fff"; ctx.font = "bold 24px Plus Jakarta Sans"; ctx.fillText(wheelItems[i]?.u || "ZMT", 100, 10); ctx.restore();
         }
     }
 
     window.doSpin = () => {
-        if(wheelItems.length < 2) return Swal.fire("Min 2 Orang!");
+        if(wheelItems.length < 2) return Swal.fire("Minimal 2 Peserta!");
         rot += Math.floor(Math.random() * 360) + 3600;
         document.getElementById('wheel').style.transform = `rotate(${rot}deg)`;
         let tick = setInterval(() => { document.getElementById('sTick').currentTime = 0; document.getElementById('sTick').play(); }, 120);
@@ -561,11 +300,12 @@
     };
 
     window.resetDB = async () => {
-        if(confirm("WIPE DATA?")) {
+        const { value: pass } = await Swal.fire({ title: 'HARD RESET', input: 'password', inputPlaceholder: 'Masukkan Key Admin' });
+        if(pass === ADMIN_KEY) {
             await set(ref(db, 'config/wipeTrigger'), true);
-            await remove(ref(db, 'q')); await remove(ref(db, 'wins')); await remove(ref(db, 'chats')); await remove(ref(db, 'auth'));
-            setTimeout(() => { set(ref(db, 'config/wipeTrigger'), false); location.reload(); }, 1500);
-        }
+            await remove(ref(db, 'q')); await remove(ref(db, 'wins')); await remove(ref(db, 'auth'));
+            setTimeout(() => { set(ref(db, 'config/wipeTrigger'), false); }, 2000);
+        } else if(pass !== undefined) { Swal.fire("Key Salah!"); }
     }
 </script>
 </body>
