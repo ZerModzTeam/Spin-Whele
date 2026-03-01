@@ -3,264 +3,811 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT v.0.1.5</title>
+    <title>ZMT EVENT SYSTEM v.0.3.5</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        /* # UI ASLI */
-        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; margin: 0; color: #333; }
-        .header { background: #6200ea; color: white; padding: 15px; text-align: center; font-weight: bold; font-size: 20px; }
-        .container { max-width: 500px; margin: auto; padding: 10px; }
-        .card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px; margin-bottom: 10px; }
-        
-        /* # TOMBOL STYLES */
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 5px; }
-        .btn-p { background: #6200ea; color: white; }
-        .btn-s { background: #2ecc71; color: white; }
-        .btn-d { background: #e74c3c; color: white; }
-        .btn:disabled { background: #ccc !important; cursor: not-allowed; }
+        /* # (UI LAMA DAN DETAIL STYLING) */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
 
-        /* # CHAT ENGINE (FIX GARIS BARU) */
-        .chat-box { height: 220px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; display: flex; flex-direction: column; gap: 8px; background: #fff; border-radius: 5px; }
-        .msg { padding: 8px 12px; border-radius: 8px; font-size: 14px; max-width: 85%; white-space: pre-wrap; line-height: 1.4; word-wrap: break-word; }
-        .m-me { background: #e1f5fe; align-self: flex-end; border: 1px solid #b3e5fc; }
-        .m-ot { background: #f5f5f5; align-self: flex-start; border: 1px solid #e0e0e0; }
-        .m-notif { background: #fff9c4; color: #827717; align-self: center; text-align: center; width: 100%; font-weight: bold; border: 1px solid #fff176; padding: 8px; }
+        .header {
+            background-color: #6200ea;
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 800;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
 
-        /* # RODA ENGINE */
-        .wheel-wrap { position: relative; width: 250px; height: 250px; margin: 10px auto; }
-        #canvas { width: 100%; height: 100%; transform: rotate(-90deg); transition: 6s cubic-bezier(0.1, 0, 0.1, 1); border-radius: 50%; border: 3px solid #6200ea; }
-        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 30px; background: red; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; border: 1px solid #fff; }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 0 20px;
+            box-sizing: border-box;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #e1e4e8;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: #6200ea;
+            border-bottom: 3px solid #f0f2f5;
+            padding-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* # (INPUT DAN FORM STYLING) */
+        input[type="text"],
+        input[type="password"],
+        textarea {
+            width: 100%;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 2px solid #edeff2;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+            background-color: #fcfcfc;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #6200ea;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(98, 0, 234, 0.1);
+        }
+
+        textarea {
+            resize: none;
+            min-height: 100px;
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
+
+        /* # (TOMBOL DAN NAVIGASI) */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: block;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background-color: #6200ea;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(98, 0, 234, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.95);
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn:disabled {
+            background-color: #bdc3c7 !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* # (RODA SPIN STYLING) */
+        .wheel-container {
+            position: relative;
+            width: 340px;
+            height: 340px;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #wheelCanvas {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid #6200ea;
+            box-shadow: 0 0 30px rgba(98, 0, 234, 0.25);
+            transform: rotate(-90deg);
+            transition: transform 7s cubic-bezier(0.15, 0, 0.15, 1);
+            background-color: #fff;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 35px;
+            height: 50px;
+            background-color: #ff4757;
+            clip-path: polygon(50% 100%, 0 0, 100% 0);
+            z-index: 100;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+            border: 2px solid #fff;
+        }
+
+        /* # (CHAT BOX STYLING) */
+        .chat-container {
+            height: 350px;
+            overflow-y: auto;
+            border: 2px solid #f1f2f6;
+            border-radius: 12px;
+            padding: 20px;
+            background-color: #fdfdfd;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 14px 18px;
+            border-radius: 18px;
+            font-size: 15px;
+            line-height: 1.5;
+            position: relative;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .message-sent {
+            background-color: #6200ea;
+            color: #ffffff;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-received {
+            background-color: #f1f2f6;
+            color: #2f3542;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #e1e4e8;
+        }
+
+        .message-system {
+            background-color: #fff3cd;
+            color: #856404;
+            align-self: center;
+            text-align: center;
+            width: 95%;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            border: 1px solid #ffeeba;
+            padding: 12px;
+        }
+
+        .message img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+            display: block;
+            border: 2px solid rgba(0,0,0,0.05);
+        }
+
+        /* # (ADMIN LIST PEMENANG) */
+        .winner-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .winner-tag {
+            background-color: #6200ea;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .winner-tag:hover {
+            background-color: #3700b3;
+            transform: scale(1.05);
+        }
+
+        /* # (MODAL DAN OVERLAY) */
+        #loginPage {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #6200ea;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .login-card {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 380px;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-<div id="pg-auth" style="display: flex; height: 100vh; align-items: center; justify-content: center; background: #6200ea;">
-    <div class="card" style="width: 300px; text-align: center;">
-        <h2 style="margin: 0 0 15px 0;">ZMT EVENT</h2>
-        <div id="box-u">
-            <input type="text" id="in-u" placeholder="Username" style="width:90%; padding:10px; margin-bottom:10px;">
-            <input type="password" id="in-p" placeholder="Password" style="width:90%; padding:10px; margin-bottom:10px;">
-            <button class="btn btn-p" onclick="doAuth('user')">LOGIN / DAFTAR</button>
-            <p onclick="setA(true)" style="font-size:10px; margin-top:15px; cursor:pointer; opacity:0.6;">Admin Access</p>
+<div id="loginPage">
+    <div class="login-card">
+        <h2 style="color: #6200ea; margin-bottom: 30px; font-size: 28px;">ZMT EVENT</h2>
+        
+        <div id="userLoginForm">
+            <input type="text" id="username" placeholder="Masukkan Username" autocomplete="off">
+            <input type="password" id="password" placeholder="Masukkan Password">
+            <button class="btn btn-primary" onclick="handleAuth('user')">MASUK / DAFTAR</button>
+            <p onclick="toggleAdminForm(true)" style="margin-top: 20px; font-size: 13px; color: #777; cursor: pointer; font-weight: 600;">Akses Admin</p>
         </div>
-        <div id="box-a" style="display:none;">
-            <input type="password" id="in-ak" placeholder="Admin Master Key" style="width:90%; padding:10px; margin-bottom:10px;">
-            <button class="btn btn-d" onclick="doAuth('admin')">MASUK ADMIN</button>
-            <p onclick="setA(false)" style="font-size:10px; margin-top:15px; cursor:pointer;">Kembali</p>
+
+        <div id="adminLoginForm" style="display: none;">
+            <input type="password" id="adminKey" placeholder="Masukkan Admin Key">
+            <button class="btn btn-danger" onclick="handleAuth('admin')">MASUK ADMIN</button>
+            <p onclick="toggleAdminForm(false)" style="margin-top: 20px; font-size: 13px; color: #777; cursor: pointer; font-weight: 600;">Kembali ke Login User</p>
         </div>
     </div>
 </div>
 
-<div id="pg-app" style="display:none;">
-    <div class="header">ZMT SYSTEM DASHBOARD</div>
+<div id="mainContent" style="display: none;">
+    <div class="header">ZMT EVENT SYSTEM</div>
+
     <div class="container">
         
-        <div id="ui-u" style="display:none;">
-            <div class="card"><button id="btn-j" class="btn btn-p" onclick="join()">DAFTAR UNDIAN</button></div>
-            <div class="card" style="text-align:center;">
-                <div class="wheel-wrap"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div>
-            </div>
+        <div id="userInterface" style="display: none;">
             <div class="card">
-                <b>🌍 GLOBAL CHAT</b>
-                <div id="chat-g" class="chat-box"></div>
-                <textarea id="msg-g" rows="2" placeholder="Tulis pesan publik..."></textarea>
-                <button class="btn btn-p" onclick="send('global')">KIRIM KE SEMUA</button>
+                <div class="card-title">🎡 Undian Berhadiah</div>
+                <button id="btnJoinEvent" class="btn btn-primary" onclick="joinQueue()">IKUTI ANTRIAN EVENT</button>
+                <p id="joinStatus" style="text-align: center; margin-top: 15px; font-weight: 600; color: #2ecc71; display: none;">Terdaftar dalam antrian! ✅</p>
             </div>
-            <div id="area-win" class="card" style="display:none; border: 2px solid gold;">
-                <b style="color: #b8860b;">🎁 KLAIM HADIAH (CHAT ADMIN)</b>
-                <div id="chat-p-u" class="chat-box"></div>
-                <input type="file" id="f-u" style="margin-top:10px;" onchange="up('user')">
-                <textarea id="msg-p-u" rows="2" placeholder="Tulis Alamat/No Dana..."></textarea>
-                <button id="sb-u" class="btn btn-s" onclick="send('user')">KIRIM KLAIM</button>
+
+            <div class="card" style="text-align: center;">
+                <div class="wheel-container">
+                    <div class="pointer"></div>
+                    <canvas id="wheelCanvas" width="500" height="500"></canvas>
+                </div>
+                <p id="spinStatus" style="font-weight: 700; color: #6200ea; font-size: 18px;">Menunggu Admin memutar roda...</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💬 Chat Global</div>
+                <div id="globalChatBox" class="chat-container"></div>
+                <textarea id="globalInput" placeholder="Ketik pesan publik..."></textarea>
+                <button class="btn btn-primary" onclick="sendMessage('global')">KIRIM PESAN</button>
+            </div>
+
+            <div id="winnerSection" class="card" style="display: none; border: 3px solid #f1c40f;">
+                <div class="card-title" style="color: #f1c40f;">🏆 Klaim Hadiah Anda</div>
+                <div id="privateChatBoxUser" class="chat-container"></div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-weight: 700; margin-bottom: 10px; font-size: 14px;">Upload Bukti Menang / ID:</label>
+                    <input type="file" id="fileInputUser" onchange="handleFileUpload('user')" accept="image/*">
+                </div>
+                <textarea id="privateInputUser" placeholder="Tulis Nama Lengkap, Alamat, atau No Dana..."></textarea>
+                <button id="btnSendUser" class="btn btn-success" onclick="sendMessage('privateUser')">KIRIM DATA KLAIM</button>
             </div>
         </div>
 
-        <div id="ui-a" style="display:none;">
+        <div id="adminInterface" style="display: none;">
             <div class="card">
-                <b>⚙️ KONTROL PENDAFTARAN</b>
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <button class="btn btn-s" onclick="setR(true)">BUKA REG</button>
-                    <button class="btn btn-d" onclick="setR(false)">TUTUP REG</button>
+                <div class="card-title">⚙️ Kontrol Event</div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <button class="btn btn-success" onclick="updateRegStatus(true)">BUKA REGIS</button>
+                    <button class="btn btn-danger" onclick="updateRegStatus(false)">TUTUP REGIS</button>
+                </div>
+                <p id="regStatusLabel" style="text-align: center; margin-top: 15px; font-weight: 800;"></p>
+            </div>
+
+            <div class="card" style="text-align: center;">
+                <div class="wheel-container">
+                    <div class="pointer"></div>
+                    <canvas id="adminWheelCanvas" width="500" height="500"></canvas>
+                </div>
+                <button id="btnSpin" class="btn btn-primary" onclick="startSpinning()">PUTAR RODA SEKARANG</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🌍 Monitor Chat Global</div>
+                <div id="adminGlobalChatBox" class="chat-container"></div>
+                <textarea id="adminGlobalInput" placeholder="Kirim pengumuman resmi..."></textarea>
+                <button class="btn btn-primary" onclick="sendMessage('globalAdmin')">KIRIM BROADCAST</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">🥇 Daftar Pemenang</div>
+                <div id="winnerTagsContainer" class="winner-list"></div>
+                
+                <div id="adminPrivateChatArea" style="display: none; margin-top: 30px; padding-top: 20px; border-top: 2px dashed #eee;">
+                    <h4 id="chatTargetName" style="color: #6200ea;"></h4>
+                    <div id="privateChatBoxAdmin" class="chat-container"></div>
+                    <input type="file" id="fileInputAdmin" onchange="handleFileUpload('admin')" accept="image/*">
+                    <textarea id="privateInputAdmin" placeholder="Balas instruksi klaim..."></textarea>
+                    <button id="btnSendAdmin" class="btn btn-primary" onclick="sendMessage('privateAdmin')">BALAS CHAT</button>
                 </div>
             </div>
-            <div class="card" style="text-align:center;">
-                <div class="wheel-wrap"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
-                <button class="btn btn-p" onclick="spin()">PUTAR RODA SEKARANG</button>
+
+            <div class="card" style="border: 2px solid #e74c3c;">
+                <div class="card-title" style="color: #e74c3c;">☢️ Zona Bahaya</div>
+                <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Fitur ini akan menghapus seluruh database, termasuk akun user, antrian, dan riwayat chat.</p>
+                <button class="btn btn-danger" onclick="wipeAllData()">RESET TOTAL DATABASE</button>
             </div>
-            <div class="card">
-                <b>🌍 MONITOR GLOBAL CHAT</b>
-                <div id="chat-g-a" class="chat-box"></div>
-                <textarea id="msg-g-a" rows="2" placeholder="Pesan admin global..."></textarea>
-                <button class="btn btn-p" onclick="send('global-a')">KIRIM GLOBAL</button>
-            </div>
-            <div class="card">
-                <b>💬 BALAS CHAT PEMENANG</b>
-                <div id="list-w" style="margin-bottom:10px; display:flex; flex-wrap:wrap; gap:5px;"></div>
-                <div id="box-p-a" style="display:none; border-top: 1px solid #ddd; padding-top:10px;">
-                    <b id="target-n" style="color:#6200ea; font-size:12px;"></b>
-                    <div id="chat-p-a" class="chat-box" style="margin:10px 0;"></div>
-                    <input type="file" id="f-a" onchange="up('admin')">
-                    <textarea id="msg-p-a" rows="2" placeholder="Bales..."></textarea>
-                    <button id="sb-a" class="btn btn-p" onclick="send('admin')">BALAS PRIVATE</button>
-                </div>
-            </div>
-            <button class="btn btn-d" style="margin-top:20px;" onclick="wipe()">☢️ RESET TOTAL (HAPUS SEMUA AKUN & DATA)</button>
         </div>
+
     </div>
 </div>
 
-<audio id="s-spin" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3"></audio>
-<audio id="s-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+<audio id="spinSound" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3" preload="auto"></audio>
+<audio id="winSound" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3" preload="auto"></audio>
 
 <script type="module">
+    // # (FIREBASE INITIALIZATION)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
-    
-    const cfg = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
-    const app = initializeApp(cfg); const db = getDatabase(app);
-    
-    let myID = ""; let myRole = ""; let items = []; let curChat = ""; let isRegOpen = true;
+    import { getDatabase, ref, set, push, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-    // # AUTH (LOGIKA MENTAL & LOGIN TETAP)
-    window.doAuth = async (role) => {
-        if(role === 'admin') {
-            if(document.getElementById('in-ak').value === "zmtxxx") { myID="ADMIN"; myRole="admin"; start(); }
-            else alert("Admin Key Salah!");
+    const firebaseConfig = {
+        apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
+        authDomain: "spinanberhadiahzmt.firebaseapp.com",
+        databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "spinanberhadiahzmt",
+        appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // # (VARIABEL GLOBAL STATE)
+    let myUsername = "";
+    let myRole = "";
+    let participantList = [];
+    let currentChatTarget = "";
+    let isRegistrationOpen = true;
+    let tempBase64Image = null;
+
+    // # (FITUR AUTHENTICATION LOGIC)
+    window.handleAuth = async (role) => {
+        if (role === 'admin') {
+            const key = document.getElementById('adminKey').value;
+            if (key === "zmtxxx") {
+                myUsername = "ADMIN";
+                myRole = "admin";
+                enterApp();
+            } else {
+                Swal.fire('Error', 'Admin Key Salah!', 'error');
+            }
         } else {
-            const u = document.getElementById('in-u').value.trim();
-            const p = document.getElementById('in-p').value;
-            if(!u || !p) return alert("Isi data!");
-            const uRef = ref(db, `auth/users/${u}`);
-            const s = await get(uRef);
-            const rS = await get(ref(db, 'config/reg'));
-            const isOpen = rS.exists() ? rS.val() : true;
+            const user = document.getElementById('username').value.trim();
+            const pass = document.getElementById('password').value;
 
-            if(s.exists()) { // # USER LAMA: BISA LOGIN KAPANPUN
-                if(s.val().pw === p) { myID = u; myRole = "user"; start(); }
-                else alert("Password Salah!");
-            } else { // # USER BARU: MENTAL KALO REG TUTUP
-                if(!isOpen) return alert("PENDAFTARAN TUTUP! Gak bisa daftar.");
-                await set(uRef, {pw: p});
-                myID = u; myRole = "user"; start();
+            if (!user || !pass) {
+                return Swal.fire('Error', 'Username dan Password wajib diisi!', 'warning');
+            }
+
+            const userRef = ref(db, `auth/users/${user}`);
+            const snapshot = await get(userRef);
+            
+            // Cek Status Registrasi dari Database
+            const regRef = ref(db, 'config/registrationStatus');
+            const regSnap = await get(regRef);
+            const canRegister = regSnap.exists() ? regSnap.val() : true;
+
+            if (snapshot.exists()) {
+                // User lama mencoba login
+                if (snapshot.val().password === pass) {
+                    myUsername = user;
+                    myRole = "user";
+                    enterApp();
+                } else {
+                    Swal.fire('Gagal', 'Password salah!', 'error');
+                }
+            } else {
+                // User baru mencoba daftar
+                if (!canRegister) {
+                    return Swal.fire('Tutup', 'Pendaftaran user baru sedang ditutup oleh Admin!', 'info');
+                }
+                
+                await set(userRef, {
+                    password: pass,
+                    createdAt: Date.now()
+                });
+                myUsername = user;
+                myRole = "user";
+                enterApp();
             }
         }
     };
 
-    function start() {
-        document.getElementById('pg-auth').style.display='none'; document.getElementById('pg-app').style.display='block';
-        if(myRole==='admin') { document.getElementById('ui-a').style.display='block'; initA(); }
-        else { document.getElementById('ui-u').style.display='block'; initU(); }
+    window.toggleAdminForm = (show) => {
+        document.getElementById('userLoginForm').style.display = show ? 'none' : 'block';
+        document.getElementById('adminLoginForm').style.display = show ? 'block' : 'none';
+    };
+
+    function enterApp() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('mainContent').style.display = 'block';
+
+        if (myRole === 'admin') {
+            document.getElementById('adminInterface').style.display = 'block';
+            initializeAdminCore();
+        } else {
+            document.getElementById('userInterface').style.display = 'block';
+            initializeUserCore();
+        }
     }
 
-    // # UPLOAD (DENGAN JEDA PROSES)
-    window.up = (r) => {
-        const f = document.getElementById(r==='admin'?'f-a':'f-u').files[0];
-        const btn = document.getElementById(r==='admin'?'sb-a':'sb-u');
-        if(f.size > 900000) return alert("Max 900KB!");
-        btn.disabled = true; btn.innerText = "⌛ PROSES...";
-        const reader = new FileReader();
-        reader.onload = (e) => { window.tempImg = e.target.result; btn.disabled = false; btn.innerText = "KIRIM"; };
-        reader.readAsDataURL(f);
+    // # (FITUR CHAT DAN MESSAGE SYSTEM)
+    window.sendMessage = async (type) => {
+        let text = "";
+        let path = "";
+        let inputEl = null;
+
+        if (type === 'global') {
+            inputEl = document.getElementById('globalInput');
+            path = 'chats/global';
+        } else if (type === 'globalAdmin') {
+            inputEl = document.getElementById('adminGlobalInput');
+            path = 'chats/global';
+        } else if (type === 'privateUser') {
+            inputEl = document.getElementById('privateInputUser');
+            path = `chats/private/${myUsername}`;
+        } else if (type === 'privateAdmin') {
+            inputEl = document.getElementById('privateInputAdmin');
+            path = `chats/private/${currentChatTarget}`;
+        }
+
+        text = inputEl.value.trim();
+        const img = tempBase64Image;
+
+        if (!text && !img) return;
+
+        await push(ref(db, path), {
+            sender: myUsername,
+            message: text,
+            image: img,
+            timestamp: Date.now()
+        });
+
+        inputEl.value = "";
+        tempBase64Image = null;
+        
+        // # (RESET INPUT SETELAH KIRIM)
+        if (document.getElementById('fileInputUser')) document.getElementById('fileInputUser').value = "";
+        if (document.getElementById('fileInputAdmin')) document.getElementById('fileInputAdmin').value = "";
     };
 
-    // # CHAT ENGINE
-    window.send = async (m) => {
-        const isG = m.includes('global');
-        const idInp = isG ? (myRole==='admin'?'msg-g-a':'msg-g') : (myRole==='admin'?'msg-p-a':'msg-p-u');
-        const inp = document.getElementById(idInp);
-        const txt = inp.value.trim(); const img = window.tempImg || null;
-        if(!txt && !img) return;
-        const path = isG ? 'global_chat' : `chats/${myRole==='admin'?curChat:myID}`;
-        await push(ref(db, path), { s: myID, t: txt, f: img });
-        inp.value = ""; window.tempImg = null;
-        if(!isG) document.getElementById(myRole==='admin'?'f-a':'f-u').value = "";
-    };
-
-    function listen(path, boxId) {
-        onValue(ref(db, path), (s) => {
-            const b = document.getElementById(boxId); if(!b) return; b.innerHTML = "";
-            s.forEach(c => {
-                const d = c.val();
-                let cls = d.type === 'notif' ? 'm-notif' : (d.s===myID ? 'm-me' : 'm-ot');
-                b.innerHTML += `<div class="msg ${cls}">${d.type !== 'notif' ? `<b>${d.s}:</b>` : ""}${d.f ? `<img src="${d.f}" width="100%" style="margin-top:5px;border-radius:5px;">` : ""}${d.t || ""}</div>`;
+    // # (FITUR SUBSCRIBE CHAT REALTIME)
+    function subscribeChat(path, elementId) {
+        const chatRef = ref(db, path);
+        onValue(chatRef, (snapshot) => {
+            const container = document.getElementById(elementId);
+            if (!container) return;
+            container.innerHTML = "";
+            
+            snapshot.forEach((child) => {
+                const data = child.val();
+                const isSystem = data.type === 'system';
+                const isMe = data.sender === myUsername;
+                
+                let html = "";
+                if (isSystem) {
+                    html = `<div class="message message-system">${data.message}</div>`;
+                } else {
+                    const cls = isMe ? 'message-sent' : 'message-received';
+                    html = `
+                        <div class="message ${cls}">
+                            <strong style="font-size: 11px; display:block; margin-bottom: 4px;">${data.sender}</strong>
+                            ${data.image ? `<img src="${data.image}">` : ""}
+                            <div>${data.message.replace(/\n/g, '<br>')}</div>
+                        </div>
+                    `;
+                }
+                container.innerHTML += html;
             });
-            b.scrollTop = b.scrollHeight;
+            container.scrollTop = container.scrollHeight;
         });
     }
 
-    // # SPIN ENGINE
-    window.spin = async () => {
-        if(items.length < 2) return alert("Butuh min 2 peserta!");
-        const wIdx = Math.floor(Math.random() * items.length);
-        const win = items[wIdx];
-        const arc = 360 / items.length;
-        const rot = 3600 + (360 - (wIdx * arc)) - (arc / 2);
-        await set(ref(db, 'config/sync'), { r: rot, w: win.u, d: false });
-        setTimeout(async () => {
-            await set(ref(db, 'config/sync/d'), true);
-            await push(ref(db, 'wins'), {u: win.u});
-            await push(ref(db, 'global_chat'), { type: 'notif', t: `📢 PENGUMUMAN: @${win.u} MENANG DALAM EVENT!` });
-            await remove(ref(db, `q/${win.k}`));
-        }, 6500);
+    // # (FITUR UPLOAD FOTO DENGAN JEDA PROSES)
+    window.handleFileUpload = (role) => {
+        const fileInput = document.getElementById(role === 'admin' ? 'fileInputAdmin' : 'fileInputUser');
+        const sendBtn = document.getElementById(role === 'admin' ? 'btnSendAdmin' : 'btnSendUser');
+        const file = fileInput.files[0];
+
+        if (!file) return;
+
+        // Validasi Ukuran (Max 1MB)
+        if (file.size > 1024 * 1024) {
+            Swal.fire('Terlalu Besar', 'Maksimal ukuran foto adalah 1MB!', 'error');
+            fileInput.value = "";
+            return;
+        }
+
+        // # (AKTIFKAN JEDA / LOADING STATE)
+        sendBtn.disabled = true;
+        const originalText = sendBtn.innerText;
+        sendBtn.innerText = "⌛ MENGUNGGAH...";
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            tempBase64Image = e.target.result;
+            // Kembalikan tombol setelah proses pembacaan selesai
+            sendBtn.disabled = false;
+            sendBtn.innerText = originalText;
+        };
+        reader.readAsDataURL(file);
     };
 
-    // # INIT ROLE
-    function initA() {
-        listen('global_chat', 'chat-g-a');
-        onValue(ref(db, 'q'), (s) => { items=[]; s.forEach(c => { items.push({u:c.val().u, k:c.key}); }); draw(items, 'cv-a'); });
-        onValue(ref(db, 'wins'), (s) => {
-            let h = ""; s.forEach(c => { h += `<button class="btn btn-s" style="width:auto; padding:5px 10px; margin:2px;" onclick="openChat('${c.val().u}')">@${c.val().u}</button>`; });
-            document.getElementById('list-w').innerHTML = h;
-        });
+    // # (FITUR RODA UNDIAN / SPIN LOGIC)
+    function drawWheel(canvasId, list) {
+        const canvas = document.getElementById(canvasId);
+        if (!canvas) return;
+        const ctx = canvas.getContext('2d');
+        const len = list.length || 1;
+        const arc = (2 * Math.PI) / len;
+
+        ctx.clearRect(0, 0, 500, 500);
+
+        for (let i = 0; i < len; i++) {
+            ctx.beginPath();
+            ctx.fillStyle = `hsl(${i * (360 / len)}, 75%, 60%)`;
+            ctx.moveTo(250, 250);
+            ctx.arc(250, 250, 240, i * arc, (i + 1) * arc);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.save();
+            ctx.translate(250, 250);
+            ctx.rotate(i * arc + arc / 2);
+            ctx.fillStyle = "#fff";
+            ctx.font = "bold 22px Arial";
+            ctx.textAlign = "right";
+            const name = list[i] ? (list[i].u || list[i]) : "KOSONG";
+            ctx.fillText(name, 230, 10);
+            ctx.restore();
+        }
     }
 
-    function initU() {
-        listen('global_chat', 'chat-g');
-        onValue(ref(db, 'config/reg'), (s) => { isRegOpen = s.val(); document.getElementById('btn-j').innerText = isRegOpen ? "DAFTAR UNDIAN" : "PENDAFTARAN TUTUP"; });
-        onValue(ref(db, 'q'), (s) => {
-            items=[]; let j=false; s.forEach(c => { items.push({u:c.val().u}); if(c.val().u===myID) j=true; });
-            if(j) { document.getElementById('btn-j').disabled = true; document.getElementById('btn-j').innerText = "DAFTAR BERHASIL ✅"; }
-            draw(items, 'cv-u');
-        });
-        onValue(ref(db, 'config/sync'), (s) => {
-            const d = s.val(); if(!d) return;
-            document.getElementById('cv-u').style.transform = `rotate(${d.r - 90}deg)`;
-            if(d.r > 0) document.getElementById('s-spin').play();
-            if(d.d && d.w === myID) {
-                confetti(); document.getElementById('s-win').play();
-                Swal.fire("ANDA MENANG!", "TUNGGU ADMIN CHAT UNTUK KLAIM!", "success");
-            }
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            let win=false; s.forEach(c => { if(c.val().u===myID) win=true; });
-            document.getElementById('area-win').style.display = win ? 'block' : 'none';
-            if(win) listen(`chats/${myID}`, 'chat-p-u');
-        });
-    }
+    // # (FITUR MULAI SPIN OLEH ADMIN)
+    window.startSpinning = async () => {
+        if (participantList.length < 2) {
+            return Swal.fire('Minimal 2', 'Peserta antrian harus minimal 2 orang!', 'warning');
+        }
 
-    // # CANVAS
-    function draw(it, id) {
-        const c = document.getElementById(id); const ctx = c.getContext('2d');
-        const n = it.length || 1; const arc = (2*Math.PI)/n; ctx.clearRect(0,0,500,500);
-        it.forEach((p, i) => {
-            ctx.beginPath(); ctx.fillStyle = `hsl(${i*(360/n)}, 70%, 50%)`;
-            ctx.moveTo(250,250); ctx.arc(250,250,245,i*arc,(i+1)*arc); ctx.fill();
-            ctx.save(); ctx.translate(250,250); ctx.rotate(i*arc + arc/2);
-            ctx.fillStyle="#fff"; ctx.font="bold 20px Arial"; ctx.textAlign="right"; ctx.fillText(p.u, 230, 10); ctx.restore();
-        });
-    }
+        const winnerIndex = Math.floor(Math.random() * participantList.length);
+        const winnerObj = participantList[winnerIndex];
+        const arcDegrees = 360 / participantList.length;
+        const finalRotation = 3600 + (360 - (winnerIndex * arcDegrees)) - (arcDegrees / 2);
 
-    // # UTILS
-    window.setA = (v) => { document.getElementById('box-u').style.display=v?'none':'block'; document.getElementById('box-a').style.display=v?'block':'none'; };
-    window.setR = (v) => set(ref(db, 'config/reg'), v);
-    window.join = () => { if(isRegOpen) push(ref(db, 'q'), {u: myID}); };
-    window.openChat = (u) => { curChat=u; document.getElementById('box-p-a').style.display='block'; document.getElementById('target-n').innerText="Chatting with @"+u; listen(`chats/${u}`, 'chat-p-a'); };
-    window.wipe = async () => {
-        if(confirm("HAPUS SEMUA DATA & USER? User lama wajib daftar ulang setelah ini!")){
-            await remove(ref(db, '/')); await set(ref(db, 'config/reg'), true); location.reload();
+        // Sync rotasi ke Database agar semua user melihat putaran yang sama
+        await set(ref(db, 'config/syncSpin'), {
+            rotation: finalRotation,
+            winner: winnerObj.u,
+            isDone: false,
+            timestamp: Date.now()
+        });
+
+        // Tunggu Durasi Putaran Selesai (Animasi CSS 7 Detik)
+        setTimeout(async () => {
+            await update(ref(db, 'config/syncSpin'), { isDone: true });
+            
+            // Masukkan ke Daftar Pemenang Tetap
+            await push(ref(db, 'pemenang'), { u: winnerObj.u });
+
+            // Beri Notifikasi Global bahwa ada yang menang
+            await push(ref(db, 'chats/global'), {
+                type: 'system',
+                message: `🎉 PENGUMUMAN: @${winnerObj.u} TELAH MENANG DALAM UNDIAN!`
+            });
+
+            // Hapus pemenang dari antrian aktif agar tidak dobel
+            await remove(ref(db, `queue/${winnerObj.k}`));
+        }, 7500);
+    };
+
+    // # (FITUR MANAJEMEN DATABASE ADMIN)
+    window.updateRegStatus = (status) => {
+        set(ref(db, 'config/registrationStatus'), status);
+    };
+
+    window.wipeAllData = async () => {
+        const confirm = await Swal.fire({
+            title: 'HAPUS SEMUA?',
+            text: "Seluruh akun user dan data akan lenyap selamanya!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'YA, RESET TOTAL!'
+        });
+
+        if (confirm.isConfirmed) {
+            // # (NUKLIR: HAPUS SELURUH DATABASE / ROOT)
+            await remove(ref(db, '/'));
+            // Reset status registrasi ke default (Open) setelah wipe
+            await set(ref(db, 'config/registrationStatus'), true); 
+            Swal.fire('Database Bersih!', 'Sistem telah direset ulang.', 'success').then(() => {
+                location.reload();
+            });
         }
     };
+
+    // # (INITIALIZATION ADMIN SIDE)
+    function initializeAdminCore() {
+        subscribeChat('chats/global', 'adminGlobalChatBox');
+        
+        onValue(ref(db, 'config/registrationStatus'), (s) => {
+            const val = s.val();
+            const el = document.getElementById('regStatusLabel');
+            if (el) {
+                el.innerText = val ? "STATUS: TERBUKA" : "STATUS: TERTUTUP";
+                el.style.color = val ? "#2ecc71" : "#e74c3c";
+            }
+        });
+
+        onValue(ref(db, 'queue'), (snap) => {
+            participantList = [];
+            snap.forEach(c => { participantList.push({u: c.val().u, k: c.key}); });
+            drawWheel('adminWheelCanvas', participantList);
+        });
+
+        onValue(ref(db, 'pemenang'), (snap) => {
+            const container = document.getElementById('winnerTagsContainer');
+            if (container) {
+                container.innerHTML = "";
+                snap.forEach(c => {
+                    const u = c.val().u;
+                    container.innerHTML += `<button class="winner-tag" onclick="openPrivateChat('${u}')">@${u}</button>`;
+                });
+            }
+        });
+    }
+
+    // # (FITUR BUKA CHAT PRIVATE ADMIN)
+    window.openPrivateChat = (username) => {
+        currentChatTarget = username;
+        document.getElementById('adminPrivateChatArea').style.display = 'block';
+        document.getElementById('chatTargetName').innerText = "Chatting dengan @" + username;
+        subscribeChat(`chats/private/${username}`, 'privateChatBoxAdmin');
+    };
+
+    // # (INITIALIZATION USER SIDE)
+    function initializeUserCore() {
+        subscribeChat('chats/global', 'globalChatBox');
+
+        onValue(ref(db, 'config/registrationStatus'), (s) => {
+            isRegistrationOpen = s.val();
+        });
+
+        onValue(ref(db, 'queue'), (snap) => {
+            let list = [];
+            let alreadyIn = false;
+            snap.forEach(c => { 
+                list.push(c.val().u);
+                if(c.val().u === myUsername) alreadyIn = true;
+            });
+            
+            if(alreadyIn) {
+                const btn = document.getElementById('btnJoinEvent');
+                if (btn) {
+                    btn.disabled = true;
+                    document.getElementById('joinStatus').style.display = 'block';
+                }
+            }
+            drawWheel('wheelCanvas', list);
+        });
+
+        // # (FITUR SYNC SPIN REALTIME)
+        onValue(ref(db, 'config/syncSpin'), (snap) => {
+            const data = snap.val();
+            if (!data) return;
+
+            const wheel = document.getElementById('wheelCanvas');
+            if (wheel) {
+                wheel.style.transform = `rotate(${data.rotation - 90}deg)`;
+                
+                if (data.rotation > 0 && !data.isDone) {
+                    document.getElementById('spinSound').play();
+                    document.getElementById('spinStatus').innerText = "RODA BERPUTAR...";
+                }
+
+                if (data.isDone) {
+                    document.getElementById('spinStatus').innerText = "PUTARAN SELESAI!";
+                    if (data.winner === myUsername) {
+                        confetti();
+                        document.getElementById('winSound').play();
+                        Swal.fire({
+                            title: 'ANDA MENANG!',
+                            text: 'Silakan isi data klaim di bawah layar!',
+                            icon: 'success'
+                        });
+                    }
+                }
+            }
+        });
+
+        onValue(ref(db, 'pemenang'), (snap) => {
+            let win = false;
+            snap.forEach(c => { if(c.val().u === myUsername) win = true; });
+            const winSec = document.getElementById('winnerSection');
+            if (winSec) {
+                winSec.style.display = win ? 'block' : 'none';
+                if (win) subscribeChat(`chats/private/${myUsername}`, 'privateChatBoxUser');
+            }
+        });
+    }
+
+    // # (FITUR IKUT ANTRIAN)
+    window.joinQueue = () => {
+        if (!isRegistrationOpen) return Swal.fire('Tutup', 'Maaf, Admin sudah menutup antrian.', 'error');
+        push(ref(db, 'queue'), { u: myUsername });
+    };
+
 </script>
 </body>
 </html>
