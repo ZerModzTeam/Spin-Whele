@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT HUB V0.0.4 (PRO)</title>
+    <title>ZMT HUB V0.0.5 (FIXED)</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
@@ -15,26 +15,308 @@
         @keyframes scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
         .card { background: var(--glass); backdrop-filter: blur(20px); padding: 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
         input { width: 100%; padding: 15px 20px; margin: 8px 0; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); color: white; font-family: inherit; }
-        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; font-family: inherit; display: flex; align-items: center; justify-content: center; text-transform: uppercase; letter-spacing: 1px; }
-        .btn:active { transform: scale(0.95); }
-        .btn-p { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
+        .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; font-family: inherit; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
+        .btn-p { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
         .on { background: var(--succ); box-shadow: 0 0 10px var(--succ); }
         .off { background: var(--err); box-shadow: 0 0 10px var(--err); }
-        .chat-box { height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
-        .msg { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 12px; line-height: 1.4; }
-        .msg.me { align-self: flex-end; background: var(--p); border-bottom-right-radius: 4px; }
-        .msg.other { align-self: flex-start; background: #334155; border-bottom-left-radius: 4px; }
+        .chat-box { height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 20px; }
+        .msg { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 12px; }
+        .msg.me { align-self: flex-end; background: var(--p); }
+        .msg.other { align-self: flex-start; background: #334155; }
         .w-wrap { position: relative; width: 280px; height: 280px; margin: 20px auto; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; transition: 5s cubic-bezier(0.1,0,0.1,1); filter: drop-shadow(0 0 15px rgba(0,0,0,0.5)); }
-        .needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: var(--err); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.3)); }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; transition: 5s cubic-bezier(0.1,0,0.1,1); }
+        .needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: var(--err); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
         #gate { position: fixed; inset: 0; background: var(--d); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .log-box { font-size: 10px; background: #000; padding: 12px; border-radius: 20px; height: 100px; overflow-y: auto; color: #0f0; font-family: 'Courier New', monospace; border: 1px solid rgba(0,255,0,0.1); }
+        .log-box { font-size: 10px; background: #000; padding: 12px; border-radius: 20px; height: 100px; overflow-y: auto; color: #0f0; font-family: monospace; }
     </style>
 </head>
 <body>
 
 <audio id="sTick" src="https://www.soundjay.com/buttons/sounds/button-20.mp3"></audio>
+<audio id="sWin" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
+
+<div id="gate">
+    <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
+        <h2 style="color: var(--p); margin: 0;">ZMT HUB</h2>
+        <p style="font-size: 10px; opacity: 0.4; margin-bottom: 30px;">V0.0.5 (FIX NAVIGASI)</p>
+        <div id="uZone">
+            <input type="text" id="lU" placeholder="Username">
+            <input type="password" id="lP" placeholder="Password">
+            <button class="btn btn-p" onclick="doLog()">MASUK / DAFTAR</button>
+            <p onclick="toA(true)" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">ADMIN MODE</p>
+        </div>
+        <div id="aZone" style="display:none;">
+            <input type="password" id="aK" placeholder="Admin Key">
+            <button class="btn btn-p" style="background:var(--g); color:black;" onclick="doLogA()">VERIFY ADMIN</button>
+            <p onclick="toA(false)" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">KEMBALI</p>
+        </div>
+    </div>
+</div>
+
+<div id="app" style="display:none;">
+    <div class="marquee"><span id="runText">MENGHUBUNGKAN...</span></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+        <div>
+            <b id="myTag" style="color:var(--p);"></b>
+            <div style="font-size: 10px; margin-top:3px;"><span id="adDot" class="status-dot"></span> <span id="adStatus">...</span></div>
+        </div>
+        <button onclick="off()" style="background:none; border:1px solid var(--err); color:var(--err); padding:6px 15px; border-radius:50px; font-size:10px; font-weight:800;">LOGOUT</button>
+    </div>
+
+    <div id="uiU" style="display:none;">
+        <div id="joinCard" class="card">
+            <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:12px;">
+                <span>Peserta: <b id="currQ">0</b></span>
+                <span>Maksimal: <b id="maxQ">0</b></span>
+            </div>
+            <button class="btn btn-p" id="btnJoin" onclick="gasQ()">GABUNG SPIN</button>
+        </div>
+        <div id="inboxUser" class="card" style="display:none; border: 2px solid var(--g);">
+            <h3 style="color:var(--g); margin:0 0 10px 0; font-size:14px;">📩 INBOX PEMENANG</h3>
+            <div id="boxU" class="chat-box"></div>
+            <div style="display:flex; gap:8px; margin-top:12px;">
+                <input type="text" id="mU" placeholder="Pesan..." style="margin:0;">
+                <button class="btn btn-p" style="width:80px;" onclick="send('user')">KIRIM</button>
+            </div>
+        </div>
+        <div class="card"><h4>🏆 PEMENANG</h4><div id="listWU"></div></div>
+    </div>
+
+    <div id="uiA" style="display:none;">
+        <div class="card">
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <button class="btn" style="background:var(--succ); font-size:9px; color:white;" onclick="setAdStatus(true)">ON</button>
+                <button class="btn" style="background:var(--err); font-size:9px; color:white;" onclick="setAdStatus(false)">OFF</button>
+                <button class="btn" style="background:var(--p); font-size:9px; color:white;" onclick="setReg(true)">OPEN</button>
+                <button class="btn" style="background:#444; font-size:9px; color:white;" onclick="setReg(false)">CLOSE</button>
+            </div>
+            <input type="text" placeholder="Update Text..." onchange="updateInfo(this.value)" style="font-size:11px;">
+        </div>
+        <div class="card" style="text-align:center;">
+            <div class="w-wrap"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
+            <button class="btn btn-p" id="btnSpin" onclick="spin()">PUTAR RODA</button>
+            <div id="listQ" style="margin-top:15px; font-size:11px; color:var(--g);"></div>
+        </div>
+        <div class="card"><div id="logBox" class="log-box"></div></div>
+        <div class="card">
+            <h3>📩 CHATS</h3>
+            <div id="listWA"></div>
+            <div id="chatActive" style="display:none; margin-top:15px;">
+                <b id="chatName"></b>
+                <div id="boxA" class="chat-box"></div>
+                <div style="display:flex; gap:8px; margin-top:10px;">
+                    <input type="text" id="mA" placeholder="Balas..." style="margin:0;">
+                    <button class="btn btn-p" style="width:80px;" onclick="send('admin')">BALAS</button>
+                </div>
+            </div>
+        </div>
+        <button class="btn" style="background:var(--err); color:white; font-size:10px;" onclick="wipe()">HARD RESET</button>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
+    import { getDatabase, ref, push, onValue, remove, set, get, serverTimestamp, off as offFB } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+
+    const USN_ADMIN = "MASTER_ADMIN";
+    const KEY_ADMIN = "zmtxxx";
+    const conf = {
+        apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
+        authDomain: "spinanberhadiahzmt.firebaseapp.com",
+        databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "spinanberhadiahzmt",
+        appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
+    };
+
+    const appFB = initializeApp(conf);
+    const db = getDatabase(appFB);
+    let myU = ""; let sData = []; let rot = 0; let activeChat = "";
+
+    // FIXED: Navigasi Toggle Admin/User Zone
+    window.toA = (isAdminZone) => {
+        document.getElementById('uZone').style.display = isAdminZone ? 'none' : 'block';
+        document.getElementById('aZone').style.display = isAdminZone ? 'block' : 'none';
+    };
+
+    // FIXED: Login Logic
+    window.doLog = async () => {
+        const u = document.getElementById('lU').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+        const p = document.getElementById('lP').value.trim();
+        if(!u || !p) return;
+        
+        const regSnap = await get(ref(db, 'config/regStatus'));
+        if(regSnap.exists() && !regSnap.val()) return Swal.fire("PENDAFTARAN TUTUP!");
+        
+        const snap = await get(ref(db, `auth/${u}`));
+        if(snap.exists()) {
+            if(snap.val().pw === p) enter(u);
+            else Swal.fire("Password salah!");
+        } else { 
+            await set(ref(db, `auth/${u}`), {pw: p}); 
+            enter(u); 
+        }
+    };
+
+    window.doLogA = () => {
+        if(document.getElementById('aK').value === KEY_ADMIN) enter(USN_ADMIN);
+        else Swal.fire("KEY SALAH!");
+    };
+
+    // FIXED: Navigasi Enter App (Tanpa Stuck)
+    function enter(u) {
+        localStorage.setItem('z_u', u);
+        myU = u;
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        document.getElementById('myTag').innerText = (u === USN_ADMIN) ? "🛡️ ADMIN" : "@" + u;
+        
+        loadGlobalConfig();
+        if(u === USN_ADMIN) {
+            document.getElementById('uiA').style.display='block';
+            document.getElementById('uiU').style.display='none';
+            runA();
+        } else {
+            document.getElementById('uiU').style.display='block';
+            document.getElementById('uiA').style.display='none';
+            runU();
+        }
+    }
+
+    window.off = () => { localStorage.removeItem('z_u'); location.reload(); };
+
+    // Auto-login check on page load
+    const sess = localStorage.getItem('z_u');
+    if(sess) enter(sess);
+
+    function loadGlobalConfig() {
+        onValue(ref(db, 'config'), (s) => {
+            const d = s.val() || {};
+            document.getElementById('runText').innerText = d.info || "WELCOME!";
+            document.getElementById('adStatus').innerText = d.adOnline ? "ADMIN ONLINE" : "ADMIN OFFLINE";
+            document.getElementById('adDot').className = "status-dot " + (d.adOnline ? "on" : "off");
+            document.getElementById('maxQ').innerText = d.limit || 20;
+        });
+        onValue(ref(db, 'config/wipeTrigger'), (s) => { if(s.val() && myU !== USN_ADMIN) off(); });
+    }
+
+    // USER LOGIC
+    function runU() {
+        onValue(ref(db, 'q'), (s) => {
+            let found = false; let count = 0;
+            if(s.exists()) s.forEach(c => { count++; if(c.val().u === myU) found = true; });
+            document.getElementById('currQ').innerText = count;
+            const b = document.getElementById('btnJoin');
+            b.innerText = found ? "TERDAFTAR ✅" : "GABUNG SPIN";
+            b.disabled = found;
+        });
+        onValue(ref(db, 'wins'), (s) => {
+            const l = document.getElementById('listWU'); l.innerHTML = ""; let imWin = false;
+            if(s.exists()) s.forEach(c => {
+                if(c.val().u === myU) imWin = true;
+                l.innerHTML += `<div class="pill win-pill"><span>@${c.val().u}</span> 🏆</div>`;
+            });
+            if(imWin) { document.getElementById('inboxUser').style.display = 'block'; document.getElementById('joinCard').style.display = 'none'; loadChat(myU, 'boxU'); }
+        });
+    }
+
+    window.gasQ = async () => {
+        const snapQ = await get(ref(db, 'q'));
+        const snapC = await get(ref(db, 'config/limit'));
+        let count = 0; let exist = false;
+        if(snapQ.exists()) snapQ.forEach(c => { count++; if(c.val().u === myU) exist = true; });
+        if(!exist && count < (snapC.val() || 20)) push(ref(db, 'q'), {u: myU});
+    };
+
+    // ADMIN LOGIC
+    function runA() {
+        onValue(ref(db, 'q'), (s) => {
+            sData = []; const l = document.getElementById('listQ');
+            if(s.exists()) {
+                let n = []; s.forEach(c => { sData.push({u: c.val().u, key: c.key}); n.push("@"+c.val().u); });
+                l.innerText = "ANTREAN: " + n.join(", ");
+            } else l.innerText = "ANTREAN KOSONG";
+            draw();
+        });
+        onValue(ref(db, 'wins'), (s) => {
+            const l = document.getElementById('listWA'); l.innerHTML = "";
+            if(s.exists()) s.forEach(c => {
+                l.innerHTML += `<div class="pill win-pill"><span>@${c.val().u}</span><button onclick="startAdminChat('${c.val().u}')">CHAT</button></div>`;
+            });
+        });
+        onValue(ref(db, 'logs'), (s) => {
+            const box = document.getElementById('logBox'); box.innerHTML = "";
+            if(s.exists()) s.forEach(c => { box.innerHTML += `<div>> ${c.val().t}</div>`; });
+            box.scrollTop = box.scrollHeight;
+        });
+    }
+
+    window.updateInfo = (v) => set(ref(db, 'config/info'), v);
+    window.setAdStatus = (v) => set(ref(db, 'config/adOnline'), v);
+    window.setReg = (v) => set(ref(db, 'config/regStatus'), v);
+
+    window.startAdminChat = (user) => {
+        if(activeChat) offFB(ref(db, `chats/${activeChat}`));
+        activeChat = user; document.getElementById('chatActive').style.display = 'block'; 
+        document.getElementById('chatName').innerText = "CHAT: @" + user; loadChat(user, 'boxA');
+    };
+
+    function loadChat(u, boxId) {
+        onValue(ref(db, `chats/${u}`), (s) => {
+            const box = document.getElementById(boxId); box.innerHTML = "";
+            if(s.exists()) s.forEach(c => {
+                const cls = (c.val().sender === myU) ? 'me' : 'other';
+                box.innerHTML += `<div class="msg ${cls}">${c.val().txt}</div>`;
+            });
+            box.scrollTop = box.scrollHeight;
+        });
+    }
+
+    window.send = (role) => {
+        const inp = document.getElementById(role === 'admin' ? 'mA' : 'mU');
+        const txt = inp.value.trim(); if(!txt) return;
+        const target = (role === 'admin') ? activeChat : myU;
+        push(ref(db, `chats/${target}`), { sender: myU, txt: txt }); inp.value = "";
+    };
+
+    function draw() {
+        const c = document.getElementById('wheel'); const ctx = c.getContext('2d');
+        const n = sData.length || 1; const arc = (2 * Math.PI) / n;
+        ctx.clearRect(0,0,500,500);
+        for(let i=0; i<n; i++) {
+            ctx.beginPath(); ctx.fillStyle = `hsl(${i * (360/n)}, 70%, 50%)`;
+            ctx.moveTo(250, 250); ctx.arc(250, 250, 240, i * arc, (i+1) * arc); ctx.fill();
+            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc/2);
+            ctx.fillStyle = "#fff"; ctx.font = "bold 22px sans-serif"; ctx.fillText(sData[i]?.u || "ZMT", 100, 10); ctx.restore();
+        }
+    }
+
+    window.spin = () => {
+        if(sData.length < 2) return Swal.fire("MIN 2 ORANG!");
+        rot += Math.floor(Math.random() * 360) + 3600;
+        document.getElementById('wheel').style.transform = `rotate(${rot}deg)`;
+        let tick = setInterval(() => { document.getElementById('sTick').currentTime = 0; document.getElementById('sTick').play(); }, 120);
+        setTimeout(async () => {
+            clearInterval(tick); document.getElementById('sWin').play();
+            const idx = Math.floor((360 - (rot % 360) + 270) % 360 / (360 / sData.length));
+            const winner = sData[idx];
+            await push(ref(db, 'wins'), {u: winner.u});
+            await remove(ref(db, `q/${winner.key}`));
+            Swal.fire("MENANG: " + winner.u);
+        }, 5000);
+    };
+
+    window.wipe = async () => {
+        if(confirm("RESET TOTAL?")) {
+            await set(ref(db, 'config/wipeTrigger'), true);
+            await remove(ref(db, 'q')); await remove(ref(db, 'wins')); await remove(ref(db, 'chats')); await remove(ref(db, 'auth')); await remove(ref(db, 'logs'));
+            setTimeout(() => { set(ref(db, 'config/wipeTrigger'), false); location.reload(); }, 2000);
+        }
+    };
+    draw();
+</script>
+</body>
+</html><audio id="sTick" src="https://www.soundjay.com/buttons/sounds/button-20.mp3"></audio>
 <audio id="sWin" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
 
 <div id="gate">
