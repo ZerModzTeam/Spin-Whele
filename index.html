@@ -3,114 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT - DARK NEBULA</title>
+    <title>ZMT EVENT - NEBULA CAPSULE</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@700&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #7c3aed; --g: #fbbf24; --d: #050505; --r: #ff4757; --glass: rgba(15, 15, 15, 0.85); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Inter', sans-serif; }
-        body { margin: 0; background: var(--d); color: #eee; overflow-x: hidden; min-height: 100vh; }
+        :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { margin: 0; background: var(--d); color: #fff; overflow-x: hidden; min-height: 100vh; }
 
-        /* REAL CUSTOM NEBULA BG */
-        .nebula-container { position: fixed; inset: 0; z-index: -1; background: #000; overflow: hidden; }
-        .vapor { position: absolute; width: 600px; height: 600px; border-radius: 50%; filter: blur(100px); opacity: 0.4; animation: drift 25s infinite alternate; }
-        .v1 { background: radial-gradient(circle, #4f46e5, transparent); top: -10%; left: -10%; }
-        .v2 { background: radial-gradient(circle, #702283, transparent); bottom: -10%; right: -10%; animation-delay: -7s; }
-        .v3 { background: radial-gradient(circle, #1e3a8a, transparent); top: 40%; left: 20%; animation-duration: 35s; }
-        @keyframes drift { from { transform: translate(0,0) scale(1) rotate(0deg); } to { transform: translate(150px, 100px) scale(1.3) rotate(90deg); } }
+        /* CAPSULE NEBULA BACKGROUND */
+        .nebula-bg { position: fixed; inset: 0; z-index: -1; background: #020308; overflow: hidden; }
+        .vapor { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.35; animation: drift 20s infinite alternate; }
+        .v1 { width: 500px; height: 300px; background: #4f46e5; top: -10%; left: -5%; }
+        .v2 { width: 400px; height: 600px; background: #9333ea; bottom: -10%; right: -5%; animation-delay: -5s; }
+        @keyframes drift { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(100px, 80px) rotate(45deg); } }
 
-        /* UI ELEMENTS - ANTI GOOGLE STYLE */
-        .zmt-card { background: var(--glass); border: 1px solid #222; border-radius: 12px; padding: 20px; margin-bottom: 15px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); backdrop-filter: blur(15px); }
-        .header-title { font-family: 'Syncopate', sans-serif; text-transform: uppercase; letter-spacing: 5px; color: var(--p); text-shadow: 0 0 15px var(--p); }
+        /* CAPSULE GLASS UI */
+        .capsule-card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 35px; padding: 25px; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.5); }
         
-        input { width: 100%; background: #111; border: 1px solid #333; padding: 15px; color: #fff; border-radius: 4px; margin: 10px 0; font-weight: bold; }
-        input:focus { border-color: var(--p); box-shadow: 0 0 10px rgba(124, 58, 237, 0.3); }
-        
-        .z-btn { width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 900; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-        .z-btn-p { background: var(--p); color: #fff; box-shadow: 0 5px 0 #5b21b6; }
-        .z-btn-p:active { transform: translateY(3px); box-shadow: 0 2px 0 #5b21b6; }
-        .z-btn-danger { background: var(--r); color: #fff; font-size: 11px; padding: 8px; }
+        /* TOMBOL KAPSUL TRANSPARAN */
+        .btn-capsule { width: 100%; padding: 16px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.08); color: #fff; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
+        .btn-capsule:active { transform: scale(0.95); background: rgba(255,255,255,0.15); }
+        .btn-p { background: linear-gradient(90deg, #6366f1, #a855f7); border: none; box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
 
-        .marquee-zmt { background: #111; border-top: 2px solid var(--p); border-bottom: 2px solid var(--p); padding: 10px; margin: 20px 0; font-weight: 900; color: var(--g); overflow: hidden; }
-        .mq-inner { display: inline-block; white-space: nowrap; animation: slide 20s linear infinite; }
+        input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 16px 25px; color: #fff; border-radius: 999px; margin-bottom: 12px; font-size: 14px; }
+        input:focus { border-color: var(--p); background: rgba(0,0,0,0.6); }
+
+        .marquee-capsule { background: rgba(0,0,0,0.4); border-radius: 999px; padding: 12px 25px; border: 1px solid var(--border); color: var(--g); font-weight: 800; font-size: 13px; margin: 20px 0; overflow: hidden; }
+        .mq-inner { display: inline-block; white-space: nowrap; animation: slide 15s linear infinite; }
         @keyframes slide { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
 
-        /* WHEEL CUSTOM */
-        .wheel-box { position: relative; width: 300px; height: 300px; margin: 30px auto; border: 10px solid #111; border-radius: 50%; box-shadow: 0 0 30px rgba(0,0,0,1); }
-        canvas { width: 100%; height: 100%; border-radius: 50%; transition: 6s cubic-bezier(0.15, 0, 0.15, 1); }
-        .pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 40px; height: 50px; background: #fff; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        /* WHEEL AREA */
+        .wheel-container { position: relative; width: 290px; height: 290px; margin: 25px auto; border: 8px solid var(--glass); border-radius: 50%; }
+        canvas { width: 100%; height: 100%; border-radius: 50%; transition: 6s cubic-bezier(0.1, 0, 0.1, 1); filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.2)); }
+        .needle { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 35px; height: 45px; background: #ff4757; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100; border: 2px solid #fff; }
 
-        .online-tag { background: #000; border: 1px solid var(--succ); color: var(--succ); padding: 5px 10px; border-radius: 4px; font-size: 10px; font-weight: 900; }
-        .chat-msg { padding: 10px; border-radius: 4px; margin-bottom: 8px; font-size: 13px; max-width: 85%; }
-        .me { background: var(--p); margin-left: auto; color: white; }
-        .other { background: #222; color: #ccc; }
+        .tag-capsule { background: rgba(16, 185, 129, 0.15); color: #10b981; padding: 6px 18px; border-radius: 999px; border: 1px solid #10b981; font-size: 10px; font-weight: 800; }
+        .q-item { background: rgba(255,255,255,0.03); border-radius: 999px; padding: 10px 20px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
-<div class="nebula-container">
-    <div class="vapor v1"></div><div class="vapor v2"></div><div class="vapor v3"></div>
-</div>
+<div class="nebula-bg"><div class="vapor v1"></div><div class="vapor v2"></div></div>
 
-<div id="gate" style="position:fixed; inset:0; z-index:1000; background:#000; display:flex; align-items:center; justify-content:center; padding:20px;">
-    <div class="zmt-card" style="width:100%; max-width:400px; text-align:center;">
-        <h1 class="header-title">ZMT EVENT</h1>
-        <div id="loginBox">
-            <input type="text" id="uIn" placeholder="USERNAME">
-            <input type="password" id="pIn" placeholder="PASSWORD">
-            <button class="z-btn z-btn-p" onclick="login('user')">ENTER NEBULA</button>
-            <p onclick="toggleGate()" style="margin-top:20px; font-size:10px; cursor:pointer; opacity:0.5;">ADMIN SECURE LOGIN</p>
+<div id="gate" style="position:fixed; inset:0; z-index:1000; background:rgba(2,3,8,0.9); display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(15px);">
+    <div class="capsule-card" style="width:100%; max-width:380px; text-align:center;">
+        <h1 style="font-weight:900; letter-spacing:4px; color:var(--p); margin:0;">ZMT EVENT</h1>
+        <p style="font-size:10px; opacity:0.5; margin-bottom:30px;">V0.1.2 CAPSULE STABLE</p>
+        <div id="loginUser">
+            <input type="text" id="uIn" placeholder="Username">
+            <input type="password" id="pIn" placeholder="Password">
+            <button class="btn-capsule btn-p" onclick="login('user')">Masuk Event</button>
+            <p onclick="toggleGate()" style="margin-top:25px; font-size:11px; opacity:0.4; cursor:pointer;">Admin Verification</p>
         </div>
-        <div id="adminLoginBox" style="display:none;">
-            <input type="password" id="aKey" placeholder="ADMIN SECRET KEY">
-            <button class="z-btn z-btn-p" style="background:var(--g); color:#000;" onclick="login('admin')">VERIFY MASTER</button>
-            <p onclick="toggleGate()" style="margin-top:20px; font-size:10px; cursor:pointer; opacity:0.5;">BACK TO USER</p>
+        <div id="loginAdmin" style="display:none;">
+            <input type="password" id="aKey" placeholder="Admin Secret Key">
+            <button class="btn-capsule btn-p" style="background:#fbbf24; color:#000;" onclick="login('admin')">Verify Master</button>
+            <p onclick="toggleGate()" style="margin-top:20px; font-size:11px; opacity:0.4; cursor:pointer;">Kembali</p>
         </div>
     </div>
 </div>
 
-<div id="app" style="display:none; padding:15px; max-width:600px; margin:auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <div class="online-tag">🟢 <span id="onlineVal">0</span> ONLINE</div>
-        <button onclick="logout()" style="background:none; border:1px solid var(--r); color:var(--r); padding:5px 15px; font-size:10px; font-weight:900;">LOGOUT</button>
+<div id="app" style="display:none; padding:15px; max-width:550px; margin:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <div class="tag-capsule">● <span id="onlineVal">0</span> ONLINE</div>
+        <button onclick="logout()" style="background:none; border:none; color:#ff4757; font-weight:800; font-size:11px;">LOGOUT</button>
     </div>
 
-    <div class="marquee-zmt"><div class="mq-inner" id="mqText">WELCOME TO ZMT EVENT DARK NEBULA ENGINE...</div></div>
+    <div class="marquee-capsule"><div class="mq-inner" id="mqText">Sedang Menunggu Update...</div></div>
 
     <div id="uiAdmin" style="display:none;">
-        <div class="zmt-card">
-            <h3 style="margin:0 0 15px 0;">MASTER CONTROL</h3>
-            <input type="text" placeholder="GANTI RUNNING TEXT..." onchange="setMarquee(this.value)">
+        <div class="capsule-card">
+            <h4 style="margin:0 0 15px 0;">Control Panel</h4>
+            <input type="text" placeholder="Ganti Running Text..." onchange="setMQ(this.value)">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:10px;">
-                <button class="z-btn" style="background:var(--succ); color:#fff;" onclick="setReg(true)">OPEN REG</button>
-                <button class="z-btn" style="background:var(--r); color:#fff;" onclick="setReg(false)">CLOSE REG</button>
+                <button class="btn-capsule" onclick="setReg(true)" style="color:#10b981;">Buka Reg</button>
+                <button class="btn-capsule" onclick="setReg(false)" style="color:#ef4444;">Tutup Reg</button>
             </div>
-            <button class="z-btn" style="margin-top:10px; background:#444; color:#fff;" onclick="clearRoda()">🧹 RESET SEMUA PESERTA</button>
+            <button class="btn-capsule" style="margin-top:10px; font-size:11px;" onclick="resetQ()">🧹 Reset Semua Peserta</button>
         </div>
         
-        <div class="zmt-card" style="text-align:center;">
-            <div class="wheel-box"><div class="pointer"></div><canvas id="wheel" width="500" height="500"></canvas></div>
-            <button class="z-btn z-btn-p" id="spinBtn" onclick="spinNow()">SPIN NEBULA</button>
+        <div class="capsule-card" style="text-align:center;">
+            <div class="wheel-container"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
+            <button class="btn-capsule btn-p" onclick="spin()">Spin Sekarang</button>
         </div>
 
-        <div class="zmt-card">
-            <h3>QUEUE (@<span id="qCount">0</span>)</h3>
-            <div id="queueList" style="max-height:200px; overflow-y:auto;"></div>
+        <div class="capsule-card">
+            <h4>Daftar Antrian</h4>
+            <div id="qList"></div>
         </div>
     </div>
 
     <div id="uiUser" style="display:none;">
-        <div id="regArea" class="zmt-card">
-            <button class="z-btn z-btn-p" id="joinBtn" onclick="join()">JOIN SPIN</button>
+        <div class="capsule-card">
+            <button class="btn-capsule btn-p" id="joinBtn" onclick="join()">Daftar Spin</button>
         </div>
-        <div class="zmt-card" style="text-align:center;">
-            <div class="wheel-box"><div class="pointer"></div><canvas id="wheelUser" width="500" height="500"></canvas></div>
+        <div class="capsule-card" style="text-align:center;">
+            <div class="wheel-container"><div class="needle"></div><canvas id="wheelUser" width="500" height="500"></canvas></div>
         </div>
-        <div id="winArea" class="zmt-card" style="display:none; border:2px solid var(--g);">
-            <h2 style="color:var(--g); text-align:center;">YOU WIN! CHAT ADMIN</h2>
-            <div id="chatUser" style="height:200px; overflow-y:auto; padding:10px; background:#000; margin-bottom:10px;"></div>
-            <div style="display:flex; gap:5px;"><input type="text" id="mInUser" placeholder="Pesan..."><button class="z-btn z-btn-p" style="width:80px;" onclick="send('user')">SEND</button></div>
+        <div id="winNotif" class="capsule-card" style="display:none; border:2px solid var(--g);">
+            <h3 style="color:var(--g); text-align:center; margin:0;">🏆 KAMU MENANG!</h3>
+            <p style="text-align:center; font-size:12px; margin-bottom:15px;">Chat admin buat klaim hadiah</p>
+            <div id="chatBox" style="height:180px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:20px; padding:15px; margin-bottom:10px;"></div>
+            <div style="display:flex; gap:8px;"><input type="text" id="msgIn" style="margin-bottom:0;" placeholder="Tulis..."><button class="btn-capsule btn-p" style="width:80px;" onclick="send()">Kirim</button></div>
         </div>
     </div>
 </div>
@@ -119,7 +115,7 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, remove, get, onDisconnect } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-    const cfg = {
+    const fb = {
         apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
         authDomain: "spinanberhadiahzmt.firebaseapp.com",
         databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -127,32 +123,29 @@
         appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
     };
 
-    const app = initializeApp(cfg);
+    const app = initializeApp(fb);
     const db = getDatabase(app);
-    let myID = ""; let items = []; let rot = 0; let isRegOpen = true;
+    let myID = ""; let items = []; let rot = 0; let regOk = true;
 
-    // SECURITY: ANTI-GHOST SESSION
-    const s = localStorage.getItem('zmt_s');
-    const k = localStorage.getItem('zmt_k');
-    if(s === "MASTER_ADMIN" && k !== "zmtxxx") { localStorage.clear(); location.reload(); }
-    if(s) start(s);
+    // --- SECURITY AUTO-WIPE ---
+    if(localStorage.getItem('zmt_s') === "MASTER_ADMIN" && localStorage.getItem('zmt_k') !== "zmtxxx") { localStorage.clear(); location.reload(); }
+    if(localStorage.getItem('zmt_s')) start(localStorage.getItem('zmt_s'));
 
-    // ONLINE COUNTER
+    // --- ONLINE COUNTER ---
     const oRef = ref(db, 'online/'+Math.floor(Math.random()*1e6));
     onDisconnect(oRef).remove(); set(oRef, true);
     onValue(ref(db, 'online'), (s) => document.getElementById('onlineVal').innerText = s.exists() ? Object.keys(s.val()).length : 1);
 
     window.login = async (role) => {
         if(role === 'admin') {
-            const key = document.getElementById('aKey').value;
-            if(key === "zmtxxx") { localStorage.setItem('zmt_k', "zmtxxx"); start("MASTER_ADMIN"); }
-            else Swal.fire("INVALID KEY");
+            if(document.getElementById('aKey').value === "zmtxxx") { localStorage.setItem('zmt_k', "zmtxxx"); start("MASTER_ADMIN"); }
+            else Swal.fire("Wrong Key");
         } else {
             const u = document.getElementById('uIn').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
             const p = document.getElementById('pIn').value;
-            if(u.length < 3) return Swal.fire("MIN 3 CHAR");
+            if(u.length < 3) return Swal.fire("Username Min 3 Karakter");
             const snap = await get(ref(db, `auth/${u}`));
-            if(snap.exists() && snap.val().pw !== p) return Swal.fire("WRONG PW");
+            if(snap.exists() && snap.val().pw !== p) return Swal.fire("Password Salah");
             await set(ref(db, `auth/${u}`), {pw:p}); start(u);
         }
     };
@@ -167,14 +160,11 @@
 
     function runAdmin() {
         onValue(ref(db, 'q'), (s) => {
-            items = []; const list = document.getElementById('queueList'); list.innerHTML = "";
+            items = []; const list = document.getElementById('qList'); list.innerHTML = "";
             s.forEach(c => {
                 items.push({u:c.val().u, k:c.key});
-                list.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #222;">
-                    <span>@${c.val().u}</span><button class="z-btn-danger" onclick="kick('${c.key}')">KICK</button>
-                </div>`;
+                list.innerHTML += `<div class="q-item"><span>@${c.val().u}</span><button onclick="kick('${c.key}')" style="border:none; background:none; color:#ff4757; font-weight:800;">KICK</button></div>`;
             });
-            document.getElementById('qCount').innerText = items.length;
             draw('wheel');
         });
     }
@@ -183,60 +173,69 @@
         onValue(ref(db, 'q'), (s) => {
             items = []; let joined = false;
             s.forEach(c => { items.push({u:c.val().u}); if(c.val().u === myID) joined = true; });
-            document.getElementById('joinBtn').innerText = joined ? "JOINED ✅" : "JOIN SPIN";
+            document.getElementById('joinBtn').innerText = joined ? "TERDAFTAR ✅" : "DAFTAR SPIN";
             document.getElementById('joinBtn').disabled = joined;
             draw('wheelUser');
         });
         onValue(ref(db, 'wins'), (s) => {
             let win = false; s.forEach(c => { if(c.val().u === myID) win = true; });
-            if(win) document.getElementById('winArea').style.display='block';
+            if(win) { document.getElementById('winNotif').style.display='block'; listenChat(); }
         });
     }
 
-    // SYNC GLOBAL
-    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "ZMT EVENT ACTIVE");
-    onValue(ref(db, 'config/reg'), s => isRegOpen = s.val() !== false);
+    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "ZMT EVENT NEBULA");
+    onValue(ref(db, 'config/reg'), s => regOk = s.val() !== false);
 
     window.draw = (id) => {
         const c = document.getElementById(id); if(!c) return;
         const ctx = c.getContext('2d'); const n = items.length || 1; const arc = (2*Math.PI)/n;
         ctx.clearRect(0,0,500,500);
         items.forEach((it, i) => {
-            ctx.beginPath(); ctx.fillStyle = i % 2 === 0 ? "#111" : varColor(i);
+            ctx.beginPath(); ctx.fillStyle = `hsl(${i*(360/n)}, 65%, 45%)`;
             ctx.moveTo(250,250); ctx.arc(250,250,245,i*arc,(i+1)*arc); ctx.fill();
             ctx.save(); ctx.translate(250,250); ctx.rotate(i*arc+arc/2);
-            ctx.fillStyle = "#fff"; ctx.font = "900 20px Inter"; ctx.fillText(it.u.substring(0,7).toUpperCase(), 120, 10); ctx.restore();
+            ctx.fillStyle="#fff"; ctx.font="800 20px Plus Jakarta Sans"; ctx.fillText(it.u.toUpperCase().substring(0,7), 120, 10); ctx.restore();
         });
     };
 
-    function varColor(i) { return `hsl(${i * (360/items.length)}, 70%, 50%)`; }
-
-    window.spinNow = () => {
-        if(items.length < 2) return Swal.fire("MIN 2 USERS");
-        const winIdx = Math.floor(Math.random() * items.length);
-        const win = items[winIdx];
+    window.spin = () => {
+        if(items.length < 2) return Swal.fire("Min 2 Orang");
+        const idx = Math.floor(Math.random() * items.length);
+        const win = items[idx];
         const arc = 360 / items.length;
-        const stop = (360 - (winIdx * arc)) - (arc/2);
+        const stop = (360 - (idx * arc)) - (arc/2);
         rot += 3600 + (stop - (rot % 360));
         document.getElementById('wheel').style.transform = `rotate(${rot}deg)`;
         setTimeout(async () => {
-            confetti({particleCount: 200, spread: 80});
+            confetti({particleCount: 150, spread: 70});
             await push(ref(db, 'wins'), {u: win.u});
             await remove(ref(db, `q/${win.k}`));
-            Swal.fire("WINNER: @"+win.u);
+            Swal.fire("Pemenang: @"+win.u);
         }, 6000);
     };
 
     window.kick = (k) => remove(ref(db, `q/${k}`));
-    window.clearRoda = () => { if(confirm("Hapus semua antrian?")) remove(ref(db, 'q')); };
-    window.setMarquee = (t) => set(ref(db, 'config/marquee'), t);
+    window.resetQ = () => { if(confirm("Reset semua antrian?")) remove(ref(db, 'q')); };
+    window.setMQ = (t) => set(ref(db, 'config/marquee'), t);
     window.setReg = (v) => set(ref(db, 'config/reg'), v);
-    window.join = () => { if(!isRegOpen) return Swal.fire("CLOSED"); push(ref(db, 'q'), {u: myID}); };
+    window.join = () => { if(!regOk) return Swal.fire("Tutup"); push(ref(db, 'q'), {u: myID}); };
     window.logout = () => { localStorage.clear(); location.reload(); };
     window.toggleGate = () => { 
-        const u = document.getElementById('loginBox'); const a = document.getElementById('adminLoginBox');
+        const u = document.getElementById('loginUser'); const a = document.getElementById('loginAdmin');
         u.style.display = u.style.display === 'none' ? 'block' : 'none';
         a.style.display = a.style.display === 'none' ? 'block' : 'none';
+    };
+
+    function listenChat() {
+        onValue(ref(db, `chats/${myID}`), (s) => {
+            const b = document.getElementById('chatBox'); b.innerHTML = "";
+            s.forEach(c => { b.innerHTML += `<div style="padding:8px 15px; border-radius:15px; background:${c.val().sender===myID? 'var(--p)' : '#333'}; margin-bottom:5px; font-size:12px; width:fit-content; ${c.val().sender===myID? 'margin-left:auto' : ''}">${c.val().text}</div>`; });
+            b.scrollTop = b.scrollHeight;
+        });
+    }
+    window.send = async () => {
+        const inp = document.getElementById('msgIn'); if(!inp.value) return;
+        await push(ref(db, `chats/${myID}`), {sender:myID, text:inp.value}); inp.value="";
     };
 </script>
 </body>
