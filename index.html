@@ -3,69 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT V0.0.6 - NEBULA LIVE</title>
+    <title>ZMT EVENT V0.0.9 - FINAL FIX</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --p: #6366f1; --g: #f59e0b; --d: #040813; --glass: rgba(255,255,255,0.08); --err: #ef4444; --succ: #10b981; }
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none !important; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
-        
-        /* NEBULA ANIMATED BG */
+        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; outline: none !important; }
         body { font-family: 'Plus Jakarta Sans', sans-serif; margin: 0; padding: 15px; min-height: 100vh; color: white; background: var(--d); overflow-x: hidden; }
-        .nebula-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #040813 100%); overflow: hidden; }
+        
+        /* NEBULA BG */
+        .nebula-bg { position: fixed; inset: 0; z-index: -1; background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #040813 100%); }
         .star { position: absolute; background: white; border-radius: 50%; opacity: 0.3; animation: float 20s infinite linear; }
-        @keyframes float { from { transform: translateY(0) translateX(0); } to { transform: translateY(-100vh) translateX(20vw); } }
-        .glow { position: absolute; width: 300px; height: 300px; background: var(--p); filter: blur(120px); opacity: 0.15; border-radius: 50%; animation: pulse-bg 10s infinite alternate; }
-        @keyframes pulse-bg { from { transform: scale(1); opacity: 0.1; } to { transform: scale(1.5); opacity: 0.2; } }
+        @keyframes float { from { transform: translateY(100vh); } to { transform: translateY(-10vh); } }
 
-        #gate { position: fixed; inset: 0; background: rgba(4,8,19,0.9); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(20px); }
-        #app { display: none; position: relative; z-index: 10; animation: appIn 0.6s ease-out; }
-        @keyframes appIn { from { opacity: 0; scale: 0.95; } to { opacity: 1; scale: 1; } }
+        #gate { position: fixed; inset: 0; background: rgba(4,8,19,0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(25px); }
+        #app { display: none; position: relative; z-index: 10; }
 
-        .card { background: var(--glass); backdrop-filter: blur(25px); padding: 22px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
-        .online-badge { position: absolute; top: 0; right: 0; background: rgba(16,185,129,0.2); color: var(--succ); padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800; border: 1px solid var(--succ); }
+        .card { background: var(--glass); backdrop-filter: blur(25px); padding: 22px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 18px; }
+        .online-badge { position: absolute; top: -5px; right: 0; background: rgba(16,185,129,0.15); color: var(--succ); padding: 5px 15px; border-radius: 50px; font-size: 10px; font-weight: 800; border: 1px solid var(--succ); }
 
-        .marquee-box { width: 100%; overflow: hidden; background: rgba(99, 102, 241, 0.15); border-radius: 12px; margin-bottom: 20px; padding: 14px 0; border-left: 4px solid var(--p); }
-        .marquee-content { display: inline-block; white-space: nowrap; animation: jalan-kiri 15s linear infinite; color: var(--g); font-weight: 800; font-size: 14px; text-shadow: 0 0 10px rgba(245, 158, 11, 0.3); }
+        .marquee-box { width: 100%; overflow: hidden; background: rgba(99, 102, 241, 0.1); border-radius: 12px; margin-bottom: 20px; padding: 14px 0; border-left: 4px solid var(--p); }
+        .marquee-content { display: inline-block; white-space: nowrap; animation: jalan-kiri 15s linear infinite; color: var(--g); font-weight: 800; }
         @keyframes jalan-kiri { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-        input { width: 100%; padding: 16px; margin: 10px 0; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.6); color: white; font-family: inherit; font-size: 14px; }
-        input:focus { border-color: var(--p); box-shadow: 0 0 20px rgba(99, 102, 241, 0.4); background: rgba(0,0,0,0.8); }
+        input { width: 100%; padding: 16px; margin: 10px 0; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); color: white; font-family: inherit; }
         .btn { width: 100%; padding: 16px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; text-transform: uppercase; font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn:active { transform: scale(0.96); }
-        .btn-p { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.4); }
-        
-        .chat-area { height: 260px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; border: 1px solid rgba(255,255,255,0.05); }
-        .msg { max-width: 80%; padding: 14px; border-radius: 20px; font-size: 13px; line-height: 1.5; position: relative; animation: msgIn 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28); }
-        @keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .msg.me { align-self: flex-end; background: var(--p); border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3); }
-        .msg.other { align-self: flex-start; background: #2d3748; border-bottom-left-radius: 4px; }
+        .btn-p { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3); }
 
-        .w-wrap { position: relative; width: 280px; height: 280px; margin: 25px auto; z-index: 5; }
-        #wheel, #wheelUser { width: 100%; height: 100%; border-radius: 50%; transition: 5s cubic-bezier(0.1, 0, 0.1, 1); border: 10px solid rgba(255,255,255,0.03); background: #000; box-shadow: 0 0 60px rgba(99, 102, 241, 0.25); }
-        .needle { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 38px; height: 48px; background: var(--err); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 50; border: 3px solid white; filter: drop-shadow(0 8px 15px rgba(239, 68, 68, 0.4)); }
+        .chat-area { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 20px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { max-width: 80%; padding: 12px 16px; border-radius: 18px; font-size: 13px; }
+        .msg.me { align-self: flex-end; background: var(--p); border-bottom-right-radius: 2px; }
+        .msg.other { align-self: flex-start; background: #2d3748; border-bottom-left-radius: 2px; }
+
+        .w-wrap { position: relative; width: 280px; height: 280px; margin: 25px auto; }
+        #wheel, #wheelUser { width: 100%; height: 100%; border-radius: 50%; transition: 5s cubic-bezier(0.1, 0, 0.1, 1); border: 8px solid rgba(255,255,255,0.05); background: #000; }
+        .needle { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 35px; height: 45px; background: var(--err); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 50; border: 2px solid white; }
+        
+        /* History Style */
+        .hist-card { background: rgba(0,0,0,0.3); border-radius: 15px; padding: 10px; margin-top: 10px; }
+        .hist-item { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; border-bottom: 1px dashed rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
 <div class="nebula-bg" id="stars"></div>
-<audio id="sTick" src="https://www.soundjay.com/buttons/sounds/button-20.mp3" preload="auto"></audio>
-<audio id="sWin" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3" preload="auto"></audio>
+<audio id="sTick" src="https://www.soundjay.com/buttons/sounds/button-20.mp3"></audio>
+<audio id="sWin" src="https://www.soundjay.com/misc/sounds/bell-ringing-05.mp3"></audio>
 
 <div id="gate">
-    <div class="card" style="width: 100%; max-width: 360px; text-align: center; border-color: var(--p);">
-        <h2 style="color: var(--p); margin: 0; letter-spacing: 3px; font-weight: 800;">ZMT EVENT</h2>
-        <p style="font-size: 10px; opacity: 0.6; margin-bottom: 25px; letter-spacing: 1px;">V0.0.6 NEBULA LIVE</p>
+    <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
+        <h2 style="color: var(--p); letter-spacing: 2px; font-weight:800;">ZMT EVENT</h2>
+        <p style="font-size: 10px; opacity: 0.5; margin-bottom: 25px;">V0.0.9 STABLE</p>
         <div id="loginUserBox">
-            <input type="text" id="userInput" placeholder="Buat Username">
-            <input type="password" id="passInput" placeholder="Password Akun">
-            <button class="btn btn-p" id="btnLoginMain" onclick="authNow('user')">MULAI SEKARANG</button>
-            <p onclick="switchGate('admin')" style="margin-top:25px; font-size:11px; opacity:0.4; cursor:pointer; text-decoration: underline;">Admin Verification</p>
+            <input type="text" id="userInput" placeholder="Username">
+            <input type="password" id="passInput" placeholder="Password">
+            <button class="btn btn-p" onclick="authNow('user')">MASUK</button>
+            <p onclick="switchGate('admin')" style="margin-top:20px; font-size:11px; opacity:0.4; cursor:pointer;">ADMIN PANEL</p>
         </div>
         <div id="loginAdminBox" style="display:none;">
             <input type="password" id="adminKeyInput" placeholder="Admin Secret Key">
-            <button class="btn btn-p" style="background:var(--g); color:black;" onclick="authNow('admin')">MASUK PANEL</button>
-            <p onclick="switchGate('user')" style="margin-top:20px; font-size:11px; opacity:0.4; cursor:pointer;">Kembali</p>
+            <button class="btn btn-p" style="background:var(--g); color:black;" onclick="authNow('admin')">VERIFY ADMIN</button>
+            <p onclick="switchGate('user')" style="margin-top:20px; font-size:11px; opacity:0.4; cursor:pointer;">KEMBALI</p>
         </div>
     </div>
 </div>
@@ -73,62 +72,35 @@
 <div id="app">
     <div style="position: relative;">
         <div class="online-badge">● <span id="onlineCount">1</span> ONLINE</div>
-        <div class="marquee-box"><div class="marquee-content" id="infoText">ZMT EVENT: Semoga Beruntung!</div></div>
+        <div class="marquee-box"><div class="marquee-content" id="infoText">ZMT EVENT READY...</div></div>
     </div>
     
-    <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:20px; padding:0 5px;">
-        <div>
-            <b id="displayUser" style="color:var(--p); font-size:22px;"></b>
-            <div style="font-size:10px; opacity:0.6; margin-top:4px;"><span id="statusDot" class="status-dot"></span> Server: <span id="statusText">...</span></div>
-        </div>
-        <button onclick="handleLogout()" style="background:none; border:1px solid var(--err); color:var(--err); padding:8px 16px; border-radius:50px; font-size:11px; font-weight:800;">KELUAR</button>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div><b id="displayUser" style="color:var(--p); font-size:20px;"></b><div style="font-size:10px;"><span id="statusDot" class="status-dot"></span> <span id="statusText">...</span></div></div>
+        <button onclick="handleLogout()" style="background:none; border:1px solid var(--err); color:var(--err); padding:6px 15px; border-radius:50px; font-size:10px; font-weight:800;">LOGOUT</button>
     </div>
 
     <div id="uiAdmin" style="display:none;">
-        <div class="card">
-            <h4 style="margin:0 0 15px 0; font-size:14px;">🎛️ DASHBOARD ADMIN</h4>
-            <div style="display:flex; gap:10px;">
-                <button class="btn" style="background:var(--succ); color:white; flex:1;" onclick="setReg(true)">BUKA</button>
-                <button class="btn" style="background:var(--err); color:white; flex:1;" onclick="setReg(false)">TUTUP</button>
-            </div>
-            <input type="text" placeholder="Ganti Running Text..." onchange="updateMarquee(this.value)" style="margin-top:15px;">
-        </div>
-        <div class="card" style="text-align:center;">
-            <div class="w-wrap"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
-            <button class="btn btn-p" style="font-size:18px;" onclick="doSpin()">SPIN SEKARANG</button>
-        </div>
-        <div class="card">
-            <h4 style="margin:0 0 10px 0;">📂 LIST PESERTA</h4>
-            <div style="max-height: 200px; overflow-y: auto;"><table class="db-table"><tbody id="userTableBody"></tbody></table></div>
-        </div>
-        <div class="card">
-            <h4>💬 CHAT PEMENANG</h4>
-            <div id="adminChatList" style="display:flex; flex-direction:column; gap:8px;"></div>
-            <div id="activeChatAdmin" style="display:none; margin-top:20px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
-                <b id="targetChatUser" style="color:var(--g)"></b>
-                <div id="chatBoxAdmin" class="chat-area"></div>
-                <div style="display:flex; gap:10px; margin-top:15px;"><input type="text" id="msgAdmin" placeholder="Balas..."><button class="btn btn-p" style="width:90px;" onclick="sendChat('admin')">KIRIM</button></div>
-            </div>
-        </div>
+        <div class="card" style="display:flex; gap:10px;"><button class="btn" style="background:var(--succ); color:white; flex:1;" onclick="setReg(true)">BUKA</button><button class="btn" style="background:var(--err); color:white; flex:1;" onclick="setReg(false)">TUTUP</button></div>
+        <div class="card" style="text-align:center;"><div class="w-wrap"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div><button class="btn btn-p" onclick="doSpin()">SPIN SEKARANG</button></div>
+        <div class="card"><h4>DATABASE USER</h4><div style="max-height: 150px; overflow-y: auto;"><table class="db-table"><tbody id="userTableBody"></tbody></table></div></div>
+        <div class="card"><h4>CHAT PEMENANG</h4><div id="adminChatList"></div><div id="activeChatAdmin" style="display:none; margin-top:15px;"><b id="targetChatUser" style="color:var(--g)"></b><div id="chatBoxAdmin" class="chat-area"></div><div style="display:flex; gap:10px; margin-top:10px;"><input type="text" id="msgAdmin" placeholder="Balas..."><button class="btn btn-p" style="width:80px;" onclick="sendChat('admin')">KIRIM</button></div></div></div>
     </div>
 
     <div id="uiUser" style="display:none;">
-        <div id="joinSection" class="card"><button class="btn btn-p" id="btnJoin" style="font-size:18px;" onclick="joinSpin()">DAFTAR SPIN</button></div>
-        <div class="card" style="text-align:center;">
-            <div class="w-wrap"><div class="needle"></div><canvas id="wheelUser" width="500" height="500"></canvas></div>
-            <p style="font-size:12px; color:var(--g); font-weight:800;">LIVE PREVIEW RODA</p>
+        <div id="joinSection" class="card"><button class="btn btn-p" id="btnJoin" onclick="joinSpin()">IKUT SPIN</button></div>
+        <div class="card" style="text-align:center;"><div class="w-wrap"><div class="needle"></div><canvas id="wheelUser" width="500" height="500"></canvas></div><p style="font-size:12px; color:var(--g);">LIVE RODA</p></div>
+        <div class="card">
+            <h4 style="margin:0 0 10px 0; font-size:14px; color:var(--p);">📜 HISTORI PEMENANG</h4>
+            <div id="userWinnerHistory" class="hist-card"></div>
         </div>
-        <div id="chatWinnerSection" class="card" style="display:none; border: 2px solid var(--g);">
-            <h4 style="color:var(--g); text-align:center;">🎁 ANDA PEMENANG! CHAT ADMIN:</h4>
-            <div id="chatBoxUser" class="chat-area"></div>
-            <div style="display:flex; gap:10px; margin-top:15px;"><input type="text" id="msgUser" placeholder="Tulis pesan..."><button class="btn btn-p" style="width:80px;" onclick="sendChat('user')">KIRIM</button></div>
-        </div>
+        <div id="chatWinnerSection" class="card" style="display:none; border: 2px solid var(--g);"><h4 style="color:var(--g); text-align:center;">🏆 ANDA MENANG! CHAT ADMIN:</h4><div id="chatBoxUser" class="chat-area"></div><div style="display:flex; gap:10px; margin-top:10px;"><input type="text" id="msgUser" placeholder="Tulis pesan..."><button class="btn btn-p" style="width:80px;" onclick="sendChat('user')">KIRIM</button></div></div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, set, get, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, set, get, onDisconnect } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.app";
 
     const fbConfig = {
         apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
@@ -142,63 +114,65 @@
     const db = getDatabase(appFB);
     let myID = ""; let wheelItems = []; let rot = 0; let activeChat = ""; let regStatus = true;
 
-    // --- CREATE NEBULA BACKGROUND ---
-    const bg = document.getElementById('stars');
-    for(let i=0; i<50; i++) {
-        const star = document.createElement('div');
-        star.className = 'star';
-        star.style.width = Math.random() * 3 + 'px';
-        star.style.height = star.style.width;
-        star.style.left = Math.random() * 100 + 'vw';
-        star.style.top = Math.random() * 100 + 'vh';
-        star.style.animationDuration = (Math.random() * 20 + 10) + 's';
-        bg.appendChild(star);
+    // --- SECURITY SATPAM: MENCEGAH USER BIASA JADI ADMIN ---
+    const saved = localStorage.getItem('zmt_sess');
+    if (saved) {
+        if (saved === "MASTER_ADMIN") {
+            // Jika bekas admin, paksa mental ke login demi keamanan
+            localStorage.removeItem('zmt_sess');
+            location.reload(); 
+        } else {
+            startApp(saved);
+        }
     }
-    const glow = document.createElement('div'); glow.className = 'glow'; bg.appendChild(glow);
 
-    // --- LIVE ONLINE COUNTER ---
-    const onlineRef = ref(db, 'online/' + Math.floor(Math.random()*1000000));
-    onDisconnect(onlineRef).remove();
-    set(onlineRef, true);
-    onValue(ref(db, 'online'), (s) => { document.getElementById('onlineCount').innerText = s.exists() ? Object.keys(s.val()).length : 1; });
+    // --- NEBULA STARS ---
+    for(let i=0; i<30; i++) {
+        let s = document.createElement('div'); s.className = 'star';
+        s.style.width = s.style.height = Math.random()*3+'px';
+        s.style.left = Math.random()*100+'vw'; s.style.animationDuration = 10+Math.random()*20+'s';
+        document.getElementById('stars').appendChild(s);
+    }
 
-    // --- DRAW WHEEL ENGINE ---
+    // --- LIVE ONLINE ---
+    const onlineRef = ref(db, 'online/' + Math.floor(Math.random()*1e6));
+    onDisconnect(onlineRef).remove(); set(onlineRef, true);
+    onValue(ref(db, 'online'), (s) => document.getElementById('onlineCount').innerText = s.exists() ? Object.keys(s.val()).length : 1);
+
     function draw(id) {
-        const canvas = document.getElementById(id); if(!canvas) return;
-        const ctx = canvas.getContext('2d'); const n = wheelItems.length || 1; const arc = (2 * Math.PI) / n;
+        const cvs = document.getElementById(id); if(!cvs) return;
+        const ctx = cvs.getContext('2d'); const n = wheelItems.length || 1; const a = (2*Math.PI)/n;
         ctx.clearRect(0,0,500,500);
-        wheelItems.forEach((item, i) => {
-            ctx.beginPath(); ctx.fillStyle = `hsl(${i * (360/n)}, 75%, 50%)`;
-            ctx.moveTo(250, 250); ctx.arc(250, 250, 240, i * arc, (i + 1) * arc); ctx.fill();
-            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc/2);
-            ctx.fillStyle = "#fff"; ctx.font = "bold 24px Arial"; ctx.shadowBlur = 4; ctx.shadowColor = "#000";
-            ctx.fillText(item.u.substring(0, 8).toUpperCase(), 105, 10); ctx.restore();
+        wheelItems.forEach((it, i) => {
+            ctx.beginPath(); ctx.fillStyle = `hsl(${i*(360/n)}, 70%, 50%)`;
+            ctx.moveTo(250,250); ctx.arc(250,250,240,i*a,(i+1)*a); ctx.fill();
+            ctx.save(); ctx.translate(250,250); ctx.rotate(i*a+a/2);
+            ctx.fillStyle="#fff"; ctx.font="bold 24px Arial"; ctx.fillText(it.u.toUpperCase().substring(0,8),110,10); ctx.restore();
         });
     }
 
-    // --- FIREBASE SYNC ---
     onValue(ref(db, 'q'), (s) => {
-        wheelItems = []; if(s.exists()) s.forEach(c => wheelItems.push({u: c.val().u, key: c.key}));
+        wheelItems = []; if(s.exists()) s.forEach(c => wheelItems.push({u:c.val().u, key:c.key}));
         draw('wheel'); draw('wheelUser');
     });
-    onValue(ref(db, 'config/marquee'), (s) => { if(s.exists()) document.getElementById('infoText').innerText = s.val(); });
+
     onValue(ref(db, 'config/regStatus'), (s) => {
         regStatus = s.val() !== false;
-        document.getElementById('statusText').innerText = regStatus ? "ONLINE" : "OFFLINE";
+        document.getElementById('statusText').innerText = regStatus ? "PENDAFTARAN BUKA" : "PENDAFTARAN TUTUP";
         document.getElementById('statusDot').className = "status-dot " + (regStatus ? "on" : "off");
     });
 
     window.authNow = async (role) => {
         if (role === 'admin') {
             if (document.getElementById('adminKeyInput').value === "zmtxxx") startApp("MASTER_ADMIN");
-            else Swal.fire("Wrong Key!", "", "error");
+            else Swal.fire("Key Salah!");
         } else {
-            if (!regStatus) return Swal.fire("Tutup!", "Event belum dimulai.", "warning");
+            if (!regStatus) return Swal.fire("Pendaftaran Tutup!");
             const u = document.getElementById('userInput').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
             const p = document.getElementById('passInput').value.trim();
-            if (u.length < 3) return Swal.fire("Username kependekan!");
+            if (u.length < 3) return Swal.fire("Min 3 huruf!");
             const snap = await get(ref(db, `auth/${u}`));
-            if (snap.exists() && snap.val().pw !== p) return Swal.fire("Password salah!");
+            if (snap.exists() && snap.val().pw !== p) return Swal.fire("Sandi salah!");
             await set(ref(db, `auth/${u}`), { pw: p });
             startApp(u);
         }
@@ -208,17 +182,15 @@
         myID = u; localStorage.setItem('zmt_sess', u);
         document.getElementById('gate').style.display = 'none';
         document.getElementById('app').style.display = 'block';
-        document.getElementById('displayUser').innerText = (u === "MASTER_ADMIN") ? "ADMIN" : "@" + u;
+        document.getElementById('displayUser').innerText = (u === "MASTER_ADMIN") ? "🛡️ ADMIN" : "@" + u;
         if (u === "MASTER_ADMIN") { document.getElementById('uiAdmin').style.display = 'block'; runAdmin(); }
-        else { document.getElementById('uiUser').style.display = 'block'; runUser(); }
+        else { document.getElementById('uiUser').style.display = 'block'; runUser(); syncHistory(); }
     }
 
-    const saved = localStorage.getItem('zmt_sess');
-    if (saved) startApp(saved);
     window.handleLogout = () => { localStorage.clear(); location.reload(); };
 
     window.doSpin = () => {
-        if(wheelItems.length < 2) return Swal.fire("Butuh 2 orang!");
+        if(wheelItems.length < 2) return Swal.fire("Minimal 2 orang!");
         const winIdx = Math.floor(Math.random() * wheelItems.length);
         const winner = wheelItems[winIdx];
         const arc = 360 / wheelItems.length;
@@ -228,20 +200,30 @@
         let tick = setInterval(() => { document.getElementById('sTick').currentTime = 0; document.getElementById('sTick').play(); }, 120);
         setTimeout(async () => {
             clearInterval(tick); document.getElementById('sWin').play();
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
             await push(ref(db, 'wins'), { u: winner.u });
             await remove(ref(db, `q/${winner.key}`));
-            Swal.fire("WINNER: @" + winner.u);
+            Swal.fire("PEMENANG: @" + winner.u);
         }, 5000);
     };
+
+    function syncHistory() {
+        onValue(ref(db, 'wins'), (s) => {
+            const container = document.getElementById('userWinnerHistory');
+            if(!container) return; container.innerHTML = "";
+            let data = []; s.forEach(c => { data.unshift(c.val()); });
+            data.slice(0, 5).forEach(w => { container.innerHTML += `<div class="hist-item"><span>@${w.u}</span> <span style="color:var(--succ)">MENANG! 🏆</span></div>`; });
+        });
+    }
 
     function runAdmin() {
         onValue(ref(db, 'auth'), (s) => {
             const tb = document.getElementById('userTableBody'); tb.innerHTML = "";
-            s.forEach(c => { tb.innerHTML += `<tr><td>@${c.key}</td><td><code>${c.val().pw}</code></td><td onclick="delUser('${c.key}')" style="color:var(--err); cursor:pointer;">✖</td></tr>`; });
+            s.forEach(c => { tb.innerHTML += `<tr><td>@${c.key}</td><td>${c.val().pw}</td><td onclick="delUser('${c.key}')" style="color:red; cursor:pointer;">✖</td></tr>`; });
         });
         onValue(ref(db, 'wins'), (s) => {
             const list = document.getElementById('adminChatList'); list.innerHTML = "";
-            s.forEach(c => { list.innerHTML += `<button class="btn btn-p" onclick="openChat('${c.val().u}')">Chat @${c.val().u}</button>`; });
+            s.forEach(c => { list.innerHTML += `<button class="btn btn-p" style="margin-bottom:5px;" onclick="openChat('${c.val().u}')">Chat @${c.val().u}</button>`; });
         });
     }
 
@@ -252,12 +234,11 @@
         });
         onValue(ref(db, 'q'), (s) => {
             let j = false; s.forEach(c => { if(c.val().u === myID) j = true; });
-            document.getElementById('btnJoin').innerText = j ? "BERHASIL DAFTAR ✅" : "DAFTAR SPIN";
+            document.getElementById('btnJoin').innerText = j ? "DAFTAR BERHASIL ✅" : "IKUT SPIN";
             document.getElementById('btnJoin').disabled = j;
         });
     }
 
-    window.updateMarquee = (t) => set(ref(db, 'config/marquee'), t);
     window.delUser = (u) => { if(confirm("Hapus?")) remove(ref(db, `auth/${u}`)); };
     window.openChat = (u) => { activeChat = u; document.getElementById('activeChatAdmin').style.display = 'block'; document.getElementById('targetChatUser').innerText = "Chat @" + u; listenChat(u, 'chatBoxAdmin'); };
     window.sendChat = async (role) => {
