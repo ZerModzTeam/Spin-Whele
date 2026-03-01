@@ -3,103 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT - v.0.0.7 (GOD MODE)</title>
+    <title>ZMT EVENT - v.0.0.8 ULTIMATE</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
+        :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.12); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
         body { margin: 0; background: var(--d); color: #fff; overflow-x: hidden; min-height: 100vh; }
-        .nebula-bg { position: fixed; inset: 0; z-index: -1; background: #020308; }
-        .vapor { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.3; animation: drift 20s infinite alternate; }
-        .v1 { width: 400px; height: 400px; background: #4f46e5; top: -10%; left: -10%; }
-        .v2 { width: 400px; height: 400px; background: #9333ea; bottom: -10%; right: -10%; }
-        @keyframes drift { from { transform: translate(0,0); } to { transform: translate(50px, 50px); } }
-        .capsule-card { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 30px; padding: 20px; margin-bottom: 20px; }
-        .btn-capsule { width: 100%; padding: 15px; border-radius: 999px; border: none; color: #fff; font-weight: 800; cursor: pointer; transition: 0.3s; }
-        .btn-p { background: linear-gradient(90deg, #6366f1, #a855f7); }
-        input { width: 100%; background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 15px 20px; color: #fff; border-radius: 25px; margin-bottom: 10px; outline: none; }
-        .chat-box { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 10px; display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; }
-        .msg { padding: 10px 15px; border-radius: 15px; font-size: 13px; max-width: 80%; }
-        .me { background: var(--p); align-self: flex-end; }
-        .other { background: #333; align-self: flex-start; }
-        .marquee-capsule { background: rgba(0,0,0,0.5); border-radius: 999px; padding: 10px; border: 1px solid var(--border); color: var(--g); font-weight: 800; margin: 15px 0; overflow: hidden; text-align: center; }
-        .wheel-container { position: relative; width: 260px; height: 260px; margin: 10px auto; border: 5px solid var(--glass); border-radius: 50%; }
-        canvas { width: 100%; height: 100%; transition: 6s cubic-bezier(0.1, 0, 0.1, 1); }
-        .needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: #ff4757; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; border: 2px solid #fff; }
+        
+        /* BG NEBULA ANIMATION */
+        .nebula { position: fixed; inset: 0; z-index: -1; background: #020308; overflow: hidden; }
+        .vapor { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.4; animation: drift 15s infinite alternate; }
+        .v1 { width: 450px; height: 450px; background: #4f46e5; top: -10%; left: -10%; }
+        .v2 { width: 400px; height: 400px; background: #9333ea; bottom: -10%; right: -5%; animation-delay: -5s; }
+        .v3 { width: 300px; height: 300px; background: #ec4899; top: 30%; left: 20%; opacity: 0.2; }
+        @keyframes drift { from { transform: translate(0,0) scale(1); } to { transform: translate(60px, 40px) scale(1.1); } }
+
+        .capsule-card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 35px; padding: 25px; margin-bottom: 20px; animation: slideUp 0.6s ease-out; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        .btn-capsule { width: 100%; padding: 18px; border-radius: 999px; border: none; color: #fff; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; letter-spacing: 1px; }
+        .btn-p { background: linear-gradient(135deg, #6366f1, #a855f7); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3); }
+        .btn-p:hover { transform: scale(1.02); filter: brightness(1.1); }
+        .btn-p:active { transform: scale(0.98); }
+
+        input { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 16px 25px; color: #fff; border-radius: 30px; margin-bottom: 12px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--p); background: rgba(0,0,0,0.6); }
+
+        .marquee-box { background: rgba(0,0,0,0.5); border-radius: 999px; padding: 12px; border: 1px solid var(--border); color: var(--g); font-weight: 800; margin-bottom: 25px; overflow: hidden; text-align: center; }
+        
+        .wheel-container { position: relative; width: 280px; height: 280px; margin: 20px auto; border: 10px solid var(--glass); border-radius: 50%; box-shadow: 0 0 40px rgba(139,92,246,0.2); }
+        canvas { width: 100%; height: 100%; border-radius: 50%; transition: 6s cubic-bezier(0.1, 0, 0.1, 1); }
+        .needle { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 35px; height: 45px; background: #ff4757; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; border: 2px solid #fff; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.5)); }
+
+        .chat-box { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .msg { padding: 12px 18px; border-radius: 20px; font-size: 13px; max-width: 80%; }
+        .me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 4px; }
+        .other { background: #333; align-self: flex-start; border-bottom-left-radius: 4px; }
+
+        .q-item { background: rgba(255,255,255,0.05); border-radius: 20px; padding: 12px 20px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border); }
     </style>
 </head>
 <body>
-<div class="nebula-bg"><div class="vapor v1"></div><div class="vapor v2"></div></div>
+<div class="nebula"><div class="vapor v1"></div><div class="vapor v2"></div><div class="vapor v3"></div></div>
 
-<div id="gate" style="position:fixed; inset:0; z-index:1000; background:rgba(2,3,8,0.95); display:flex; align-items:center; justify-content:center; padding:20px;">
-    <div class="capsule-card" style="width:100%; max-width:350px; text-align:center;">
-        <h1 style="margin:0; color:var(--p); letter-spacing:3px;">ZMT EVENT</h1>
-        <div id="loginForm">
-            <input type="text" id="uIn" placeholder="Username" style="margin-top:20px;">
+<div id="gate" style="position:fixed; inset:0; z-index:1000; background:rgba(2,3,8,0.95); display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(15px);">
+    <div class="capsule-card" style="width:100%; max-width:380px; text-align:center;">
+        <h1 style="font-weight:900; letter-spacing:4px; color:var(--p); margin:0;">ZMT EVENT</h1>
+        <p style="font-size:11px; opacity:0.6; margin-bottom:25px;">VERSION 0.0.8 ULTIMATE</p>
+        <div id="uLogin">
+            <input type="text" id="uIn" placeholder="Username">
             <input type="password" id="pIn" placeholder="Password">
-            <button class="btn-capsule btn-p" onclick="login()">MASUK / DAFTAR</button>
-            <p id="adminBtn" onclick="switchToAdmin()" style="font-size:11px; opacity:0.4; margin-top:20px; cursor:pointer;">Admin Login</p>
+            <button class="btn-capsule btn-p" onclick="handleAuth('user')">MASUK / DAFTAR</button>
+            <p onclick="toggleForm()" style="margin-top:25px; font-size:12px; opacity:0.4; cursor:pointer; font-weight:800;">ADMIN LOGIN</p>
         </div>
-        <div id="adminForm" style="display:none;">
-            <input type="password" id="aKey" placeholder="Admin Master Key" style="margin-top:20px;">
-            <button class="btn-capsule" style="background:var(--g); color:#000;" onclick="loginAdmin()">VERIFY ADMIN</button>
-            <p onclick="switchToUser()" style="font-size:11px; opacity:0.4; margin-top:20px; cursor:pointer;">Kembali</p>
+        <div id="aLogin" style="display:none;">
+            <input type="password" id="aKey" placeholder="Admin Key">
+            <button class="btn-capsule" style="background:var(--g); color:#000;" onclick="handleAuth('admin')">VERIFY ADMIN</button>
+            <p onclick="toggleForm()" style="margin-top:20px; font-size:12px; opacity:0.4; cursor:pointer;">KEMBALI</p>
         </div>
     </div>
 </div>
 
-<div id="app" style="display:none; padding:15px; max-width:500px; margin:auto;">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-        <span style="color:var(--g); font-weight:800;">ZMT ENGINE v7</span>
-        <button onclick="logout()" style="background:none; border:none; color:#ff4757; font-weight:800;">LOGOUT</button>
+<div id="app" style="display:none; padding:15px; max-width:550px; margin:auto;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0;">
+        <div style="color:var(--g); font-weight:900; letter-spacing:1px;">ZMT ENGINE</div>
+        <button onclick="logout()" style="background:none; border:1px solid #ff4757; color:#ff4757; padding:5px 15px; border-radius:20px; font-size:11px; font-weight:800;">LOGOUT</button>
     </div>
 
-    <div class="marquee-capsule" id="mqText">WELCOME TO ZMT EVENT...</div>
+    <div class="marquee-box" id="mqText">SISTEM ONLINE...</div>
 
     <div id="uiAdmin" style="display:none;">
         <div class="capsule-card">
-            <input type="text" placeholder="Ganti Running Text..." onchange="updateMQ(this.value)">
+            <h4>Control Panel</h4>
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
-                <button class="btn-capsule" style="background:#10b981" onclick="setReg(true)">BUKA</button>
-                <button class="btn-capsule" style="background:#ef4444" onclick="setReg(false)">TUTUP</button>
+                <button class="btn-capsule" onclick="updateConfig('reg', true)" style="background:#10b981; font-size:12px;">BUKA REG</button>
+                <button class="btn-capsule" onclick="updateConfig('reg', false)" style="background:#ef4444; font-size:12px;">TUTUP REG</button>
             </div>
-            <button class="btn-capsule" style="background:#000; border:1px solid red; margin-top:10px; font-size:11px;" onclick="nuclearReset()">☢️ RESET ALL (KEEP ADMIN)</button>
+            <button class="btn-capsule" style="margin-top:10px; font-size:11px; background:#000; border:1px solid red; color:red;" onclick="nuclearReset()">☢️ NUCLEAR RESET (CLEAN USERS)</button>
         </div>
         <div class="capsule-card" style="text-align:center;">
             <div class="wheel-container"><div class="needle"></div><canvas id="wheelAdmin" width="500" height="500"></canvas></div>
-            <button class="btn-capsule btn-p" onclick="spin()">SPIN SEKARANG</button>
+            <button class="btn-capsule btn-p" onclick="spin()">SPIN</button>
+        </div>
+        <div class="capsule-card">
+            <h4>Pemenang & Chat</h4>
+            <div id="winList"></div>
+            <div id="chatAdminArea" style="display:none; margin-top:20px;">
+                <b id="chatName" style="color:var(--g)"></b>
+                <div id="boxAdmin" class="chat-box"></div>
+                <div style="display:flex; gap:8px;">
+                    <input type="text" id="msgAdmin" placeholder="Balas..." style="margin-bottom:0;">
+                    <button class="btn-capsule btn-p" style="width:80px;" onclick="sendChat('admin')">OK</button>
+                </div>
+            </div>
         </div>
         <div class="capsule-card">
             <h4>Antrian (@<span id="qCount">0</span>)</h4>
-            <div id="qList" style="max-height:150px; overflow-y:auto;"></div>
-        </div>
-        <div class="capsule-card">
-            <h4>Chat Pemenang</h4>
-            <div id="chatPemenangList"></div>
-            <div id="adminChatArea" style="display:none; margin-top:15px;">
-                <b id="chatWith" style="color:var(--g)"></b>
-                <div id="boxAdmin" class="chat-box"></div>
-                <div style="display:flex; gap:5px;">
-                    <input type="text" id="msgAdmin" placeholder="Balas...">
-                    <button class="btn-capsule btn-p" style="width:80px;" onclick="send('admin')">KIRIM</button>
-                </div>
-            </div>
+            <div id="qList"></div>
         </div>
     </div>
 
     <div id="uiUser" style="display:none;">
-        <div class="capsule-card"><button class="btn-capsule btn-p" id="joinBtn" onclick="join()">DAFTAR SPIN</button></div>
+        <div class="capsule-card"><button class="btn-capsule btn-p" id="joinBtn" onclick="joinQueue()">DAFTAR SPIN SEKARANG</button></div>
         <div class="capsule-card" style="text-align:center;">
             <div class="wheel-container"><div class="needle"></div><canvas id="wheelUser" width="500" height="500"></canvas></div>
         </div>
         <div id="winArea" class="capsule-card" style="display:none; border:2px solid var(--g);">
-            <h3 style="color:var(--g); text-align:center; margin:0 0 10px 0;">🏆 KAMU MENANG!</h3>
+            <h3 style="color:var(--g); text-align:center; margin-top:0;">🏆 ANDA MENANG!</h3>
             <div id="boxUser" class="chat-box"></div>
-            <div style="display:flex; gap:5px;">
-                <input type="text" id="msgUser" placeholder="Kirim pesan ke admin...">
-                <button class="btn-capsule btn-p" style="width:80px;" onclick="send('user')">KIRIM</button>
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="msgUser" placeholder="Chat admin..." style="margin-bottom:0;">
+                <button class="btn-capsule btn-p" style="width:80px;" onclick="sendChat('user')">KIRIM</button>
             </div>
         </div>
     </div>
@@ -107,101 +124,129 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-    const firebaseConfig = {
-        apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
-        authDomain: "spinanberhadiahzmt.firebaseapp.com",
-        databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "spinanberhadiahzmt",
-        appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
-    };
-    
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+    const fbCfg = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
+    const app = initializeApp(fbCfg); const db = getDatabase(app);
     let myID = ""; let myRole = ""; let items = []; let rot = 0; let activeChat = "";
 
-    // --- PROTEKSI TUTUP REG ---
-    onValue(ref(db, 'config/reg'), (s) => {
-        if(s.val() === false && myRole === 'user') {
-            logout();
+    // --- GLOBAL OBSERVER (REALTIME NOTIF) ---
+    onValue(ref(db, 'config'), (s) => {
+        const conf = s.val();
+        if(!conf || myRole !== 'user') return;
+
+        // Notif Registrasi Tutup
+        if(conf.reg === false && myID !== "") {
+            Swal.fire({
+                title: "REGISTRASI DITUTUP!",
+                text: "Admin telah menutup pendaftaran. Silahkan hubungi admin di grup.",
+                icon: "warning",
+                allowOutsideClick: false,
+                confirmButtonText: "KELUAR"
+            }).then(() => logout());
+        }
+
+        // Notif Reset All
+        if(conf.resetTrigger === true && myID !== "") {
+            Swal.fire({
+                title: "SISTEM DIRESET!",
+                text: "Semua data dibersihkan oleh admin. Akun Anda telah terhapus.",
+                icon: "error",
+                allowOutsideClick: false,
+                confirmButtonText: "OK"
+            }).then(() => logout());
         }
     });
 
-    // --- SYSTEM LOGIN ---
-    window.switchToAdmin = () => { document.getElementById('loginForm').style.display='none'; document.getElementById('adminForm').style.display='block'; };
-    window.switchToUser = () => { document.getElementById('loginForm').style.display='block'; document.getElementById('adminForm').style.display='none'; };
-
-    window.login = async () => {
-        const u = document.getElementById('uIn').value.trim().toLowerCase();
-        const p = document.getElementById('pIn').value;
-        if(u.length < 3 || p.length < 1) return Swal.fire("Isi Lengkap!");
-
-        const regSnap = await get(ref(db, 'config/reg'));
-        if(regSnap.val() === false) return Swal.fire("REGISTRASI SEDANG DI TUTUP OLEH ADMIN SILAHKAN HUBUNGI DI GRUP");
-
-        const userRef = ref(db, `auth/users/${u}`);
-        const snap = await get(userRef);
-        if(snap.exists()) {
-            if(snap.val().pw !== p) return Swal.fire("Password Salah!");
+    // --- AUTH LOGIC ---
+    window.handleAuth = async (role) => {
+        if(role === 'admin') {
+            if(document.getElementById('aKey').value === "zmtxxx") { 
+                myID="ADMIN_MASTER"; myRole="admin"; start(); 
+            } else { Swal.fire("Key Salah!"); }
         } else {
-            await set(userRef, {pw: p});
-        }
-        myID = u; myRole = "user"; start();
-    };
+            const u = document.getElementById('uIn').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
+            const p = document.getElementById('pIn').value;
+            if(u.length < 3 || p.length < 1) return Swal.fire("Input tidak valid!");
 
-    window.loginAdmin = () => {
-        if(document.getElementById('aKey').value === "zmtxxx") {
-            myID = "MASTER_ADMIN"; myRole = "admin"; start();
-        } else { Swal.fire("Key Salah!"); }
+            const regSnap = await get(ref(db, 'config/reg'));
+            if(regSnap.val() === false) return Swal.fire("REGISTRASI SEDANG DITUTUP!");
+
+            const uRef = ref(db, `auth/users/${u}`);
+            const snap = await get(uRef);
+            if(snap.exists()) {
+                if(snap.val().pw !== p) return Swal.fire("Password Salah!");
+            } else {
+                await set(uRef, {pw: p});
+            }
+            myID = u; myRole = "user"; start();
+        }
     };
 
     function start() {
-        document.getElementById('gate').style.display = 'none';
-        document.getElementById('app').style.display = 'block';
-        if(myRole === 'admin') { document.getElementById('uiAdmin').style.display='block'; initAdmin(); }
-        else { document.getElementById('uiUser').style.display='block'; initUser(); }
+        document.getElementById('gate').style.display='none';
+        document.getElementById('app').style.display='block';
+        if(myRole==='admin') { 
+            document.getElementById('uiAdmin').style.display='block'; runAdmin(); 
+        } else { 
+            document.getElementById('uiUser').style.display='block'; runUser(); 
+        }
     }
 
-    // --- ADMIN ENGINE ---
-    window.setReg = (v) => set(ref(db, 'config/reg'), v);
-    window.updateMQ = (v) => set(ref(db, 'config/marquee'), v);
-
+    // --- ADMIN ACTIONS ---
+    window.updateConfig = (k, v) => set(ref(db, `config/${k}`), v);
+    
     window.nuclearReset = async () => {
-        const res = await Swal.fire({ title: 'RESET ALL?', text: "Hapus semua akun user & data? (Admin Aman)", icon: 'warning', showCancelButton: true });
-        if(res.isConfirmed) {
-            await set(ref(db, 'config/reg'), false);
-            await remove(ref(db, 'q'));
-            await remove(ref(db, 'wins'));
-            await remove(ref(db, 'chats'));
-            await remove(ref(db, 'auth/users')); // Cuma hapus folder users, folder admin aman
-            Swal.fire("Sistem Dibersihkan!");
+        const ask = await Swal.fire({ 
+            title: 'HAPUS SEMUA DATA?', 
+            text: "User akan ditendang & akun mereka dihapus!",
+            icon: 'warning', 
+            showCancelButton: true,
+            confirmButtonColor: '#d33'
+        });
+        if(ask.isConfirmed) {
+            await set(ref(db, 'config/resetTrigger'), true);
+            setTimeout(async () => {
+                await remove(ref(db, 'q'));
+                await remove(ref(db, 'wins'));
+                await remove(ref(db, 'chats'));
+                await remove(ref(db, 'auth/users'));
+                await set(ref(db, 'config/resetTrigger'), false);
+                await set(ref(db, 'config/reg'), false);
+                Swal.fire("Sistem Bersih!");
+            }, 1500);
         }
     };
 
-    function initAdmin() {
+    function runAdmin() {
         onValue(ref(db, 'q'), (s) => {
-            items = []; let html = "";
-            s.forEach(c => { items.push({u:c.val().u, k:c.key}); html += `<div class="q-item"><span>@${c.val().u}</span><button onclick="kick('${c.key}')" style="color:red; background:none; border:none;">X</button></div>`; });
-            document.getElementById('qList').innerHTML = html;
+            items = []; let h = "";
+            s.forEach(c => { items.push({u:c.val().u, k:c.key}); h += `<div class="q-item"><span>@${c.val().u}</span><button onclick="kick('${c.key}')" style="color:red; background:none; border:none; font-weight:800;">X</button></div>`; });
+            document.getElementById('qList').innerHTML = h;
             document.getElementById('qCount').innerText = items.length;
-            drawWheel('wheelAdmin');
+            render('wheelAdmin');
         });
         onValue(ref(db, 'wins'), (s) => {
-            let html = ""; s.forEach(c => { html += `<button class="btn-capsule" style="margin-bottom:5px; background:rgba(255,255,255,0.1);" onclick="openChat('${c.val().u}')">Chat @${c.val().u}</button>`; });
-            document.getElementById('chatPemenangList').innerHTML = html;
+            let h = ""; s.forEach(c => { h += `<button class="btn-capsule" style="margin-bottom:8px; background:rgba(255,255,255,0.1);" onclick="openChat('${c.val().u}')">Chat @${c.val().u}</button>`; });
+            document.getElementById('winList').innerHTML = h;
         });
     }
 
-    // --- USER ENGINE ---
-    function initUser() {
+    // --- USER ACTIONS ---
+    window.joinQueue = async () => {
+        const regSnap = await get(ref(db, 'config/reg'));
+        if(regSnap.val() === false) return Swal.fire("REGISTRASI TUTUP!");
+        await push(ref(db, 'q'), {u: myID});
+        Swal.fire({ title: "Berhasil!", icon: "success", timer: 1000, showConfirmButton: false });
+    };
+
+    function runUser() {
         onValue(ref(db, 'q'), (s) => {
             items = []; let joined = false;
             s.forEach(c => { items.push({u:c.val().u}); if(c.val().u === myID) joined = true; });
-            const btn = document.getElementById('joinBtn');
-            btn.innerText = joined ? "SUDAH TERDAFTAR ✅" : "DAFTAR SPIN";
-            btn.disabled = joined;
-            drawWheel('wheelUser');
+            document.getElementById('joinBtn').innerText = joined ? "TERDAFTAR ✅" : "DAFTAR SPIN SEKARANG";
+            document.getElementById('joinBtn').disabled = joined;
+            render('wheelUser');
         });
         onValue(ref(db, 'wins'), (s) => {
             let win = false; s.forEach(c => { if(c.val().u === myID) win = true; });
@@ -210,22 +255,22 @@
         });
     }
 
-    // --- SHARED FEATURES ---
-    window.drawWheel = (id) => {
+    // --- SHARED ENGINE ---
+    window.render = (id) => {
         const c = document.getElementById(id); if(!c) return;
         const ctx = c.getContext('2d'); const n = items.length || 1; const arc = (2*Math.PI)/n;
         ctx.clearRect(0,0,500,500);
         items.forEach((it, i) => {
             ctx.beginPath(); ctx.fillStyle = `hsl(${i*(360/n)}, 70%, 50%)`;
             ctx.moveTo(250,250); ctx.arc(250,250,245,i*arc,(i+1)*arc); ctx.fill();
-            ctx.save(); ctx.translate(250,250); ctx.rotate(i*arc + arc/2);
-            ctx.fillStyle="#fff"; ctx.font="bold 25px Sans"; ctx.fillText(it.u.substring(0,6), 130, 10); ctx.restore();
+            ctx.save(); ctx.translate(250,250); ctx.rotate(i*arc+arc/2);
+            ctx.fillStyle="#fff"; ctx.font="800 22px Sans"; ctx.fillText(it.u.substring(0,6), 130, 10); ctx.restore();
         });
     };
 
     window.spin = () => {
-        if(items.length < 2) return Swal.fire("Minimal 2 orang!");
-        const winIdx = Math.floor(Math.random() * items.length);
+        if(items.length < 2) return Swal.fire("Minimal 2 Peserta!");
+        const winIdx = Math.floor(Math.random()*items.length);
         const winner = items[winIdx];
         rot += 3600 + (360 - (winIdx * (360/items.length)));
         document.getElementById('wheelAdmin').style.transform = `rotate(${rot}deg)`;
@@ -233,11 +278,11 @@
             confetti();
             await push(ref(db, 'wins'), {u: winner.u});
             await remove(ref(db, `q/${winner.k}`));
-            Swal.fire("Pemenang: " + winner.u);
+            Swal.fire("Winner: @" + winner.u);
         }, 6000);
     };
 
-    window.openChat = (u) => { activeChat = u; document.getElementById('adminChatArea').style.display='block'; document.getElementById('chatWith').innerText = "Chat: @"+u; listenChat(u, 'boxAdmin'); };
+    window.openChat = (u) => { activeChat=u; document.getElementById('chatAdminArea').style.display='block'; document.getElementById('chatName').innerText="Chat: @"+u; listenChat(u, 'boxAdmin'); };
     
     function listenChat(u, boxID) {
         onValue(ref(db, `chats/${u}`), (s) => {
@@ -247,17 +292,21 @@
         });
     }
 
-    window.send = async (role) => {
-        const t = (role === 'admin') ? activeChat : myID;
+    window.sendChat = async (role) => {
+        const target = (role === 'admin') ? activeChat : myID;
         const inp = document.getElementById(role === 'admin' ? 'msgAdmin' : 'msgUser');
         if(!inp.value.trim()) return;
-        await push(ref(db, `chats/${t}`), { s: myID, t: inp.value });
+        await push(ref(db, `chats/${target}`), { s: myID, t: inp.value });
         inp.value = "";
     };
 
     window.kick = (k) => remove(ref(db, `q/${k}`));
-    window.logout = () => { location.reload(); };
-    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "WELCOME");
+    window.logout = () => location.reload();
+    window.toggleForm = () => {
+        document.getElementById('uLogin').style.display = document.getElementById('uLogin').style.display === 'none' ? 'block' : 'none';
+        document.getElementById('aLogin').style.display = document.getElementById('aLogin').style.display === 'none' ? 'block' : 'none';
+    };
+    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "SISTEM ONLINE");
 </script>
 </body>
 </html>
