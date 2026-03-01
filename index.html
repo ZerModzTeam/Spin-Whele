@@ -25,7 +25,6 @@
         .btn-p { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
         .btn-err { background: var(--err); color: white; }
 
-        /* DB & CHAT BISA COPY */
         .db-table { width: 100%; border-collapse: collapse; font-size: 12px; user-select: text !important; }
         .db-table td { padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .chat-area { height: 220px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 15px; padding: 15px; display: flex; flex-direction: column; gap: 10px; user-select: text !important; }
@@ -48,7 +47,7 @@
 <div id="gate">
     <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
         <h2 style="color: var(--p); margin: 0; letter-spacing: 2px;">ZMT EVENT</h2>
-        <p style="font-size: 10px; opacity: 0.5; margin-bottom: 25px;">V0.0.3 (FIXED VERSION)</p>
+        <p style="font-size: 10px; opacity: 0.5; margin-bottom: 25px;">V0.0.3 (CLEAN VERSION)</p>
         <div id="loginUserBox">
             <input type="text" id="userInput" placeholder="Username">
             <input type="password" id="passInput" placeholder="Password">
@@ -64,7 +63,7 @@
 </div>
 
 <div id="app">
-    <div class="marquee-box"><div class="marquee-content" id="infoText">ZMT EVENT MAX STABLE...</div></div>
+    <div class="marquee-box"><div class="marquee-content" id="infoText">ZMT EVENT READY...</div></div>
     
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
         <div><b id="displayUser" style="color:var(--p); font-size:18px;"></b><div style="font-size:10px;"><span id="statusDot" class="status-dot"></span> Reg: <span id="statusText">...</span></div></div>
@@ -77,14 +76,14 @@
             <button class="btn" style="background:var(--err); color:white; flex:1;" onclick="setReg(false)">TUTUP</button>
         </div>
         <div class="card">
-            <h4 style="margin:0 0 10px 0; color:var(--g);">📂 DATA AKUN (USN & SANDI)</h4>
+            <h4 style="margin:0 0 10px 0; color:var(--g);">📂 DATA AKUN (TERDAFTAR)</h4>
             <div style="max-height: 150px; overflow-y: auto;">
                 <table class="db-table"><tbody id="userTableBody"></tbody></table>
             </div>
         </div>
         <div class="card" style="text-align:center;">
             <div class="w-wrap"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
-            <button class="btn btn-p" onclick="doSpin()">PUTAR (RANDOM)</button>
+            <button class="btn btn-p" onclick="doSpin()">PUTAR RODA</button>
         </div>
         <div class="card">
             <h4>CHAT PEMENANG</h4>
@@ -95,7 +94,7 @@
                 <div style="display:flex; gap:10px; margin-top:10px;"><input type="text" id="msgAdmin" placeholder="Balas..."><button class="btn btn-p" style="width:80px;" onclick="sendChat('admin')">KIRIM</button></div>
             </div>
         </div>
-        <button class="btn" style="background:rgba(239, 68, 68, 0.1); color:var(--err); border:1px solid var(--err); margin-bottom: 20px;" onclick="resetDB()">⚠️ HARD RESET DATABASE</button>
+        <button class="btn" style="background:rgba(239, 68, 68, 0.1); color:var(--err); border:1px solid var(--err); margin-bottom: 20px;" onclick="resetDB()">⚠️ HARD RESET (HAPUS SEMUA AKUN)</button>
     </div>
 
     <div id="uiUser" style="display:none;">
@@ -110,9 +109,9 @@
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, set, get, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, set, get } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-    const firebaseConfig = {
+    const fbConfig = {
         apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
         authDomain: "spinanberhadiahzmt.firebaseapp.com",
         databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
@@ -120,39 +119,37 @@
         appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
     };
 
-    const appFB = initializeApp(firebaseConfig);
+    const appFB = initializeApp(fbConfig);
     const db = getDatabase(appFB);
     let myID = ""; let wheelItems = []; let rot = 0; let activeChat = ""; let regStatus = true;
 
-    // --- FIX: LOGIN & AUTO KICK REALTIME ---
+    // LOGIN & KICK LISTENER
     onValue(ref(db, 'config/regStatus'), (s) => {
         regStatus = s.val();
-        const btnLogin = document.getElementById('btnLoginMain');
-        const stText = document.getElementById('statusText');
+        const bl = document.getElementById('btnLoginMain');
         if (!regStatus) {
-            if(btnLogin) { btnLogin.innerText = "PENDAFTARAN DITUTUP"; btnLogin.classList.add('btn-err'); }
-            if(stText) { stText.innerText = "TUTUP"; document.getElementById('statusDot').className = "status-dot off"; }
+            if(bl) { bl.innerText = "PENDAFTARAN DITUTUP"; bl.classList.add('btn-err'); }
+            document.getElementById('statusText').innerText = "TUTUP"; document.getElementById('statusDot').className = "status-dot off";
             if (myID !== "" && myID !== "MASTER_ADMIN") handleLogout();
         } else {
-            if(btnLogin) { btnLogin.innerText = "MASUK / DAFTAR"; btnLogin.classList.remove('btn-err'); }
-            if(stText) { stText.innerText = "BUKA"; document.getElementById('statusDot').className = "status-dot on"; }
+            if(bl) { bl.innerText = "MASUK / DAFTAR"; bl.classList.remove('btn-err'); }
+            document.getElementById('statusText').innerText = "BUKA"; document.getElementById('statusDot').className = "status-dot on";
         }
     });
 
-    // --- FIX: WIPE TRIGGER (AUTO KICK ALL) ---
     onValue(ref(db, 'config/wipeTrigger'), (s) => { if(s.val() && myID !== "MASTER_ADMIN") handleLogout(); });
 
     window.authNow = async (role) => {
         if (role === 'admin') {
             if (document.getElementById('adminKeyInput').value === "zmtxxx") startApp("MASTER_ADMIN");
-            else Swal.fire("Salah!");
+            else Swal.fire("Key Salah!");
         } else {
-            if (!regStatus) return Swal.fire("Tutup Boss!");
+            if (!regStatus) return Swal.fire("Pendaftaran Tutup!");
             const u = document.getElementById('userInput').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
             const p = document.getElementById('passInput').value.trim();
             if (!u || !p) return Swal.fire("Isi data!");
             const snap = await get(ref(db, `auth/${u}`));
-            if (snap.exists() && snap.val().pw !== p) return Swal.fire("Salah sandi!");
+            if (snap.exists() && snap.val().pw !== p) return Swal.fire("Sandi Salah!");
             await set(ref(db, `auth/${u}`), { pw: p });
             startApp(u);
         }
@@ -171,7 +168,7 @@
     if (saved) startApp(saved);
     window.handleLogout = () => { localStorage.clear(); location.reload(); };
 
-    // --- SPIN LOGIC ADIL ---
+    // SPIN LOGIC
     window.doSpin = () => {
         if(wheelItems.length < 2) return Swal.fire("Minimal 2 orang!");
         const winIdx = Math.floor(Math.random() * wheelItems.length);
@@ -194,8 +191,7 @@
             s.forEach(c => { tb.innerHTML += `<tr><td>@${c.key}</td><td>${c.val().pw}</td></tr>`; });
         });
         onValue(ref(db, 'q'), (s) => { 
-            wheelItems = []; if(s.exists()) s.forEach(c => wheelItems.push({u: c.val().u, key: c.key})); 
-            draw(); 
+            wheelItems = []; if(s.exists()) s.forEach(c => wheelItems.push({u: c.val().u, key: c.key})); draw(); 
         });
         onValue(ref(db, 'wins'), (s) => {
             const list = document.getElementById('adminChatList'); list.innerHTML = "";
@@ -229,10 +225,10 @@
 
     window.openChat = (u) => { activeChat = u; document.getElementById('activeChatAdmin').style.display = 'block'; document.getElementById('targetChatUser').innerText = "Chat @" + u; listenChat(u, 'chatBoxAdmin'); };
     window.sendChat = async (role) => {
-        const target = role === 'admin' ? activeChat : myID;
+        const t = role === 'admin' ? activeChat : myID;
         const inp = document.getElementById(role === 'admin' ? 'msgAdmin' : 'msgUser');
         if(!inp.value.trim()) return;
-        await push(ref(db, `chats/${target}`), { sender: myID, text: inp.value });
+        await push(ref(db, `chats/${t}`), { sender: myID, text: inp.value });
         inp.value = "";
     };
 
@@ -244,14 +240,19 @@
         });
     }
 
+    // --- FIX: RESET TOTAL (TERMASUK AKUN) ---
     window.resetDB = async () => {
-        if(confirm("BERSIHKAN SEMUA DATA & TENDANG SEMUA USER?")) {
+        if(confirm("HAPUS SEMUA DATA, SEMUA AKUN, & TENDANG SEMUA USER?")) {
             await set(ref(db, 'config/wipeTrigger'), true);
-            await remove(ref(db, 'q')); await remove(ref(db, 'wins')); await remove(ref(db, 'chats'));
-            setTimeout(() => set(ref(db, 'config/wipeTrigger'), false), 2000);
-            Swal.fire("Selesai!");
+            await remove(ref(db, 'auth')); // Hapus Akun (Sandi & USN)
+            await remove(ref(db, 'q'));    // Hapus Antrian
+            await remove(ref(db, 'wins')); // Hapus Pemenang
+            await remove(ref(db, 'chats'));// Hapus Chat
+            setTimeout(() => set(ref(db, 'config/wipeTrigger'), false), 1500);
+            Swal.fire("Selesai! Database Mulus Lagi.");
         }
     };
+
     window.joinSpin = async () => { await push(ref(db, 'q'), { u: myID }); Swal.fire("Berhasil!"); };
     window.setReg = (v) => set(ref(db, 'config/regStatus'), v);
     window.switchGate = (m) => { document.getElementById('loginUserBox').style.display = m==='user'?'block':'none'; document.getElementById('loginAdminBox').style.display = m==='admin'?'block':'none'; };
