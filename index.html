@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; user-select: none; }
         body { margin: 0; background: var(--d); color: #fff; overflow-x: hidden; min-height: 100vh; }
         .nebula-bg { position: fixed; inset: 0; z-index: -1; background: #020308; overflow: hidden; }
         .vapor { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.35; animation: drift 20s infinite alternate; }
@@ -19,9 +19,9 @@
         .capsule-card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 35px; padding: 25px; margin-bottom: 20px; }
         .btn-capsule { width: 100%; padding: 16px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.08); color: #fff; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .btn-p { background: linear-gradient(90deg, #6366f1, #a855f7); border: none; }
-        input, textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 16px 25px; color: #fff; border-radius: 30px; font-size: 14px; margin-bottom: 10px; resize: none; }
+        input, textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 16px 25px; color: #fff; border-radius: 30px; font-size: 14px; margin-bottom: 10px; resize: none; outline: none; }
         .chat-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 12px 18px; border-radius: 20px; font-size: 13px; max-width: 85%; line-height: 1.5; white-space: pre-wrap; user-select: text; }
+        .msg { padding: 12px 18px; border-radius: 20px; font-size: 13px; max-width: 85%; line-height: 1.5; white-space: pre-wrap; user-select: text !important; }
         .me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 4px; }
         .other { background: #333; align-self: flex-start; border-bottom-left-radius: 4px; }
         .marquee-capsule { background: rgba(0,0,0,0.4); border-radius: 999px; padding: 12px 25px; border: 1px solid var(--border); color: var(--g); font-weight: 800; margin: 20px 0; overflow: hidden; }
@@ -114,22 +114,21 @@
     const app = initializeApp(fb); const db = getDatabase(app);
     let myID = ""; let items = []; let rot = 0; let regOk = true; let curChat = "";
 
-    // 1. FORCE EJECT LISTENERS
+    // --- FORCE KICK LISTENERS ---
     onValue(ref(db, 'config/reg'), (s) => {
         regOk = s.val() !== false;
         if (!regOk && myID !== "" && myID !== "MASTER_ADMIN") {
-            Swal.fire({ title: "CLOSED!", text: "Registrasi ditutup, anda dikeluarkan otomatis!", icon: "error", timer: 3000, showConfirmButton: false });
-            setTimeout(() => logout(), 3000);
+            Swal.fire({ title: "CLOSED!", text: "Registrasi ditutup oleh Admin!", icon: "error", timer: 2500, showConfirmButton: false });
+            setTimeout(() => logout(), 2500);
         }
     });
 
     onValue(ref(db, 'config/nuclear'), (s) => {
         if (s.exists() && s.val() === true) {
-            Swal.fire({ title: "SYSTEM RESET!", text: "Data dihapus & System dimulai ulang!", icon: "warning", timer: 3000, showConfirmButton: false });
-            setTimeout(() => {
-                localStorage.clear();
-                location.reload();
-            }, 3000);
+            // Langsung hapus sesi lokal biar gak looping
+            localStorage.clear();
+            Swal.fire({ title: "SYSTEM RESET!", text: "Data dibersihkan, silakan login ulang.", icon: "warning", timer: 2500, showConfirmButton: false });
+            setTimeout(() => location.reload(), 2500);
         }
     });
 
@@ -140,11 +139,11 @@
             else Swal.fire("Key Salah");
         } else {
             const snapReg = await get(ref(db, 'config/reg'));
-            if(snapReg.val() === false) return Swal.fire("MAAF!", "Registrasi sedang ditutup admin.", "error");
+            if(snapReg.val() === false) return Swal.fire("MAAF!", "Registrasi ditutup.", "error");
             
             const u = document.getElementById('uIn').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
             const p = document.getElementById('pIn').value;
-            if(u.length < 3) return Swal.fire("Username Min 3");
+            if(u.length < 3) return Swal.fire("Min 3 Karakter");
             const snapAuth = await get(ref(db, `auth/${u}`));
             if(snapAuth.exists() && snapAuth.val().pw !== p) return Swal.fire("Password Salah");
             await set(ref(db, `auth/${u}`), {pw:p}); start(u);
@@ -160,40 +159,37 @@
     }
 
     // --- ADMIN ACTIONS ---
-    window.setReg = (v) => {
-        set(ref(db, 'config/reg'), v);
-        if(!v) Swal.fire("REG DITUTUP", "Semua user akan mental otomatis.", "info");
-    };
+    window.setReg = (v) => set(ref(db, 'config/reg'), v);
 
     window.hardReset = async () => {
         Swal.fire({
             title: '☢️ NUCLEAR RESET?',
-            text: "Semua data (Antrian, Chat, Wins) akan LENYAP dan semua orang KICK TOTAL!",
+            text: "Semua data akan LENYAP dan semua orang mental!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
-            confirmButtonText: 'YA, HANCURKAN!'
+            confirmButtonText: 'YA, RESET!'
         }).then(async (result) => {
             if (result.isConfirmed) {
-                // Kirim sinyal hancurkan ke semua orang
+                // 1. Kirim sinyal nuclear ke semua
                 await set(ref(db, 'config/nuclear'), true);
-                // Bersihkan data
+                // 2. Hapus semua data inti
                 await remove(ref(db, 'q'));
                 await remove(ref(db, 'wins'));
                 await remove(ref(db, 'chats'));
-                // Tunggu sebentar biar sinyal nyampe ke user lain baru matikan sinyalnya
-                setTimeout(() => set(ref(db, 'config/nuclear'), false), 5000);
+                // 3. MATIKAN sinyal nuclear setelah 1 detik biar gak looping mental
+                setTimeout(() => set(ref(db, 'config/nuclear'), false), 1500);
             }
         });
     };
 
-    // --- LOGIC ---
+    // --- MAIN LOGIC ---
     function runAdmin() {
         onValue(ref(db, 'q'), (s) => {
             items = []; const list = document.getElementById('qList'); list.innerHTML = "";
             s.forEach(c => {
                 items.push({u:c.val().u, k:c.key});
-                list.innerHTML += `<div class="q-item"><span>@${c.val().u}</span><button onclick="kick('${c.key}')" style="border:none; background:none; color:#ff4757; font-weight:800; cursor:pointer;">KICK</button></div>`;
+                list.innerHTML += `<div class="q-item"><span>@${c.val().u}</span><button onclick="kick('${c.key}')" style="border:none; background:none; color:#ff4757; font-weight:800;">KICK</button></div>`;
             });
             document.getElementById('qCount').innerText = items.length;
             draw('wheel');
@@ -257,7 +253,7 @@
 
     window.openChat = (u) => {
         curChat = u; document.getElementById('activeAdminChat').style.display='block';
-        document.getElementById('targetUser').innerText = "Chatting with @"+u;
+        document.getElementById('targetUser').innerText = "Chat @"+u;
         listenChat(u, 'adminChatBox');
     };
 
@@ -280,7 +276,7 @@
         inp.value = "";
     };
 
-    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "WELCOME TO ZMT EVENT");
+    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "WELCOME TO ZMT");
     window.kick = (k) => remove(ref(db, `q/${k}`));
     window.setMQ = (t) => set(ref(db, 'config/marquee'), t);
     window.join = () => { if(!regOk) return logout(); push(ref(db, 'q'), {u: myID}); };
@@ -290,11 +286,8 @@
         document.getElementById('loginAdmin').style.display = document.getElementById('loginAdmin').style.display === 'none' ? 'block' : 'none';
     };
 
-    // Auto-login session check
-    if(localStorage.getItem('zmt_s')) {
-        const s = localStorage.getItem('zmt_s');
-        if(s === "MASTER_ADMIN" && localStorage.getItem('zmt_k') !== "zmtxxx") logout();
-    }
+    onDisconnect(ref(db, 'online/'+Math.floor(Math.random()*1e6))).remove();
+    onValue(ref(db, 'online'), (s) => document.getElementById('onlineVal').innerText = s.exists() ? Object.keys(s.val()).length : 1);
 </script>
 </body>
 </html>
