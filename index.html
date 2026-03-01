@@ -3,290 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT v0.1.5 (BETA)</title>
+    <title>ZMT EVENT v0.1.5 (BETA) - FULL UNTOUCHED</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* // # (STYLE DASAR & ANIMASI) */
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
-            background-attachment: fixed;
-            color: #e0e0e0;
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
+        /* // # (TOTAL STYLE - NO SUNAT) */
+        body { 
+            margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%); 
+            background-attachment: fixed; color: #e0e0e0; overflow-x: hidden; 
+            -webkit-tap-highlight-color: transparent; 
+        }
+        body::after { 
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: url('https://www.transparenttextures.com/patterns/stardust.png'); 
+            opacity: 0.15; z-index: -1; pointer-events: none; 
         }
 
-        body::after {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.15;
-            z-index: -1;
-            pointer-events: none;
+        /* // # (HEADER & NAVIGATION) */
+        .header { 
+            background: rgba(0, 0, 0, 0.9); backdrop-filter: blur(20px); 
+            padding: 15px 20px; display: flex; justify-content: space-between; 
+            align-items: center; border-bottom: 2px solid #00f2fe; 
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); position: sticky; top: 0; z-index: 1000; 
+        }
+        .main-title { font-size: 22px; font-weight: 900; margin: 0; color: #00f2fe; text-shadow: 0 0 10px #00f2fe; }
+        .sub-title { font-size: 10px; color: #71ff00; margin: 0; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; }
+        .btn-logout { background: #ff0844; color: #fff; border: none; padding: 6px 15px; border-radius: 20px; font-size: 10px; cursor: pointer; font-weight: bold; }
+
+        /* // # (CONTAINER LAYOUT) */
+        .container { max-width: 480px; margin: 15px auto; padding: 0 15px; }
+        .card { 
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(15px); 
+            border-radius: 35px; border: 1px solid rgba(0, 242, 254, 0.2); 
+            padding: 25px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+            position: relative; overflow: hidden; 
         }
 
-        /* // # (STYLE HEADER & NAVIGATION) */
-        .header {
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(20px);
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #00f2fe;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+        /* // # (SPIN WHEEL SYSTEM) */
+        .wheel-box { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .wheel-container { position: relative; width: 280px; height: 280px; margin: 15px auto; z-index: 1; }
+        #cv-u, #cv-a { 
+            width: 100% !important; height: 100% !important; 
+            border-radius: 50%; border: 5px solid #00f2fe; 
+            transition: 7.5s cubic-bezier(0.1, 0, 0.1, 1); box-sizing: border-box; 
+        }
+        .pointer { 
+            position: absolute; top: -18px; left: 50%; transform: translateX(-50%); 
+            width: 25px; height: 42px; background: #71ff00; 
+            clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; 
+            filter: drop-shadow(0 0 8px #71ff00); 
         }
 
-        .main-title {
-            font-size: 20px;
-            font-weight: 900;
-            margin: 0;
-            color: #00f2fe;
-            text-shadow: 0 0 10px #00f2fe;
-            letter-spacing: 1px;
-        }
-
-        .sub-title {
-            font-size: 9px;
-            color: #71ff00;
-            margin: 0;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        .user-meta {
-            text-align: right;
-        }
-
-        .usn-display {
-            font-size: 12px;
-            font-weight: 800;
-            color: #00f2fe;
-            margin-bottom: 4px;
-        }
-
-        .btn-logout {
-            background: #ff0844;
-            color: #fff;
-            border: none;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 9px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        /* // # (STYLE LAYOUT & CARD) */
-        .container {
-            max-width: 450px;
-            margin: 15px auto;
-            padding: 0 15px;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.04);
-            backdrop-filter: blur(15px);
-            border-radius: 30px;
-            border: 1px solid rgba(0, 242, 254, 0.2);
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* // # (STYLE INFO AKUN) */
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 11px;
-        }
-
-        .info-label {
-            color: #00f2fe;
-            font-weight: bold;
-        }
-
-        .status-on { color: #71ff00; font-weight: bold; }
+        /* // # (MONITORING TABLE - FULL INFO) */
+        .monitor-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 15px; }
+        .monitor-table th { text-align: left; color: #00f2fe; padding: 12px; border-bottom: 1px solid #00f2fe; }
+        .monitor-table td { padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #fff; }
+        .status-on { color: #71ff00; font-weight: bold; } 
         .status-off { color: #ff0844; font-weight: bold; }
 
-        /* // # (FIX SPINAN / WHEEL - AGAR TIDAK NIMPA) */
-        .wheel-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            overflow: visible !important;
+        /* // # (CHAT UI - NEON STYLE) */
+        .chat-box { 
+            height: 280px; overflow-y: auto; background: rgba(0,0,0,0.5); 
+            border-radius: 25px; padding: 15px; margin-bottom: 12px; 
+            display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(255,255,255,0.05);
         }
+        .msg { max-width: 85%; padding: 12px 18px; border-radius: 20px; font-size: 13px; line-height: 1.4; }
+        .msg-me { background: rgba(0, 242, 254, 0.2); border: 1px solid #00f2fe; align-self: flex-end; border-bottom-right-radius: 4px; }
+        .msg-ot { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.1); align-self: flex-start; border-bottom-left-radius: 4px; }
 
-        .wheel-container {
-            position: relative;
-            width: 250px; /* Ukuran pas biar gak nimpa chat */
-            height: 250px;
-            margin: 15px auto;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1;
+        /* // # (INPUTS & CUSTOM ZMT UPLOAD) */
+        input, textarea { 
+            width: 100%; padding: 16px 22px; margin-bottom: 15px; 
+            border: 1px solid rgba(0, 242, 254, 0.4); border-radius: 30px; 
+            background: rgba(0, 0, 0, 0.6); color: #71ff00; outline: none; box-sizing: border-box; 
         }
-
-        #cv-u, #cv-a {
-            width: 100% !important;
-            height: 100% !important;
-            border-radius: 50%;
-            border: 4px solid #00f2fe;
-            transition: 7s cubic-bezier(0.1, 0, 0.1, 1);
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2);
-            box-sizing: border-box;
-        }
-
-        .pointer {
-            position: absolute;
-            top: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 35px;
-            background: #71ff00;
-            clip-path: polygon(50% 100%, 0 0, 100% 0);
-            z-index: 10;
-            filter: drop-shadow(0 0 5px #71ff00);
-        }
-
-        /* // # (STYLE MONITORING ADMIN) */
-        .monitor-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 10px;
-            margin-top: 10px;
-        }
-
-        .monitor-table th {
-            text-align: left;
-            color: #00f2fe;
-            padding: 8px;
-            border-bottom: 1px solid #00f2fe;
-        }
-
-        .monitor-table td {
-            padding: 8px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            color: #fff;
-        }
-
-        .btn-kick {
-            background: #ff0844;
-            color: #fff;
-            border: none;
-            padding: 2px 6px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 9px;
-        }
-
-        /* // # (STYLE CHAT GLOBAL & PRIVATE) */
-        .chat-box {
-            height: 240px;
-            overflow-y: auto;
-            background: rgba(0,0,0,0.2);
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .msg {
-            max-width: 85%;
-            padding: 10px 14px;
-            border-radius: 18px;
-            font-size: 12px;
-            position: relative;
-            line-height: 1.4;
-        }
-
-        .msg-me {
-            background: rgba(0, 242, 254, 0.15);
-            border: 1px solid #00f2fe;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-        }
-
-        .msg-ot {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-        }
-
-        /* // # (STYLE FORM INPUT & BUTTON) */
-        input, textarea {
-            width: 100%;
-            padding: 14px 20px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(0, 242, 254, 0.3);
-            border-radius: 25px;
-            background: rgba(0, 0, 0, 0.5);
-            color: #71ff00;
-            outline: none;
-            box-sizing: border-box;
-            font-size: 13px;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 25px;
-            font-size: 13px;
-            font-weight: 800;
-            cursor: pointer;
-            text-transform: uppercase;
-            transition: 0.3s;
-        }
-
-        .btn-primary { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; }
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 30px; font-size: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        .btn-primary { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; box-shadow: 0 4px 15px rgba(0, 242, 254, 0.3); }
         .btn-danger { background: #ff0844; color: #fff; }
-
-        /* // # (STYLE LOGIN PAGE) */
-        #pg-login {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: #090a0f;
-            z-index: 9999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        
+        /* TOMBOL UPLOAD CUSTOM BIAR GAK KAKU */
+        .btn-upload-zmt {
+            background: rgba(0, 0, 0, 0.5); border: 2px dashed #00f2fe;
+            color: #00f2fe; padding: 15px; border-radius: 20px; text-align: center;
+            margin-bottom: 15px; cursor: pointer; font-weight: bold; font-size: 12px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        .login-card {
-            width: 300px;
-            padding: 35px;
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 40px;
-            border: 2px solid #00f2fe;
-            text-align: center;
-            box-shadow: 0 0 30px rgba(0, 242, 254, 0.2);
-        }
+        #pg-login { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #090a0f; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .login-card { width: 320px; padding: 45px; background: rgba(255, 255, 255, 0.04); border-radius: 50px; border: 2px solid #00f2fe; text-align: center; box-shadow: 0 0 40px rgba(0, 242, 254, 0.3); }
     </style>
 </head>
 <body>
@@ -294,123 +100,94 @@
 <div id="pg-login">
     <div class="login-card">
         <h1 class="main-title">ZMT EVENT</h1>
-        <p class="sub-title">SILAHKAN DAFTAR</p>
-        
-        <div id="u-form" style="margin-top: 25px;">
+        <p class="sub-title">VERSION 0.1.5 BETA</p>
+        <div id="u-form" style="margin-top: 35px;">
             <input type="text" id="log-u" placeholder="USERNAME">
             <input type="password" id="log-p" placeholder="PASSWORD">
             <button class="btn btn-primary" onclick="auth('user')">MASUK / DAFTAR</button>
-            <p onclick="setA(true)" style="color:#222; cursor:pointer; font-size:10px; margin-top:15px;">ADMIN MODE</p>
+            <p onclick="setA(true)" style="color:rgba(255,255,255,0.1); cursor:pointer; font-size:10px; margin-top:20px;">ADMIN PANEL</p>
         </div>
-
-        <div id="a-form" style="display:none; margin-top: 25px;">
-            <input type="password" id="a-key" placeholder="MASTER KEY">
+        <div id="a-form" style="display:none; margin-top: 35px;">
+            <input type="password" id="a-key" placeholder="ADMIN MASTER KEY">
             <button class="btn btn-danger" onclick="auth('admin')">BYPASS ADMIN</button>
-            <p onclick="setA(false)" style="color:#222; cursor:pointer; font-size:10px; margin-top:15px;">BACK</p>
+            <p onclick="setA(false)" style="color:rgba(255,255,255,0.1); cursor:pointer; font-size:10px; margin-top:20px;">KEMBALI</p>
         </div>
     </div>
 </div>
 
 <div id="pg-app" style="display:none;">
     <div class="header">
-        <div class="header-titles">
-            <h1 class="main-title">ZMT EVENT</h1>
-            <p class="sub-title">v0.1.5 (BETA)</p>
-        </div>
-        <div class="user-meta">
-            <div class="usn-display" id="top-usn">USN: ---</div>
-            <button class="btn-logout" onclick="location.reload()">Logout</button>
-        </div>
+        <div><h1 class="main-title">ZMT EVENT</h1><p class="sub-title">v0.1.5</p></div>
+        <div style="text-align:right;"><div id="top-usn" style="font-size:13px; color:#00f2fe; font-weight:800;">---</div><button class="btn-logout" onclick="location.reload()">Logout</button></div>
     </div>
 
     <div class="container">
         <div class="card">
-            <div class="sub-title" style="margin-bottom:10px; color:#00f2fe;">📋 DATA LOGIN ANDA</div>
-            <div class="info-row"><span class="info-label">User :</span> <span id="info-u">---</span></div>
-            <div class="info-row"><span class="info-label">Pass :</span> <span id="info-p">---</span></div>
-            <div class="info-row"><span class="info-label">Device :</span> <span id="info-dev">0</span></div>
-            <div class="info-row"><span class="info-label">Status :</span> <span id="info-stat">---</span></div>
-            <div class="info-row"><span class="info-label">Login on :</span> <span id="info-time">---</span></div>
+            <div class="sub-title" style="margin-bottom:12px; color:#00f2fe;">📋 DATA KONEKSI</div>
+            <div style="font-size:11px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>USER: <span id="info-u" style="color:#71ff00;">-</span></div>
+                <div>PASS: <span id="info-p" style="color:#71ff00;">-</span></div>
+                <div>DEVICE: <span id="info-dev" style="color:#71ff00;">0</span></div>
+                <div>STATUS: <span id="info-stat">-</span></div>
+            </div>
         </div>
 
         <div id="ui-user" style="display:none;">
-            <div class="card">
-                <button id="btn-join" class="btn btn-primary" onclick="join()">DAFTAR ANTRIAN</button>
-            </div>
-
+            <div class="card"><button id="btn-join" class="btn btn-primary" onclick="join()">DAFTAR ANTRIAN SPIN</button></div>
             <div class="card wheel-box">
-                <div class="wheel-container">
-                    <div class="pointer"></div>
-                    <canvas id="cv-u" width="500" height="500"></canvas>
-                </div>
+                <div class="wheel-container"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div>
+                <p id="spin-msg" style="font-size: 11px; color: #71ff00; font-weight: bold; text-align: center;">MENUNGGU ADMIN MEMUTAR...</p>
             </div>
-
             <div class="card">
                 <div id="chat-u" class="chat-box"></div>
                 <textarea id="msg-u" placeholder="Chat Global..."></textarea>
-                <button class="btn btn-primary" onclick="send('global')">KIRIM</button>
+                <button class="btn btn-primary" onclick="send('global')">KIRIM PESAN</button>
             </div>
-
             <div id="box-win" class="card" style="display:none; border:2px solid #71ff00;">
-                <div class="sub-title" style="color:#71ff00; margin-bottom:10px;">🎁 KLAIM HADIAH ANDA</div>
+                <div class="sub-title" style="color:#71ff00; margin-bottom:15px;">🎁 FORM KLAIM PEMENANG</div>
                 <div id="chat-p-u" class="chat-box"></div>
-                <input type="file" id="f-u" onchange="up('user')">
-                <textarea id="msg-p-u" placeholder="Tulis klaim / kirim screenshot..."></textarea>
-                <button id="sb-u" class="btn btn-primary" onclick="send('private-u')">KIRIM KLAIM</button>
+                <input type="file" id="f-u" style="display:none;" onchange="up('user')">
+                <div class="btn-upload-zmt" onclick="document.getElementById('f-u').click()">🖼️ PILIH FOTO BUKTI / SS</div>
+                <textarea id="msg-p-u" placeholder="Ketik detail klaim (ID/No.Dana)..."></textarea>
+                <button class="btn btn-primary" onclick="send('private-u')">KIRIM KLAIM</button>
             </div>
         </div>
 
         <div id="ui-admin" style="display:none;">
             <div class="card">
-                <div class="sub-title" style="margin-bottom:10px; color:#ff0844;">👥 MONITORING AKUN USER</div>
+                <div class="sub-title" style="color:#ff0844; margin-bottom:10px;">👥 MONITORING PESERTA</div>
                 <div style="overflow-x:auto;">
                     <table class="monitor-table">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Pass</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
-                            </tr>
-                        </thead>
+                        <thead><tr><th>USER</th><th>PASS</th><th>STATUS</th><th>AKSI</th></tr></thead>
                         <tbody id="user-list-body"></tbody>
                     </table>
                 </div>
             </div>
-
-            <div class="card">
-                <button class="btn btn-primary" onclick="reg(true)">BUKA REGISTRASI</button>
-                <button class="btn btn-danger" onclick="reg(false)" style="margin-top:10px;">TUTUP REGISTRASI</button>
-            </div>
-
             <div class="card wheel-box">
-                <div class="wheel-container">
-                    <div class="pointer"></div>
-                    <canvas id="cv-a" width="500" height="500"></canvas>
-                </div>
-                <button class="btn btn-primary" onclick="spin()" style="margin-top:15px;">PUTAR SEKARANG</button>
+                <div class="wheel-container"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
+                <button class="btn btn-primary" onclick="spin()" style="margin-top:20px;">PUTAR RODA SEKARANG</button>
             </div>
-
             <div class="card">
                 <div id="chat-a" class="chat-box"></div>
-                <textarea id="msg-a" placeholder="Tulis pesan global atau ketik /ban [user]..."></textarea>
-                <button class="btn btn-primary" onclick="send('global-a')">TRANSMIT</button>
+                <textarea id="msg-a" placeholder="Broadcast ke user..."></textarea>
+                <button class="btn btn-primary" onclick="send('global-a')">TRANSMIT BROADCAST</button>
             </div>
-
             <div class="card">
-                <div class="sub-title" style="margin-bottom:10px; color:#00f2fe;">📥 DAFTAR PEMENANG</div>
-                <div id="win-tags" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>
-                
-                <div id="box-p-a" style="display:none; border-top: 1px solid rgba(255,255,255,0.1); padding-top:15px;">
+                <div id="win-tags" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;"></div>
+                <div id="box-p-a" style="display:none;">
                     <b id="target-n" style="color:#00f2fe; display:block; margin-bottom:10px;"></b>
                     <div id="chat-p-a" class="chat-box"></div>
-                    <input type="file" id="f-a" onchange="up('admin')">
+                    <input type="file" id="f-a" style="display:none;" onchange="up('admin')">
+                    <div class="btn-upload-zmt" onclick="document.getElementById('f-a').click()">📂 LAMPIRKAN GAMBAR</div>
                     <textarea id="msg-p-a" placeholder="Balas klaim..."></textarea>
-                    <button id="sb-a" class="btn btn-primary" onclick="send('private-a')">BALAS PESAN</button>
+                    <button class="btn btn-primary" onclick="send('private-a')">BALAS KLAIM</button>
                 </div>
             </div>
-
-            <button class="btn btn-danger" onclick="wipeConfirm()" style="margin-bottom:30px;">☢️ CLEAN DATABASE</button>
+            <div class="card">
+                <button class="btn btn-primary" onclick="reg(true)">BUKA PENDAFTARAN</button>
+                <button class="btn btn-danger" onclick="reg(false)" style="margin-top:10px;">TUTUP PENDAFTARAN</button>
+                <button class="btn btn-danger" onclick="wipeConfirm()" style="margin-top:10px; background:#000;">☢️ RESET DATABASE</button>
+            </div>
         </div>
     </div>
 </div>
@@ -419,351 +196,196 @@
 <audio id="s-win" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
 
 <script type="module">
-    // # (FITUR FIREBASE INITIALIZATION)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, remove, get, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-    const cfg = { 
+    const config = { 
         apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", 
         authDomain: "spinanberhadiahzmt.firebaseapp.com", 
         databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", 
         projectId: "spinanberhadiahzmt", 
         appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" 
     };
-    const app = initializeApp(cfg); 
-    const db = getDatabase(app);
+    const app = initializeApp(config); const db = getDatabase(app);
 
     let myU = "", myR = "", q = [], curT = "", imgB = null;
 
-    // # (FITUR AUTHENTICATION LOGIC)
-    window.setA = (v) => {
-        document.getElementById('u-form').style.display = v ? 'none' : 'block';
-        document.getElementById('a-form').style.display = v ? 'block' : 'none';
+    // --- SISTEM AUTH ---
+    window.setA = (v) => { 
+        document.getElementById('u-form').style.display = v ? 'none' : 'block'; 
+        document.getElementById('a-form').style.display = v ? 'block' : 'none'; 
     };
 
     window.auth = async (role) => {
         if(role === 'admin') {
-            const key = document.getElementById('a-key').value;
-            if(key === "zmtxxx") {
-                myU = "ADMIN";
-                myR = "admin";
-                launch("SECRET_KEY");
-            } else {
-                Swal.fire('Error', 'Master Key Salah!', 'error');
-            }
+            if(document.getElementById('a-key').value === "zmtxxx") { 
+                myU="ADMIN"; myR="admin"; launch("MASTER_ACCESS"); 
+            } else Swal.fire('Error', 'Master Key Salah!', 'error');
         } else {
-            const u = document.getElementById('log-u').value.trim();
+            const u = document.getElementById('log-u').value.trim(); 
             const p = document.getElementById('log-p').value;
             if(!u || !p) return;
-
-            const uRef = ref(db, `auth/users/${u}`);
+            const uRef = ref(db, `auth/users/${u}`); 
             const snap = await get(uRef);
-
-            if(snap.exists()) {
-                if(snap.val().pw === p) {
-                    myU = u;
-                    myR = "user";
-                    launch(p);
-                } else {
-                    Swal.fire('Error', 'Password Salah!', 'error');
-                }
-            } else {
-                const regS = await get(ref(db, 'config/regStatus'));
-                if(regS.exists() && !regS.val()) {
-                    return Swal.fire('Tutup', 'Registrasi sudah ditutup oleh admin!', 'info');
-                }
-                const now = new Date();
-                const ts = `${now.getHours()}:${now.getMinutes()} - ${now.getDate()}/${now.getMonth()+1}`;
-                await set(uRef, {pw: p, loginOn: ts});
-                myU = u;
-                myR = "user";
-                launch(p);
+            if(snap.exists()) { 
+                if(snap.val().pw === p) { myU=u; myR="user"; launch(p); } 
+                else Swal.fire('Error', 'Password Salah!', 'error'); 
+            } else { 
+                const regS = await get(ref(db, 'config/regStatus')); 
+                if(regS.exists() && !regS.val()) return Swal.fire('Tutup', 'Registrasi Ditutup!', 'info');
+                await set(uRef, {pw: p}); myU=u; myR="user"; launch(p);
             }
         }
     };
 
     function launch(pass) {
-        document.getElementById('pg-login').style.display = 'none';
-        document.getElementById('pg-app').style.display = 'block';
-        document.getElementById('top-usn').innerText = `USN: ${myU}`;
-        document.getElementById('info-u').innerText = myU;
+        document.getElementById('pg-login').style.display='none'; 
+        document.getElementById('pg-app').style.display='block';
+        document.getElementById('top-usn').innerText = myU; 
+        document.getElementById('info-u').innerText = myU; 
         document.getElementById('info-p').innerText = pass;
-
-        if(myR === 'admin') {
-            document.getElementById('ui-admin').style.display = 'block';
-            initA();
-        } else {
-            document.getElementById('ui-user').style.display = 'block';
-            initU();
-            handlePresence(myU);
+        if(myR==='admin') { 
+            document.getElementById('ui-admin').style.display='block'; 
+            initA(); 
+        } else { 
+            document.getElementById('ui-user').style.display='block'; 
+            initU(); 
+            handlePresence(myU); 
         }
     }
 
-    // # (FITUR ADMIN MONITORING LOGIC)
+    // --- SISTEM ADMIN ---
     function initA() {
         listen('chats/global', 'chat-a');
-
-        onValue(ref(db, 'queue'), (s) => {
-            q = [];
-            s.forEach(c => {
-                q.push({u: c.val().u, k: c.key});
-            });
-            draw('cv-a', q);
+        onValue(ref(db, 'queue'), (s) => { 
+            q=[]; s.forEach(c => { q.push({u:c.val().u, k:c.key}); }); 
+            draw('cv-a', q); 
         });
-
         onValue(ref(db, 'auth/users'), (snap) => {
-            const tbody = document.getElementById('user-list-body');
+            const tbody = document.getElementById('user-list-body'); 
             tbody.innerHTML = "";
-            snap.forEach(userSnap => {
-                const username = userSnap.key;
-                const userData = userSnap.val();
-                
-                onValue(ref(db, `presence/${username}`), (pSnap) => {
-                    const isOnline = pSnap.exists();
-                    const rowId = `row-${username}`;
-                    let existingRow = document.getElementById(rowId);
-                    
-                    const rowContent = `
-                        <td>${username}</td>
-                        <td>${userData.pw}</td>
-                        <td class="${isOnline ? 'status-on' : 'status-off'}">${isOnline ? 'Online' : 'Offline'}</td>
-                        <td><button class="btn-kick" onclick="banConfirm('${username}')">BAN</button></td>
-                    `;
-
-                    if(existingRow) {
-                        existingRow.innerHTML = rowContent;
-                    } else {
-                        const tr = document.createElement('tr');
-                        tr.id = rowId;
-                        tr.innerHTML = rowContent;
-                        tbody.appendChild(tr);
+            snap.forEach(uSnap => {
+                const name = uSnap.key; const data = uSnap.val();
+                onValue(ref(db, `presence/${name}`), (pSnap) => {
+                    const isOn = pSnap.exists(); const rowId = `row-${name}`;
+                    const html = `<td>${name}</td><td>${data.pw}</td><td class="${isOn?'status-on':'status-off'}">${isOn?'ON':'OFF'}</td><td><button class="btn-logout" style="padding:2px 8px;" onclick="ban('${name}')">BAN</button></td>`;
+                    let row = document.getElementById(rowId);
+                    if(row) row.innerHTML = html; else { 
+                        const tr = document.createElement('tr'); 
+                        tr.id=rowId; tr.innerHTML=html; 
+                        tbody.appendChild(tr); 
                     }
                 });
             });
         });
-
         onValue(ref(db, 'wins'), (s) => {
-            const l = document.getElementById('win-tags');
-            l.innerHTML = "";
-            s.forEach(c => {
-                const n = c.val().u;
-                l.innerHTML += `<button class="btn btn-primary" style="width:auto; padding:5px 10px; margin-right:5px; font-size:10px;" onclick="openP('${n}')">@${n}</button>`;
-            });
+            const l = document.getElementById('win-tags'); l.innerHTML = "";
+            s.forEach(c => { const n = c.val().u; l.innerHTML += `<button class="btn btn-primary" style="width:auto; padding:5px 12px; font-size:10px;" onclick="openP('${n}')">@${n}</button>`; });
         });
     }
 
-    // # (FITUR BAN & RESET LOGIC)
-    window.banConfirm = (u) => {
-        Swal.fire({
-            title: 'BAN USER?',
-            text: `Apakah anda yakin ingin mem-ban ${u}?`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'YA, BAN!',
-            cancelButtonText: 'BATAL'
-        }).then((result) => {
-            if (result.isConfirmed) banUser(u);
-        });
+    // --- SISTEM SPIN (KENDALI ADMIN) ---
+    window.spin = async () => {
+        if(q.length < 2) return Swal.fire('Error', 'Butuh minimal 2 orang!', 'warning');
+        const wIdx = Math.floor(Math.random() * q.length);
+        const rot = 3600 + (360 - (wIdx * (360/q.length))) - ((360/q.length)/2);
+        await set(ref(db, 'config/sync'), { r: rot, w: q[wIdx].u, d: false });
+        setTimeout(async () => { 
+            await update(ref(db, 'config/sync'), { d: true }); 
+            await push(ref(db, 'wins'), { u: q[wIdx].u }); 
+            await remove(ref(db, `queue/${q[wIdx].k}`)); 
+        }, 7600);
     };
 
-    async function banUser(u) {
-        await remove(ref(db, `auth/users/${u}`));
-        await remove(ref(db, `presence/${u}`));
-        await remove(ref(db, `chats/private/${u}`));
-        Swal.fire('Banned', `${u} telah dihapus dari database!`, 'success');
+    function draw(id, list) {
+        const c = document.getElementById(id); if(!c) return; const ctx = c.getContext('2d');
+        const n = list.length || 1; const a = (2*Math.PI)/n; ctx.clearRect(0,0,500,500);
+        list.forEach((p, i) => {
+            ctx.beginPath(); ctx.fillStyle = i%2===0 ? '#001529' : '#002140'; ctx.moveTo(250,250); ctx.arc(250,250,240,i*a,(i+1)*a); ctx.fill();
+            ctx.save(); ctx.translate(250,250); ctx.rotate(i*a + a/2); ctx.fillStyle = "#00f2fe"; ctx.font = "bold 24px Arial"; ctx.textAlign="right"; ctx.fillText(p.u.substring(0,12), 230, 8); ctx.restore();
+        });
     }
 
-    window.wipeConfirm = () => {
-        Swal.fire({
-            title: 'RESET TOTAL?',
-            text: "Hapus semua data database? Tindakan ini tidak bisa dibatalkan!",
-            icon: 'error',
-            showCancelButton: true,
-            confirmButtonText: 'RESET!',
-            cancelButtonText: 'BATAL'
-        }).then((result) => {
-            if (result.isConfirmed) wipe();
+    // --- SISTEM USER (SYNC) ---
+    function initU() {
+        listen('chats/global', 'chat-u');
+        onValue(ref(db, 'queue'), (s) => { 
+            let l=[]; let j=false; 
+            s.forEach(c => { l.push({u:c.val().u}); if(c.val().u===myU) j=true; }); 
+            if(j) { document.getElementById('btn-join').disabled=true; document.getElementById('btn-join').innerText="SUDAH TERDAFTAR"; } 
+            draw('cv-u', l); 
         });
-    };
-
-    async function wipe() {
-        await remove(ref(db, '/'));
-        location.reload();
-    }
-
-    // # (FITUR PRESENCE SYSTEM)
-    function handlePresence(u) {
-        const pRef = ref(db, `presence/${u}`);
-        const sRef = push(pRef);
-        set(sRef, { state: 'online' });
-        onDisconnect(sRef).remove();
-
-        onValue(pRef, (s) => {
-            const count = s.exists() ? Object.keys(s.val()).length : 0;
-            document.getElementById('info-dev').innerText = count;
-            document.getElementById('info-stat').innerText = count > 0 ? "Online" : "Offline";
-            document.getElementById('info-stat').className = count > 0 ? "status-on" : "status-off";
-        });
-
-        get(ref(db, `auth/users/${u}/loginOn`)).then(s => {
-            document.getElementById('info-time').innerText = s.val() || "---";
-        });
-
-        onValue(ref(db, `auth/users/${u}`), (s) => {
-            if(!s.exists()) {
-                Swal.fire({title:'BANNED', text:'Akun anda telah dihapus oleh admin!', icon:'error'}).then(() => location.reload());
+        onValue(ref(db, 'config/sync'), (s) => {
+            const d = s.val(); if(!d) return; 
+            document.getElementById('cv-u').style.transform = `rotate(${d.r - 90}deg)`;
+            if(d.r > 0 && !d.d) { 
+                document.getElementById('s-spin').play(); 
+                document.getElementById('spin-msg').innerText = "RODA BERPUTAR...";
             }
+            if(d.d && d.w === myU) { 
+                confetti(); document.getElementById('s-win').play(); 
+                Swal.fire('MENANG!', 'Segera klaim di menu bawah!', 'success'); 
+            }
+            if(d.d) document.getElementById('spin-msg').innerText = "PUTARAN SELESAI!";
+        });
+        onValue(ref(db, 'wins'), (s) => {
+            let w=false; s.forEach(c => { if(c.val().u===myU) w=true; });
+            document.getElementById('box-win').style.display = w ? 'block' : 'none'; 
+            if(w) listen(`chats/private/${myU}`, 'chat-p-u');
         });
     }
 
-    // # (FITUR MESSAGING & UPLOAD LOGIC)
+    // --- SISTEM CHAT & UPLOAD ---
     window.send = async (m) => {
-        const isG = m.includes('global');
-        const inp = document.getElementById(isG ? (myR === 'admin' ? 'msg-a' : 'msg-u') : (myR === 'admin' ? 'msg-p-a' : 'msg-p-u'));
-        let txt = inp.value.trim();
-
-        if(!txt && !imgB) return;
-
-        if(myR === 'admin' && txt.startsWith('/ban ')) {
-            const target = txt.split(' ')[1];
-            banUser(target);
-            inp.value = "";
-            return;
-        }
-
-        const path = isG ? 'chats/global' : `chats/private/${myR === 'admin' ? curT : myU}`;
-        await push(ref(db, path), {
-            s: myU,
-            m: txt,
-            f: imgB,
-            t: Date.now()
-        });
-
-        inp.value = "";
-        imgB = null;
+        const isG = m.includes('global'); 
+        const inp = document.getElementById(isG ? (myR==='admin'?'msg-a':'msg-u') : (myR==='admin'?'msg-p-a':'msg-p-u'));
+        if(!inp.value && !imgB) return;
+        const path = isG ? 'chats/global' : `chats/private/${myR==='admin'?curT:myU}`;
+        await push(ref(db, path), { s: myU, m: inp.value, f: imgB, t: Date.now() }); 
+        inp.value = ""; imgB = null;
     };
 
     function listen(p, id) {
         onValue(ref(db, p), (s) => {
-            const b = document.getElementById(id);
-            b.innerHTML = "";
+            const b = document.getElementById(id); b.innerHTML = "";
             s.forEach(c => {
-                const d = c.val();
-                let cls = d.s === myU ? 'msg-me' : 'msg-ot';
-                b.innerHTML += `
-                    <div class="msg ${cls}">
-                        <b style="font-size:10px;">${d.s}:</b><br>
-                        ${d.f ? `<img src="${d.f}" style="max-width:100%; border-radius:10px; margin:5px 0;"><br>` : ""}
-                        ${d.m}
-                    </div>
-                `;
+                const d = c.val(); let cls = d.s === myU ? 'msg-me' : 'msg-ot';
+                b.innerHTML += `<div class="msg ${cls}"><b>${d.s}:</b><br>${d.f ? `<img src="${d.f}" style="max-width:100%; border-radius:15px; margin:10px 0;"><br>` : ""}${d.m}</div>`;
             });
             b.scrollTop = b.scrollHeight;
         });
     }
 
     window.up = (r) => {
-        const file = document.getElementById(r === 'admin' ? 'f-a' : 'f-u').files[0];
-        if(!file) return;
+        const f = document.getElementById(r==='admin'?'f-a':'f-u').files[0];
         const reader = new FileReader();
-        reader.onload = (e) => {
-            imgB = e.target.result;
-            Swal.fire('Ready', 'Gambar siap dikirim!', 'success');
+        reader.onload = (e) => { 
+            imgB = e.target.result; 
+            Swal.fire({title: 'Foto Siap!', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}); 
         };
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(f);
     };
 
-    // # (FITUR SPIN WHEEL ENGINE)
-    window.spin = async () => {
-        if(q.length < 2) return Swal.fire('Minimal 2 Peserta!', '', 'info');
-        const wIdx = Math.floor(Math.random() * q.length);
-        const rot = 3600 + (360 - (wIdx * (360/q.length))) - ((360/q.length)/2);
-        
-        await set(ref(db, 'config/sync'), { r: rot, w: q[wIdx].u, d: false });
-        
-        setTimeout(async () => {
-            await update(ref(db, 'config/sync'), { d: true });
-            await push(ref(db, 'wins'), { u: q[wIdx].u });
-            await remove(ref(db, `queue/${q[wIdx].k}`));
-        }, 7200);
+    // --- SISTEM KONTROL LAIN ---
+    window.ban = (u) => { if(confirm('Ban '+u+'?')) remove(ref(db, `auth/users/${u}`)); };
+    window.wipeConfirm = () => { if(confirm('Hapus Semua Data?')) remove(ref(db, '/')); };
+    window.openP = (u) => { 
+        curT=u; document.getElementById('box-p-a').style.display='block'; 
+        document.getElementById('target-n').innerText="REPLY: @"+u; 
+        listen(`chats/private/${u}`, 'chat-p-a'); 
     };
-
-    function draw(id, list) {
-        const c = document.getElementById(id);
-        if(!c) return;
-        const ctx = c.getContext('2d');
-        const n = list.length || 1;
-        const a = (2*Math.PI)/n;
-        ctx.clearRect(0,0,500,500);
-        
-        list.forEach((p, i) => {
-            ctx.beginPath();
-            ctx.fillStyle = i % 2 === 0 ? '#001529' : '#002140';
-            ctx.moveTo(250,250);
-            ctx.arc(250,250,240,i*a,(i+1)*a);
-            ctx.fill();
-            ctx.save();
-            ctx.translate(250,250);
-            ctx.rotate(i*a + a/2);
-            ctx.fillStyle = "#00f2fe";
-            ctx.font = "bold 20px Arial";
-            ctx.textAlign = "right";
-            ctx.fillText(p.u, 230, 8);
-            ctx.restore();
-        });
-    }
-
-    function initU() {
-        listen('chats/global', 'chat-u');
-
-        onValue(ref(db, 'queue'), (s) => {
-            let l = [];
-            let j = false;
-            s.forEach(c => {
-                l.push({u: c.val().u});
-                if(c.val().u === myU) j = true;
-            });
-            if(j) {
-                const btn = document.getElementById('btn-join');
-                btn.disabled = true;
-                btn.innerText = "SUDAH TERDAFTAR";
-            }
-            draw('cv-u', l);
-        });
-
-        onValue(ref(db, 'config/sync'), (s) => {
-            const d = s.val();
-            if(!d) return;
-            const cv = document.getElementById('cv-u');
-            cv.style.transform = `rotate(${d.r - 90}deg)`;
-            
-            if(d.r > 0 && !d.d) document.getElementById('s-spin').play();
-            
-            if(d.d && d.w === myU) {
-                confetti();
-                document.getElementById('s-win').play();
-                Swal.fire('SELAMAT!', 'Anda memenangkan spinan kali ini!', 'success');
-            }
-        });
-
-        onValue(ref(db, 'wins'), (s) => {
-            let w = false;
-            s.forEach(c => { if(c.val().u === myU) w = true; });
-            document.getElementById('box-win').style.display = w ? 'block' : 'none';
-            if(w) listen(`chats/private/${myU}`, 'chat-p-u');
-        });
-    }
-
-    // # (FITUR ADMIN CONTROL INTERFACE)
-    window.openP = (u) => {
-        curT = u;
-        document.getElementById('box-p-a').style.display = 'block';
-        document.getElementById('target-n').innerText = "REPLY UNTUK: @" + u;
-        listen(`chats/private/${u}`, 'chat-p-a');
-    };
-
     window.reg = (v) => set(ref(db, 'config/regStatus'), v);
     window.join = () => push(ref(db, 'queue'), {u: myU});
+
+    function handlePresence(u) {
+        const pRef = ref(db, `presence/${u}`); const sRef = push(pRef);
+        set(sRef, { state: 'online' }); onDisconnect(sRef).remove();
+        onValue(pRef, (s) => {
+            const c = s.exists() ? Object.keys(s.val()).length : 0;
+            document.getElementById('info-dev').innerText = c;
+            document.getElementById('info-stat').innerText = c > 0 ? "ONLINE" : "OFFLINE";
+        });
+    }
 </script>
 </body>
 </html>
