@@ -11,46 +11,31 @@
         :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { margin: 0; background: var(--d); color: #fff; overflow-x: hidden; min-height: 100vh; }
-
-        /* NEBULA BG */
         .nebula-bg { position: fixed; inset: 0; z-index: -1; background: #020308; overflow: hidden; }
         .vapor { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.35; animation: drift 20s infinite alternate; }
         .v1 { width: 500px; height: 300px; background: #4f46e5; top: -10%; left: -5%; }
         .v2 { width: 400px; height: 600px; background: #9333ea; bottom: -10%; right: -5%; animation-delay: -5s; }
         @keyframes drift { from { transform: translate(0,0) rotate(0deg); } to { transform: translate(100px, 80px) rotate(45deg); } }
-
-        /* UI CAPSULE */
         .capsule-card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 35px; padding: 25px; margin-bottom: 20px; }
         .btn-capsule { width: 100%; padding: 16px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.08); color: #fff; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .btn-p { background: linear-gradient(90deg, #6366f1, #a855f7); border: none; }
-        
         input, textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 16px 25px; color: #fff; border-radius: 30px; font-size: 14px; margin-bottom: 10px; resize: none; }
-        
-        /* CHAT SYSTEM */
         .chat-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 12px 18px; border-radius: 20px; font-size: 13px; max-width: 85%; line-height: 1.5; white-space: pre-wrap; user-select: text; -webkit-user-select: text; }
+        .msg { padding: 12px 18px; border-radius: 20px; font-size: 13px; max-width: 85%; line-height: 1.5; white-space: pre-wrap; user-select: text; }
         .me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 4px; }
         .other { background: #333; align-self: flex-start; border-bottom-left-radius: 4px; }
-
-        /* MARQUEE */
         .marquee-capsule { background: rgba(0,0,0,0.4); border-radius: 999px; padding: 12px 25px; border: 1px solid var(--border); color: var(--g); font-weight: 800; margin: 20px 0; overflow: hidden; }
         .mq-inner { display: inline-block; white-space: nowrap; animation: slide 15s linear infinite; }
         @keyframes slide { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
-
-        /* WHEEL */
         .wheel-container { position: relative; width: 280px; height: 280px; margin: 25px auto; border: 8px solid var(--glass); border-radius: 50%; }
         canvas { width: 100%; height: 100%; border-radius: 50%; transition: 6s cubic-bezier(0.1, 0, 0.1, 1); }
         .needle { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 35px; height: 45px; background: #ff4757; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100; border: 2px solid #fff; }
-
-        /* LISTS */
         .hist-item { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 10px 20px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 12px; }
         .q-item { background: rgba(255,255,255,0.03); border-radius: 999px; padding: 8px 15px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 12px; }
     </style>
 </head>
 <body>
-
 <div class="nebula-bg"><div class="vapor v1"></div><div class="vapor v2"></div></div>
-
 <div id="gate" style="position:fixed; inset:0; z-index:1000; background:rgba(2,3,8,0.9); display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(15px);">
     <div class="capsule-card" style="width:100%; max-width:380px; text-align:center;">
         <h1 style="font-weight:900; letter-spacing:4px; color:var(--p); margin:0;">ZMT EVENT</h1>
@@ -68,24 +53,21 @@
         </div>
     </div>
 </div>
-
 <div id="app" style="display:none; padding:15px; max-width:550px; margin:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
         <div style="background:rgba(16,185,129,0.1); color:#10b981; padding:5px 15px; border-radius:999px; font-size:10px; font-weight:800; border:1px solid #10b981;">● <span id="onlineVal">0</span> ONLINE</div>
         <button onclick="logout()" style="background:none; border:none; color:#ff4757; font-weight:800; font-size:11px;">LOGOUT</button>
     </div>
-
     <div class="marquee-capsule"><div class="mq-inner" id="mqText">ZMT ENGINE LOADING...</div></div>
-
     <div id="uiAdmin" style="display:none;">
         <div class="capsule-card">
             <h4>Control Panel</h4>
             <input type="text" placeholder="Ganti Running Text..." onchange="setMQ(this.value)">
             <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;">
-                <button class="btn-capsule" onclick="setReg(true)" style="color:#10b981;">Buka</button>
-                <button class="btn-capsule" onclick="setReg(false)" style="color:#ef4444;">Tutup</button>
+                <button class="btn-capsule" onclick="setReg(true)" style="color:#10b981;">Buka Reg</button>
+                <button class="btn-capsule" onclick="setReg(false)" style="color:#ef4444;">Tutup & Kick User</button>
             </div>
-            <button class="btn-capsule" style="margin-top:10px; font-size:11px;" onclick="resetQ()">🧹 Reset Semua Antrian</button>
+            <button class="btn-capsule" style="margin-top:10px; font-size:11px; background:#ef4444;" onclick="hardReset()">☢️ NUCLEAR RESET (ALL DATA & KICK ALL)</button>
         </div>
         <div class="capsule-card" style="text-align:center;">
             <div class="wheel-container"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
@@ -106,7 +88,6 @@
             </div>
         </div>
     </div>
-
     <div id="uiUser" style="display:none;">
         <div class="capsule-card"><button class="btn-capsule btn-p" id="joinBtn" onclick="join()">Daftar Spin</button></div>
         <div class="capsule-card" style="text-align:center;">
@@ -119,7 +100,7 @@
         <div id="winArea" class="capsule-card" style="display:none; border:2px solid var(--g);">
             <h3 style="color:var(--g); text-align:center;">🏆 KAMU MENANG!</h3>
             <div id="userChatBox" class="chat-box" style="margin-bottom:10px;"></div>
-            <textarea id="userMsg" rows="2" placeholder="Kirim pesan ke admin (Bisa Enter)..."></textarea>
+            <textarea id="userMsg" rows="2" placeholder="Kirim pesan ke admin..."></textarea>
             <button class="btn-capsule btn-p" onclick="send('user')">Kirim Pesan</button>
         </div>
     </div>
@@ -129,35 +110,43 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, remove, get, onDisconnect } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-    const fb = {
-        apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
-        authDomain: "spinanberhadiahzmt.firebaseapp.com",
-        databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "spinanberhadiahzmt",
-        appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
-    };
-
+    const fb = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
     const app = initializeApp(fb); const db = getDatabase(app);
     let myID = ""; let items = []; let rot = 0; let regOk = true; let curChat = "";
 
-    // SESSION SECURITY
-    if(localStorage.getItem('zmt_s') === "MASTER_ADMIN" && localStorage.getItem('zmt_k') !== "zmtxxx") { localStorage.clear(); location.reload(); }
-    if(localStorage.getItem('zmt_s')) start(localStorage.getItem('zmt_s'));
+    // 1. FORCE EJECT LISTENERS
+    onValue(ref(db, 'config/reg'), (s) => {
+        regOk = s.val() !== false;
+        if (!regOk && myID !== "" && myID !== "MASTER_ADMIN") {
+            Swal.fire({ title: "CLOSED!", text: "Registrasi ditutup, anda dikeluarkan otomatis!", icon: "error", timer: 3000, showConfirmButton: false });
+            setTimeout(() => logout(), 3000);
+        }
+    });
 
-    const oRef = ref(db, 'online/'+Math.floor(Math.random()*1e6));
-    onDisconnect(oRef).remove(); set(oRef, true);
-    onValue(ref(db, 'online'), (s) => document.getElementById('onlineVal').innerText = s.exists() ? Object.keys(s.val()).length : 1);
+    onValue(ref(db, 'config/nuclear'), (s) => {
+        if (s.exists() && s.val() === true) {
+            Swal.fire({ title: "SYSTEM RESET!", text: "Data dihapus & System dimulai ulang!", icon: "warning", timer: 3000, showConfirmButton: false });
+            setTimeout(() => {
+                localStorage.clear();
+                location.reload();
+            }, 3000);
+        }
+    });
 
+    // --- AUTH ---
     window.login = async (role) => {
         if(role === 'admin') {
             if(document.getElementById('aKey').value === "zmtxxx") { localStorage.setItem('zmt_k', "zmtxxx"); start("MASTER_ADMIN"); }
             else Swal.fire("Key Salah");
         } else {
+            const snapReg = await get(ref(db, 'config/reg'));
+            if(snapReg.val() === false) return Swal.fire("MAAF!", "Registrasi sedang ditutup admin.", "error");
+            
             const u = document.getElementById('uIn').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
             const p = document.getElementById('pIn').value;
             if(u.length < 3) return Swal.fire("Username Min 3");
-            const snap = await get(ref(db, `auth/${u}`));
-            if(snap.exists() && snap.val().pw !== p) return Swal.fire("Password Salah");
+            const snapAuth = await get(ref(db, `auth/${u}`));
+            if(snapAuth.exists() && snapAuth.val().pw !== p) return Swal.fire("Password Salah");
             await set(ref(db, `auth/${u}`), {pw:p}); start(u);
         }
     };
@@ -170,6 +159,35 @@
         else { document.getElementById('uiUser').style.display='block'; runUser(); syncHistory(); }
     }
 
+    // --- ADMIN ACTIONS ---
+    window.setReg = (v) => {
+        set(ref(db, 'config/reg'), v);
+        if(!v) Swal.fire("REG DITUTUP", "Semua user akan mental otomatis.", "info");
+    };
+
+    window.hardReset = async () => {
+        Swal.fire({
+            title: '☢️ NUCLEAR RESET?',
+            text: "Semua data (Antrian, Chat, Wins) akan LENYAP dan semua orang KICK TOTAL!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'YA, HANCURKAN!'
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                // Kirim sinyal hancurkan ke semua orang
+                await set(ref(db, 'config/nuclear'), true);
+                // Bersihkan data
+                await remove(ref(db, 'q'));
+                await remove(ref(db, 'wins'));
+                await remove(ref(db, 'chats'));
+                // Tunggu sebentar biar sinyal nyampe ke user lain baru matikan sinyalnya
+                setTimeout(() => set(ref(db, 'config/nuclear'), false), 5000);
+            }
+        });
+    };
+
+    // --- LOGIC ---
     function runAdmin() {
         onValue(ref(db, 'q'), (s) => {
             items = []; const list = document.getElementById('qList'); list.innerHTML = "";
@@ -180,7 +198,6 @@
             document.getElementById('qCount').innerText = items.length;
             draw('wheel');
         });
-        // Admin Chat list based on Winners who messaged
         onValue(ref(db, 'wins'), (s) => {
             const list = document.getElementById('adminChatList'); list.innerHTML = "";
             s.forEach(c => { list.innerHTML += `<button class="btn-capsule" style="margin-bottom:8px;" onclick="openChat('${c.val().u}')">Chat @${c.val().u}</button>`; });
@@ -195,15 +212,10 @@
             document.getElementById('joinBtn').disabled = joined;
             draw('wheelUser');
         });
-        // EXCLUSIVE: SHOW CHAT ONLY IF USER IS IN WINNERS LIST
         onValue(ref(db, 'wins'), (s) => {
             let win = false; s.forEach(c => { if(c.val().u === myID) win = true; });
-            if(win) { 
-                document.getElementById('winArea').style.display='block'; 
-                listenChat(myID, 'userChatBox'); 
-            } else {
-                document.getElementById('winArea').style.display='none';
-            }
+            if(win) { document.getElementById('winArea').style.display='block'; listenChat(myID, 'userChatBox'); }
+            else { document.getElementById('winArea').style.display='none'; }
         });
     }
 
@@ -269,17 +281,20 @@
     };
 
     onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "WELCOME TO ZMT EVENT");
-    onValue(ref(db, 'config/reg'), s => regOk = s.val() !== false);
     window.kick = (k) => remove(ref(db, `q/${k}`));
-    window.resetQ = () => { if(confirm("Reset Semua?")) remove(ref(db, 'q')); };
     window.setMQ = (t) => set(ref(db, 'config/marquee'), t);
-    window.setReg = (v) => set(ref(db, 'config/reg'), v);
-    window.join = () => { if(!regOk) return Swal.fire("Tutup"); push(ref(db, 'q'), {u: myID}); };
+    window.join = () => { if(!regOk) return logout(); push(ref(db, 'q'), {u: myID}); };
     window.logout = () => { localStorage.clear(); location.reload(); };
     window.toggleGate = () => { 
         document.getElementById('loginUser').style.display = document.getElementById('loginUser').style.display === 'none' ? 'block' : 'none';
         document.getElementById('loginAdmin').style.display = document.getElementById('loginAdmin').style.display === 'none' ? 'block' : 'none';
     };
+
+    // Auto-login session check
+    if(localStorage.getItem('zmt_s')) {
+        const s = localStorage.getItem('zmt_s');
+        if(s === "MASTER_ADMIN" && localStorage.getItem('zmt_k') !== "zmtxxx") logout();
+    }
 </script>
 </body>
 </html>
