@@ -71,7 +71,7 @@
             <div style="font-size:11px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div>USER: <span id="info-u" style="color:#71ff00;">-</span></div>
                 <div>PASS: <span id="info-p" style="color:#71ff00;">-</span></div>
-                <div>OL: <span id="info-dev" style="color:#71ff00;">0</span></div>
+                <div>ON: <span id="info-dev" style="color:#71ff00;">0</span></div>
                 <div>STAT: <span id="info-stat" style="color:#71ff00;">AKTIF</span></div>
                 <div style="grid-column: span 2;">IP: <span id="info-ip" style="color:#71ff00;">...</span></div>
             </div>
@@ -83,15 +83,15 @@
             <div class="card">
                 <div id="chat-u" class="chat-box"></div>
                 <input type="text" id="msg-u" placeholder="Chat global...">
-                <button class="btn btn-primary" onclick="send('global')">KIRIM</button>
+                <button class="btn btn-primary" onclick="send('global')">KIRIM PESAN</button>
             </div>
             <div id="box-win" class="card" style="display:none; border:2px solid #71ff00;">
                 <p style="color:#71ff00; font-weight:bold;">🎁 FORM HADIAH</p>
                 <div id="chat-p-u" class="chat-box" style="height:150px;"></div>
                 <input type="file" id="f-u" style="display:none;" onchange="up('user')">
-                <div class="btn-upload" onclick="document.getElementById('f-u').click()">UPLOAD SS BUKTI</div>
-                <textarea id="msg-p-u" placeholder="No Dana / Link..."></textarea>
-                <button class="btn btn-primary" onclick="send('private-u')">KIRIM KLAIM</button>
+                <div class="btn-upload" onclick="document.getElementById('f-u').click()">KIRIM GAMBAR</div>
+                <textarea id="msg-p-u" placeholder="PESAN"></textarea>
+                <button class="btn btn-primary" onclick="send('private-u')">KIRIM PESAN</button>
             </div>
         </div>
 
