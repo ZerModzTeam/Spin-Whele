@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT - v.0.0.3 (BETA)</title>
+    <title>ZMT EVENT - v.0.0.4</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
         :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.05); --border: rgba(255, 255, 255, 0.1); }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; user-select: none; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { margin: 0; background: var(--d); color: #fff; overflow-x: hidden; min-height: 100vh; }
         .nebula-bg { position: fixed; inset: 0; z-index: -1; background: #020308; overflow: hidden; }
         .vapor { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.35; animation: drift 20s infinite alternate; }
@@ -19,18 +19,12 @@
         .capsule-card { background: var(--glass); backdrop-filter: blur(25px); border: 1px solid var(--border); border-radius: 35px; padding: 25px; margin-bottom: 20px; }
         .btn-capsule { width: 100%; padding: 16px; border-radius: 999px; border: 1px solid var(--border); background: rgba(255,255,255,0.08); color: #fff; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.3s; }
         .btn-p { background: linear-gradient(90deg, #6366f1, #a855f7); border: none; }
-        input, textarea { width: 100%; background: rgba(0,0,0,0.4); border: 1px solid var(--border); padding: 16px 25px; color: #fff; border-radius: 30px; font-size: 14px; margin-bottom: 10px; resize: none; outline: none; }
-        .chat-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { padding: 12px 18px; border-radius: 20px; font-size: 13px; max-width: 85%; line-height: 1.5; white-space: pre-wrap; user-select: text !important; }
-        .me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 4px; }
-        .other { background: #333; align-self: flex-start; border-bottom-left-radius: 4px; }
         .marquee-capsule { background: rgba(0,0,0,0.4); border-radius: 999px; padding: 12px 25px; border: 1px solid var(--border); color: var(--g); font-weight: 800; margin: 20px 0; overflow: hidden; }
         .mq-inner { display: inline-block; white-space: nowrap; animation: slide 15s linear infinite; }
         @keyframes slide { from { transform: translateX(100%); } to { transform: translateX(-100%); } }
         .wheel-container { position: relative; width: 280px; height: 280px; margin: 25px auto; border: 8px solid var(--glass); border-radius: 50%; }
         canvas { width: 100%; height: 100%; border-radius: 50%; transition: 6s cubic-bezier(0.1, 0, 0.1, 1); }
         .needle { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 35px; height: 45px; background: #ff4757; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100; border: 2px solid #fff; }
-        .hist-item { background: rgba(255,255,255,0.03); border-radius: 15px; padding: 10px 20px; margin-bottom: 8px; display: flex; justify-content: space-between; font-size: 12px; }
         .q-item { background: rgba(255,255,255,0.03); border-radius: 999px; padding: 8px 15px; margin-bottom: 5px; display: flex; justify-content: space-between; font-size: 12px; }
     </style>
 </head>
@@ -39,164 +33,138 @@
 <div id="gate" style="position:fixed; inset:0; z-index:1000; background:rgba(2,3,8,0.9); display:flex; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(15px);">
     <div class="capsule-card" style="width:100%; max-width:380px; text-align:center;">
         <h1 style="font-weight:900; letter-spacing:4px; color:var(--p); margin:0;">ZMT EVENT</h1>
-        <p style="font-size:10px; opacity:0.5; margin-bottom:20px;">v.0.0.3 (BETA)</p>
         <div id="loginUser">
-            <input type="text" id="uIn" placeholder="Username">
-            <input type="password" id="pIn" placeholder="Password">
+            <input type="text" id="uIn" placeholder="Username" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border); padding:16px; color:#fff; border-radius:30px; margin:20px 0 10px;">
             <button class="btn-capsule btn-p" onclick="login('user')">Masuk Event</button>
             <p onclick="toggleGate()" style="margin-top:25px; font-size:11px; opacity:0.4; cursor:pointer;">Admin Access</p>
         </div>
         <div id="loginAdmin" style="display:none;">
-            <input type="password" id="aKey" placeholder="Admin Key">
+            <input type="password" id="aKey" placeholder="Admin Key" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--border); padding:16px; color:#fff; border-radius:30px; margin:20px 0 10px;">
             <button class="btn-capsule btn-p" style="background:var(--g); color:#000;" onclick="login('admin')">Verify Master</button>
             <p onclick="toggleGate()" style="margin-top:20px; font-size:11px; opacity:0.4; cursor:pointer;">Kembali</p>
         </div>
     </div>
 </div>
+
 <div id="app" style="display:none; padding:15px; max-width:550px; margin:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div style="background:rgba(16,185,129,0.1); color:#10b981; padding:5px 15px; border-radius:999px; font-size:10px; font-weight:800; border:1px solid #10b981;">● <span id="onlineVal">0</span> ONLINE</div>
+        <div style="color:var(--g); font-weight:800; font-size:12px;">ZMT ENGINE</div>
         <button onclick="logout()" style="background:none; border:none; color:#ff4757; font-weight:800; font-size:11px;">LOGOUT</button>
     </div>
-    <div class="marquee-capsule"><div class="mq-inner" id="mqText">ZMT ENGINE LOADING...</div></div>
+    
+    <div class="marquee-capsule"><div class="mq-inner" id="mqText">WELCOME TO ZMT EVENT...</div></div>
+
     <div id="uiAdmin" style="display:none;">
         <div class="capsule-card">
             <h4>Control Panel</h4>
-            <input type="text" placeholder="Ganti Running Text..." onchange="setMQ(this.value)">
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-top:5px;">
-                <button class="btn-capsule" onclick="setReg(true)" style="color:#10b981;">Buka Reg</button>
-                <button class="btn-capsule" onclick="setReg(false)" style="color:#ef4444;">Tutup & Kick User</button>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                <button class="btn-capsule" onclick="setReg(true)" style="color:#10b981;">BUKA REG</button>
+                <button class="btn-capsule" onclick="setReg(false)" style="color:#ef4444;">TUTUP REG</button>
             </div>
-            <button class="btn-capsule" style="margin-top:10px; font-size:11px; background:#ef4444;" onclick="hardReset()">☢️ NUCLEAR RESET (ALL DATA & KICK ALL)</button>
+            <button class="btn-capsule" style="margin-top:10px; font-size:11px; background:#ef4444;" onclick="hardReset()">☢️ NUCLEAR RESET</button>
         </div>
         <div class="capsule-card" style="text-align:center;">
             <div class="wheel-container"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
-            <button class="btn-capsule btn-p" onclick="spin()">Spin Sekarang</button>
+            <button class="btn-capsule btn-p" onclick="spin()">SPIN</button>
         </div>
         <div class="capsule-card">
             <h4>Antrian Peserta (@<span id="qCount">0</span>)</h4>
             <div id="qList"></div>
         </div>
-        <div class="capsule-card">
-            <h4>Chat Private Pemenang</h4>
-            <div id="adminChatList"></div>
-            <div id="activeAdminChat" style="display:none; margin-top:20px;">
-                <b id="targetUser" style="color:var(--g)"></b>
-                <div id="adminChatBox" class="chat-box" style="margin:10px 0;"></div>
-                <textarea id="adminMsg" rows="2" placeholder="Tulis balasan..."></textarea>
-                <button class="btn-capsule btn-p" onclick="send('admin')">Kirim</button>
-            </div>
-        </div>
     </div>
+
     <div id="uiUser" style="display:none;">
-        <div class="capsule-card"><button class="btn-capsule btn-p" id="joinBtn" onclick="join()">Daftar Spin</button></div>
+        <div class="capsule-card"><button class="btn-capsule btn-p" id="joinBtn" onclick="join()">DAFTAR SPIN</button></div>
         <div class="capsule-card" style="text-align:center;">
             <div class="wheel-container"><div class="needle"></div><canvas id="wheelUser" width="500" height="500"></canvas></div>
-        </div>
-        <div class="capsule-card">
-            <h4>📜 Histori Pemenang</h4>
-            <div id="winHistory"></div>
-        </div>
-        <div id="winArea" class="capsule-card" style="display:none; border:2px solid var(--g);">
-            <h3 style="color:var(--g); text-align:center;">🏆 KAMU MENANG!</h3>
-            <div id="userChatBox" class="chat-box" style="margin-bottom:10px;"></div>
-            <textarea id="userMsg" rows="2" placeholder="Kirim pesan ke admin..."></textarea>
-            <button class="btn-capsule btn-p" onclick="send('user')">Kirim Pesan</button>
         </div>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, remove, get, onDisconnect } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
     const fb = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
     const app = initializeApp(fb); const db = getDatabase(app);
-    let myID = ""; let items = []; let rot = 0; let regOk = true; let curChat = "";
+    let myID = ""; let items = []; let rot = 0; let regStatus = true;
 
-    // --- FORCE KICK LISTENERS ---
+    // --- LISTENER STATUS REGISTRASI ---
     onValue(ref(db, 'config/reg'), (s) => {
-        regOk = s.val() !== false;
-        if (!regOk && myID !== "" && myID !== "MASTER_ADMIN") {
-            Swal.fire({ title: "CLOSED!", text: "Registrasi ditutup oleh Admin!", icon: "error", timer: 2500, showConfirmButton: false });
-            setTimeout(() => logout(), 2500);
+        regStatus = s.val() !== false;
+    });
+
+    // --- LISTENER RESET (SEKALI PUKUL) ---
+    onValue(ref(db, 'config/reset_event'), (s) => {
+        if(s.exists() && s.val() === true && myID !== "") {
+            Swal.fire({ title: "RESET!", text: "Sistem telah dibersihkan oleh admin", icon: "info", timer: 2000, showConfirmButton: false });
+            setTimeout(() => logout(), 2000);
         }
     });
 
-    onValue(ref(db, 'config/nuclear'), (s) => {
-        if (s.exists() && s.val() === true) {
-            // Langsung hapus sesi lokal biar gak looping
-            localStorage.clear();
-            Swal.fire({ title: "SYSTEM RESET!", text: "Data dibersihkan, silakan login ulang.", icon: "warning", timer: 2500, showConfirmButton: false });
-            setTimeout(() => location.reload(), 2500);
-        }
-    });
-
-    // --- AUTH ---
-    window.login = async (role) => {
+    window.login = (role) => {
         if(role === 'admin') {
-            if(document.getElementById('aKey').value === "zmtxxx") { localStorage.setItem('zmt_k', "zmtxxx"); start("MASTER_ADMIN"); }
-            else Swal.fire("Key Salah");
+            if(document.getElementById('aKey').value === "zmtxxx") { localStorage.setItem('zmt_role', 'admin'); start("MASTER_ADMIN"); }
+            else Swal.fire("Key Salah!");
         } else {
-            const snapReg = await get(ref(db, 'config/reg'));
-            if(snapReg.val() === false) return Swal.fire("MAAF!", "Registrasi ditutup.", "error");
-            
-            const u = document.getElementById('uIn').value.trim().toLowerCase().replace(/[^a-z0-9]/g,'');
-            const p = document.getElementById('pIn').value;
-            if(u.length < 3) return Swal.fire("Min 3 Karakter");
-            const snapAuth = await get(ref(db, `auth/${u}`));
-            if(snapAuth.exists() && snapAuth.val().pw !== p) return Swal.fire("Password Salah");
-            await set(ref(db, `auth/${u}`), {pw:p}); start(u);
+            const u = document.getElementById('uIn').value.trim();
+            if(u.length < 2) return Swal.fire("Isi nama dulu!");
+            localStorage.setItem('zmt_role', 'user');
+            start(u);
         }
     };
 
     function start(u) {
-        myID = u; localStorage.setItem('zmt_s', u);
+        myID = u; localStorage.setItem('zmt_user', u);
         document.getElementById('gate').style.display = 'none';
         document.getElementById('app').style.display = 'block';
-        if(u === "MASTER_ADMIN") { document.getElementById('uiAdmin').style.display='block'; runAdmin(); }
-        else { document.getElementById('uiUser').style.display='block'; runUser(); syncHistory(); }
+        if(localStorage.getItem('zmt_role') === 'admin') { document.getElementById('uiAdmin').style.display='block'; runAdmin(); }
+        else { document.getElementById('uiUser').style.display='block'; runUser(); }
     }
 
-    // --- ADMIN ACTIONS ---
-    window.setReg = (v) => set(ref(db, 'config/reg'), v);
+    // --- LOGIKA DAFTAR (FIX SESUAI MAU BOSS) ---
+    window.join = async () => {
+        // Cek dulu ke database status terbarunya
+        const snap = await get(ref(db, 'config/reg'));
+        const isOpen = snap.val() !== false;
 
-    window.hardReset = async () => {
-        Swal.fire({
-            title: '☢️ NUCLEAR RESET?',
-            text: "Semua data akan LENYAP dan semua orang mental!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            confirmButtonText: 'YA, RESET!'
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                // 1. Kirim sinyal nuclear ke semua
-                await set(ref(db, 'config/nuclear'), true);
-                // 2. Hapus semua data inti
-                await remove(ref(db, 'q'));
-                await remove(ref(db, 'wins'));
-                await remove(ref(db, 'chats'));
-                // 3. MATIKAN sinyal nuclear setelah 1 detik biar gak looping mental
-                setTimeout(() => set(ref(db, 'config/nuclear'), false), 1500);
-            }
-        });
+        if (!isOpen) {
+            // NOTIF SESUAI PERMINTAAN BOSS
+            Swal.fire({
+                title: "REGISTRASI SEDANG DI TUTUP OLEH ADMIN SILAHKAN HUBUNGI DI GRUP",
+                icon: "warning",
+                confirmButtonText: "OK",
+                confirmButtonColor: "#8b5cf6"
+            });
+            return;
+        }
+
+        // Kalau buka, baru daftar
+        push(ref(db, 'q'), {u: myID});
+        Swal.fire({ title: "BERHASIL!", text: "Kamu sudah masuk antrian", icon: "success", timer: 1500, showConfirmButton: false });
     };
 
-    // --- MAIN LOGIC ---
+    window.hardReset = async () => {
+        if(confirm("Hapus semua data & keluarkan semua user?")) {
+            await set(ref(db, 'config/reset_event'), true); // Sinyal kick
+            await remove(ref(db, 'q'));
+            await remove(ref(db, 'wins'));
+            await remove(ref(db, 'chats'));
+            setTimeout(async () => {
+                await set(ref(db, 'config/reset_event'), false); // Matikan sinyal kick
+                logout();
+            }, 1500);
+        }
+    };
+
+    window.setReg = (v) => set(ref(db, 'config/reg'), v);
+
     function runAdmin() {
         onValue(ref(db, 'q'), (s) => {
             items = []; const list = document.getElementById('qList'); list.innerHTML = "";
-            s.forEach(c => {
-                items.push({u:c.val().u, k:c.key});
-                list.innerHTML += `<div class="q-item"><span>@${c.val().u}</span><button onclick="kick('${c.key}')" style="border:none; background:none; color:#ff4757; font-weight:800;">KICK</button></div>`;
-            });
-            document.getElementById('qCount').innerText = items.length;
+            s.forEach(c => { items.push({u:c.val().u, k:c.key}); list.innerHTML += `<div class="q-item"><span>@${c.val().u}</span><button onclick="kick('${c.key}')" style="color:red; background:none; border:none;">KICK</button></div>`; });
             draw('wheel');
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            const list = document.getElementById('adminChatList'); list.innerHTML = "";
-            s.forEach(c => { list.innerHTML += `<button class="btn-capsule" style="margin-bottom:8px;" onclick="openChat('${c.val().u}')">Chat @${c.val().u}</button>`; });
+            document.getElementById('qCount').innerText = items.length;
         });
     }
 
@@ -204,22 +172,9 @@
         onValue(ref(db, 'q'), (s) => {
             items = []; let joined = false;
             s.forEach(c => { items.push({u:c.val().u}); if(c.val().u === myID) joined = true; });
-            document.getElementById('joinBtn').innerText = joined ? "TERDAFTAR ✅" : "DAFTAR SPIN";
             document.getElementById('joinBtn').disabled = joined;
+            if(joined) document.getElementById('joinBtn').innerText = "SUDAH TERDAFTAR ✅";
             draw('wheelUser');
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            let win = false; s.forEach(c => { if(c.val().u === myID) win = true; });
-            if(win) { document.getElementById('winArea').style.display='block'; listenChat(myID, 'userChatBox'); }
-            else { document.getElementById('winArea').style.display='none'; }
-        });
-    }
-
-    function syncHistory() {
-        onValue(ref(db, 'wins'), (s) => {
-            const list = document.getElementById('winHistory'); list.innerHTML = "";
-            let data = []; s.forEach(c => data.unshift(c.val()));
-            data.slice(0, 5).forEach(w => { list.innerHTML += `<div class="hist-item"><span>@${w.u}</span><span style="color:var(--g)">HOKI! 🏆</span></div>`; });
         });
     }
 
@@ -231,63 +186,31 @@
             ctx.beginPath(); ctx.fillStyle = `hsl(${i*(360/n)}, 65%, 45%)`;
             ctx.moveTo(250,250); ctx.arc(250,250,245,i*arc,(i+1)*arc); ctx.fill();
             ctx.save(); ctx.translate(250,250); ctx.rotate(i*arc+arc/2);
-            ctx.fillStyle="#fff"; ctx.font="800 20px Plus Jakarta Sans"; ctx.fillText(it.u.toUpperCase().substring(0,7), 120, 10); ctx.restore();
+            ctx.fillStyle="#fff"; ctx.font="800 20px Sans"; ctx.fillText(it.u.substring(0,7), 120, 10); ctx.restore();
         });
     };
 
     window.spin = () => {
-        if(items.length < 2) return Swal.fire("Min 2 Orang");
+        if(items.length < 2) return Swal.fire("Minimal 2 orang!");
         const idx = Math.floor(Math.random() * items.length);
         const win = items[idx];
-        const arc = 360 / items.length;
-        const stop = (360 - (idx * arc)) - (arc/2);
-        rot += 3600 + (stop - (rot % 360));
+        rot += 3600 + (360 - (idx * (360/items.length)));
         document.getElementById('wheel').style.transform = `rotate(${rot}deg)`;
         setTimeout(async () => {
-            confetti({particleCount: 150, spread: 70});
+            confetti();
             await push(ref(db, 'wins'), {u: win.u});
             await remove(ref(db, `q/${win.k}`));
-            Swal.fire("Pemenang: @"+win.u);
+            Swal.fire("Pemenang: " + win.u);
         }, 6000);
     };
 
-    window.openChat = (u) => {
-        curChat = u; document.getElementById('activeAdminChat').style.display='block';
-        document.getElementById('targetUser').innerText = "Chat @"+u;
-        listenChat(u, 'adminChatBox');
-    };
-
-    function listenChat(u, boxID) {
-        onValue(ref(db, `chats/${u}`), (s) => {
-            const b = document.getElementById(boxID); b.innerHTML = "";
-            s.forEach(c => {
-                const isMe = c.val().sender === myID;
-                b.innerHTML += `<div class="msg ${isMe?'me':'other'}">${c.val().text}</div>`;
-            });
-            b.scrollTop = b.scrollHeight;
-        });
-    }
-
-    window.send = async (role) => {
-        const target = (role === 'admin') ? curChat : myID;
-        const inp = document.getElementById(role === 'admin' ? 'adminMsg' : 'userMsg');
-        if(!inp.value.trim()) return;
-        await push(ref(db, `chats/${target}`), { sender: myID, text: inp.value });
-        inp.value = "";
-    };
-
-    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "WELCOME TO ZMT");
     window.kick = (k) => remove(ref(db, `q/${k}`));
-    window.setMQ = (t) => set(ref(db, 'config/marquee'), t);
-    window.join = () => { if(!regOk) return logout(); push(ref(db, 'q'), {u: myID}); };
     window.logout = () => { localStorage.clear(); location.reload(); };
-    window.toggleGate = () => { 
+    window.toggleGate = () => {
         document.getElementById('loginUser').style.display = document.getElementById('loginUser').style.display === 'none' ? 'block' : 'none';
         document.getElementById('loginAdmin').style.display = document.getElementById('loginAdmin').style.display === 'none' ? 'block' : 'none';
     };
-
-    onDisconnect(ref(db, 'online/'+Math.floor(Math.random()*1e6))).remove();
-    onValue(ref(db, 'online'), (s) => document.getElementById('onlineVal').innerText = s.exists() ? Object.keys(s.val()).length : 1);
+    onValue(ref(db, 'config/marquee'), s => document.getElementById('mqText').innerText = s.val() || "ZMT EVENT RUNNING...");
 </script>
 </body>
 </html>
