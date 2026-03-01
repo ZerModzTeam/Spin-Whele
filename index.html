@@ -3,32 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT HUB V0.0.5 (FIXED)</title>
+    <title>ZMT HUB V0.0.6 (ULTIMATE)</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root { --p: #6366f1; --g: #f59e0b; --d: #060b18; --glass: rgba(255,255,255,0.05); --err: #ef4444; --succ: #10b981; }
         * { -webkit-tap-highlight-color: transparent; outline: none !important; user-select: none; box-sizing: border-box; }
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--d); color: white; margin: 0; padding: 15px; overflow-x: hidden; }
-        .marquee { background: rgba(99, 102, 241, 0.2); padding: 8px 0; font-size: 11px; font-weight: 800; border-radius: 12px; margin-bottom: 15px; overflow: hidden; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); }
-        .marquee span { display: inline-block; padding-left: 100%; animation: scroll 20s linear infinite; color: var(--g); }
-        @keyframes scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--d); color: white; margin: 0; padding: 15px; overflow-x: hidden; min-height: 100vh; }
         .card { background: var(--glass); backdrop-filter: blur(20px); padding: 20px; border-radius: 30px; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 15px; }
         input { width: 100%; padding: 15px 20px; margin: 8px 0; border-radius: 50px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4); color: white; font-family: inherit; }
         .btn { width: 100%; padding: 15px; border-radius: 50px; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; font-family: inherit; display: flex; align-items: center; justify-content: center; text-transform: uppercase; }
         .btn-p { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
+        .marquee { background: rgba(99, 102, 241, 0.2); padding: 8px 0; font-size: 11px; font-weight: 800; border-radius: 12px; margin-bottom: 15px; overflow: hidden; white-space: nowrap; border: 1px solid rgba(255,255,255,0.1); }
+        .marquee span { display: inline-block; padding-left: 100%; animation: scroll 20s linear infinite; color: var(--g); }
+        @keyframes scroll { 0% { transform: translate(0, 0); } 100% { transform: translate(-100%, 0); } }
         .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
         .on { background: var(--succ); box-shadow: 0 0 10px var(--succ); }
         .off { background: var(--err); box-shadow: 0 0 10px var(--err); }
-        .chat-box { height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 20px; }
+        .w-wrap { position: relative; width: 260px; height: 260px; margin: 20px auto; }
+        #wheel { width: 100%; height: 100%; border-radius: 50%; transition: 5s cubic-bezier(0.1,0,0.1,1); }
+        .needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: var(--err); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        #gate { position: fixed; inset: 0; background: var(--d); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .chat-box { height: 180px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 10px; background: rgba(0,0,0,0.5); border-radius: 20px; }
         .msg { max-width: 85%; padding: 10px 14px; border-radius: 18px; font-size: 12px; }
         .msg.me { align-self: flex-end; background: var(--p); }
         .msg.other { align-self: flex-start; background: #334155; }
-        .w-wrap { position: relative; width: 280px; height: 280px; margin: 20px auto; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; transition: 5s cubic-bezier(0.1,0,0.1,1); }
-        .needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: var(--err); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
-        #gate { position: fixed; inset: 0; background: var(--d); z-index: 999; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .log-box { font-size: 10px; background: #000; padding: 12px; border-radius: 20px; height: 100px; overflow-y: auto; color: #0f0; font-family: monospace; }
+        .pill { padding: 8px 15px; background: var(--glass); border-radius: 50px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -39,17 +39,19 @@
 <div id="gate">
     <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
         <h2 style="color: var(--p); margin: 0;">ZMT HUB</h2>
-        <p style="font-size: 10px; opacity: 0.4; margin-bottom: 30px;">V0.0.5 (FIX NAVIGASI)</p>
+        <p style="font-size: 10px; opacity: 0.4; margin-bottom: 30px;">V0.0.6 (FINAL STABLE)</p>
+        
         <div id="uZone">
             <input type="text" id="lU" placeholder="Username">
             <input type="password" id="lP" placeholder="Password">
-            <button class="btn btn-p" onclick="doLog()">MASUK / DAFTAR</button>
-            <p onclick="toA(true)" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">ADMIN MODE</p>
+            <button class="btn btn-p" onclick="handleAuth('user')">MASUK / DAFTAR</button>
+            <p onclick="toggleAdminView(true)" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">ADMIN ACCESS</p>
         </div>
+
         <div id="aZone" style="display:none;">
-            <input type="password" id="aK" placeholder="Admin Key">
-            <button class="btn btn-p" style="background:var(--g); color:black;" onclick="doLogA()">VERIFY ADMIN</button>
-            <p onclick="toA(false)" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">KEMBALI</p>
+            <input type="password" id="aK" placeholder="Admin Secret Key">
+            <button class="btn btn-p" style="background:var(--g); color:black;" onclick="handleAuth('admin')">VERIFY MASTER</button>
+            <p onclick="toggleAdminView(false)" style="margin-top:25px; font-size:10px; opacity:0.3; cursor:pointer;">KEMBALI KE USER</p>
         </div>
     </div>
 </div>
@@ -59,68 +61,66 @@
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
         <div>
             <b id="myTag" style="color:var(--p);"></b>
-            <div style="font-size: 10px; margin-top:3px;"><span id="adDot" class="status-dot"></span> <span id="adStatus">...</span></div>
+            <div style="font-size: 10px;"><span id="adDot" class="status-dot"></span> Admin: <span id="adStatus">...</span></div>
         </div>
-        <button onclick="off()" style="background:none; border:1px solid var(--err); color:var(--err); padding:6px 15px; border-radius:50px; font-size:10px; font-weight:800;">LOGOUT</button>
+        <button onclick="doLogout()" style="background:none; border:1px solid var(--err); color:var(--err); padding:6px 12px; border-radius:50px; font-size:10px; font-weight:800;">LOGOUT</button>
     </div>
 
-    <div id="uiU" style="display:none;">
+    <div id="uiUser" style="display:none;">
         <div id="joinCard" class="card">
             <div style="display:flex; justify-content:space-between; font-size:11px; margin-bottom:12px;">
                 <span>Peserta: <b id="currQ">0</b></span>
-                <span>Maksimal: <b id="maxQ">0</b></span>
+                <span>Limit: <b id="maxQ">0</b></span>
             </div>
-            <button class="btn btn-p" id="btnJoin" onclick="gasQ()">GABUNG SPIN</button>
+            <button class="btn btn-p" id="btnJoin" onclick="joinQueue()">GABUNG SEKARANG</button>
         </div>
-        <div id="inboxUser" class="card" style="display:none; border: 2px solid var(--g);">
-            <h3 style="color:var(--g); margin:0 0 10px 0; font-size:14px;">📩 INBOX PEMENANG</h3>
+        <div id="inboxUser" class="card" style="display:none; border: 1px solid var(--g);">
+            <h3 style="color:var(--g); font-size:14px;">📩 INBOX PEMENANG</h3>
             <div id="boxU" class="chat-box"></div>
             <div style="display:flex; gap:8px; margin-top:12px;">
                 <input type="text" id="mU" placeholder="Pesan..." style="margin:0;">
-                <button class="btn btn-p" style="width:80px;" onclick="send('user')">KIRIM</button>
+                <button class="btn btn-p" style="width:70px;" onclick="sendMessage('user')">KIRIM</button>
             </div>
         </div>
-        <div class="card"><h4>🏆 PEMENANG</h4><div id="listWU"></div></div>
+        <div class="card"><h4>🏆 PEMENANG</h4><div id="listWinnerUser"></div></div>
     </div>
 
-    <div id="uiA" style="display:none;">
+    <div id="uiAdmin" style="display:none;">
         <div class="card">
             <div style="display:flex; gap:5px; margin-bottom:10px;">
-                <button class="btn" style="background:var(--succ); font-size:9px; color:white;" onclick="setAdStatus(true)">ON</button>
-                <button class="btn" style="background:var(--err); font-size:9px; color:white;" onclick="setAdStatus(false)">OFF</button>
-                <button class="btn" style="background:var(--p); font-size:9px; color:white;" onclick="setReg(true)">OPEN</button>
-                <button class="btn" style="background:#444; font-size:9px; color:white;" onclick="setReg(false)">CLOSE</button>
+                <button class="btn" style="background:var(--succ); font-size:9px; color:white;" onclick="updateConfig('adOnline', true)">ON</button>
+                <button class="btn" style="background:var(--err); font-size:9px; color:white;" onclick="updateConfig('adOnline', false)">OFF</button>
+                <button class="btn" style="background:var(--p); font-size:9px; color:white;" onclick="updateConfig('regStatus', true)">OPEN</button>
+                <button class="btn" style="background:#444; font-size:9px; color:white;" onclick="updateConfig('regStatus', false)">CLOSE</button>
             </div>
-            <input type="text" placeholder="Update Text..." onchange="updateInfo(this.value)" style="font-size:11px;">
+            <input type="text" placeholder="Update Running Text..." onchange="updateConfig('info', this.value)" style="font-size:11px;">
         </div>
         <div class="card" style="text-align:center;">
             <div class="w-wrap"><div class="needle"></div><canvas id="wheel" width="500" height="500"></canvas></div>
-            <button class="btn btn-p" id="btnSpin" onclick="spin()">PUTAR RODA</button>
-            <div id="listQ" style="margin-top:15px; font-size:11px; color:var(--g);"></div>
+            <button class="btn btn-p" id="btnSpin" onclick="startSpin()">PUTAR RODA</button>
+            <div id="adminQueueList" style="margin-top:15px; font-size:11px; color:var(--g);"></div>
         </div>
-        <div class="card"><div id="logBox" class="log-box"></div></div>
         <div class="card">
-            <h3>📩 CHATS</h3>
-            <div id="listWA"></div>
-            <div id="chatActive" style="display:none; margin-top:15px;">
-                <b id="chatName"></b>
+            <h3>📩 PRIVATE CHATS</h3>
+            <div id="adminChatList"></div>
+            <div id="adminChatActive" style="display:none; margin-top:15px; border-top:1px solid rgba(255,255,255,0.1); padding-top:15px;">
+                <b id="activeTargetName"></b>
                 <div id="boxA" class="chat-box"></div>
-                <div style="display:flex; gap:8px; margin-top:10px;">
+                <div style="display:flex; gap:8px; margin-top:12px;">
                     <input type="text" id="mA" placeholder="Balas..." style="margin:0;">
-                    <button class="btn btn-p" style="width:80px;" onclick="send('admin')">BALAS</button>
+                    <button class="btn btn-p" style="width:70px;" onclick="sendMessage('admin')">BALAS</button>
                 </div>
             </div>
         </div>
-        <button class="btn" style="background:var(--err); color:white; font-size:10px;" onclick="wipe()">HARD RESET</button>
+        <button class="btn" style="background:var(--err); color:white; font-size:10px;" onclick="fullReset()">HARD RESET DATABASE</button>
     </div>
 </div>
 
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, push, onValue, remove, set, get, serverTimestamp, off as offFB } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+    import { getDatabase, ref, push, onValue, remove, set, get, off as offFB } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-    const USN_ADMIN = "MASTER_ADMIN";
-    const KEY_ADMIN = "zmtxxx";
+    const MASTER_KEY = "zmtxxx";
     const conf = {
         apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI",
         authDomain: "spinanberhadiahzmt.firebaseapp.com",
@@ -129,31 +129,207 @@
         appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c"
     };
 
-    const appFB = initializeApp(conf);
-    const db = getDatabase(appFB);
-    let myU = ""; let sData = []; let rot = 0; let activeChat = "";
+    const fbApp = initializeApp(conf);
+    const db = getDatabase(fbApp);
+    let myUser = "";
+    let wheelData = [];
+    let currentRotation = 0;
+    let chatListener = null;
+    let activeTarget = "";
 
-    // FIXED: Navigasi Toggle Admin/User Zone
-    window.toA = (isAdminZone) => {
-        document.getElementById('uZone').style.display = isAdminZone ? 'none' : 'block';
-        document.getElementById('aZone').style.display = isAdminZone ? 'block' : 'none';
+    // 1. NAVIGASI AWAL
+    window.toggleAdminView = (show) => {
+        document.getElementById('uZone').style.display = show ? 'none' : 'block';
+        document.getElementById('aZone').style.display = show ? 'block' : 'none';
     };
 
-    // FIXED: Login Logic
-    window.doLog = async () => {
-        const u = document.getElementById('lU').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
-        const p = document.getElementById('lP').value.trim();
-        if(!u || !p) return;
+    // 2. AUTH HANDLER (NO RELOAD STUCK)
+    window.handleAuth = async (role) => {
+        if (role === 'admin') {
+            const key = document.getElementById('aK').value;
+            if (key === MASTER_KEY) renderApp("MASTER_ADMIN");
+            else Swal.fire("Key Salah!");
+        } else {
+            const u = document.getElementById('lU').value.trim().toLowerCase().replace(/[^a-z0-9]/g, '');
+            const p = document.getElementById('lP').value.trim();
+            if (!u || !p) return Swal.fire("Isi semua!");
+
+            const regSnap = await get(ref(db, 'config/regStatus'));
+            if (regSnap.exists() && !regSnap.val()) return Swal.fire("Pendaftaran Tutup!");
+
+            const userSnap = await get(ref(db, `auth/${u}`));
+            if (userSnap.exists()) {
+                if (userSnap.val().pw === p) renderApp(u);
+                else Swal.fire("Password salah!");
+            } else {
+                await set(ref(db, `auth/${u}`), { pw: p });
+                renderApp(u);
+            }
+        }
+    };
+
+    // 3. RENDER CORE APP
+    function renderApp(username) {
+        myUser = username;
+        localStorage.setItem('z_user', username);
         
-        const regSnap = await get(ref(db, 'config/regStatus'));
-        if(regSnap.exists() && !regSnap.val()) return Swal.fire("PENDAFTARAN TUTUP!");
-        
-        const snap = await get(ref(db, `auth/${u}`));
-        if(snap.exists()) {
-            if(snap.val().pw === p) enter(u);
-            else Swal.fire("Password salah!");
-        } else { 
-            await set(ref(db, `auth/${u}`), {pw: p}); 
+        // Sembunyi Gate, Muncul App
+        document.getElementById('gate').style.setProperty('display', 'none', 'important');
+        document.getElementById('app').style.display = 'block';
+        document.getElementById('myTag').innerText = (username === "MASTER_ADMIN") ? "🛡️ MASTER ADMIN" : "@" + username;
+
+        loadGlobalConfig();
+
+        if (username === "MASTER_ADMIN") {
+            document.getElementById('uiAdmin').style.display = 'block';
+            document.getElementById('uiUser').style.display = 'none';
+            initAdmin();
+        } else {
+            document.getElementById('uiUser').style.display = 'block';
+            document.getElementById('uiAdmin').style.display = 'none';
+            initUser();
+        }
+    }
+
+    // Auto-login Check
+    const saved = localStorage.getItem('z_user');
+    if (saved) renderApp(saved);
+
+    window.doLogout = () => { localStorage.removeItem('z_user'); location.reload(); };
+
+    // 4. CONFIG & REALTIME DATA
+    function loadGlobalConfig() {
+        onValue(ref(db, 'config'), (s) => {
+            const d = s.val() || {};
+            document.getElementById('runText').innerText = d.info || "Welcome to ZMT HUB!";
+            document.getElementById('adStatus').innerText = d.adOnline ? "ONLINE" : "OFFLINE";
+            document.getElementById('adDot').className = "status-dot " + (d.adOnline ? "on" : "off");
+            document.getElementById('maxQ').innerText = d.limit || 20;
+        });
+        onValue(ref(db, 'config/wipeTrigger'), (s) => { 
+            if (s.val() && myUser !== "MASTER_ADMIN") {
+                Swal.fire("DATA DI RESET!").then(() => doLogout());
+            }
+        });
+    }
+
+    // 5. USER FUNCTIONS
+    function initUser() {
+        onValue(ref(db, 'q'), (s) => {
+            let count = 0; let joined = false;
+            if (s.exists()) s.forEach(c => { count++; if(c.val().u === myUser) joined = true; });
+            document.getElementById('currQ').innerText = count;
+            const btn = document.getElementById('btnJoin');
+            btn.innerText = joined ? "TERDAFTAR ✅" : "GABUNG SPIN";
+            btn.disabled = joined;
+        });
+        onValue(ref(db, 'wins'), (s) => {
+            const list = document.getElementById('listWinnerUser'); list.innerHTML = "";
+            let imWinner = false;
+            if (s.exists()) s.forEach(c => {
+                if(c.val().u === myUser) imWinner = true;
+                list.innerHTML += `<div class="pill"><span>@${c.val().u}</span> 🏆</div>`;
+            });
+            if(imWinner) {
+                document.getElementById('inboxUser').style.display = 'block';
+                document.getElementById('joinCard').style.display = 'none';
+                startChatListener(myUser, 'boxU');
+            }
+        });
+    }
+
+    window.joinQueue = async () => {
+        const qSnap = await get(ref(db, 'q'));
+        const limitSnap = await get(ref(db, 'config/limit'));
+        let count = 0; if(qSnap.exists()) qSnap.forEach(() => count++);
+        if(count < (limitSnap.val() || 20)) push(ref(db, 'q'), { u: myUser });
+    };
+
+    // 6. ADMIN FUNCTIONS
+    function initAdmin() {
+        onValue(ref(db, 'q'), (s) => {
+            wheelData = []; const list = document.getElementById('adminQueueList');
+            if (s.exists()) {
+                let names = []; s.forEach(c => { wheelData.push({u: c.val().u, key: c.key}); names.push("@"+c.val().u); });
+                list.innerText = "Antrean: " + names.join(", ");
+            } else list.innerText = "Antrean Kosong";
+            drawWheel();
+        });
+        onValue(ref(db, 'wins'), (s) => {
+            const list = document.getElementById('adminChatList'); list.innerHTML = "";
+            if (s.exists()) s.forEach(c => {
+                list.innerHTML += `<div class="pill"><span>@${c.val().u}</span> <button onclick="openAdminChat('${c.val().u}')" style="background:var(--p); color:white; border:none; padding:4px 10px; border-radius:10px;">CHAT</button></div>`;
+            });
+        });
+    }
+
+    window.updateConfig = (key, val) => set(ref(db, `config/${key}`), val);
+
+    window.openAdminChat = (target) => {
+        activeTarget = target;
+        document.getElementById('adminChatActive').style.display = 'block';
+        document.getElementById('activeTargetName').innerText = "Chat: @" + target;
+        startChatListener(target, 'boxA');
+    };
+
+    function startChatListener(target, boxId) {
+        if(chatListener) offFB(ref(db, `chats/${activeTarget || myUser}`));
+        chatListener = onValue(ref(db, `chats/${target}`), (s) => {
+            const box = document.getElementById(boxId); box.innerHTML = "";
+            if (s.exists()) s.forEach(c => {
+                const isMe = c.val().sender === myUser;
+                box.innerHTML += `<div class="msg ${isMe?'me':'other'}">${c.val().txt}</div>`;
+            });
+            box.scrollTop = box.scrollHeight;
+        });
+    }
+
+    window.sendMessage = (role) => {
+        const inp = document.getElementById(role==='admin'?'mA':'mU');
+        const txt = inp.value.trim(); if(!txt) return;
+        const target = (role==='admin') ? activeTarget : myUser;
+        push(ref(db, `chats/${target}`), { sender: myUser, txt: txt });
+        inp.value = "";
+    };
+
+    // 7. WHEEL ENGINE
+    function drawWheel() {
+        const canvas = document.getElementById('wheel'); const ctx = canvas.getContext('2d');
+        const n = wheelData.length || 1; const arc = (2 * Math.PI) / n;
+        ctx.clearRect(0,0,500,500);
+        for(let i=0; i<n; i++) {
+            ctx.beginPath(); ctx.fillStyle = `hsl(${i * (360/n)}, 70%, 50%)`;
+            ctx.moveTo(250, 250); ctx.arc(250, 250, 240, i * arc, (i+1) * arc); ctx.fill();
+            ctx.save(); ctx.translate(250, 250); ctx.rotate(i * arc + arc/2);
+            ctx.fillStyle = "#fff"; ctx.font = "bold 22px sans-serif"; ctx.fillText(wheelData[i]?.u || "ZMT", 100, 10); ctx.restore();
+        }
+    }
+
+    window.startSpin = () => {
+        if(wheelData.length < 2) return Swal.fire("Min 2 Orang!");
+        currentRotation += Math.floor(Math.random() * 360) + 3600;
+        document.getElementById('wheel').style.transform = `rotate(${currentRotation}deg)`;
+        let tick = setInterval(() => { document.getElementById('sTick').currentTime = 0; document.getElementById('sTick').play(); }, 120);
+        setTimeout(async () => {
+            clearInterval(tick); document.getElementById('sWin').play();
+            const idx = Math.floor((360 - (currentRotation % 360) + 270) % 360 / (360 / wheelData.length));
+            const winner = wheelData[idx];
+            await push(ref(db, 'wins'), { u: winner.u });
+            await remove(ref(db, `q/${winner.key}`));
+            Swal.fire("Pemenang: @" + winner.u);
+        }, 5000);
+    };
+
+    window.fullReset = async () => {
+        if(confirm("HAPUS SEMUA DATA?")) {
+            await set(ref(db, 'config/wipeTrigger'), true);
+            await remove(ref(db, 'q')); await remove(ref(db, 'wins')); await remove(ref(db, 'chats')); await remove(ref(db, 'auth'));
+            setTimeout(() => { set(ref(db, 'config/wipeTrigger'), false); location.reload(); }, 2000);
+        }
+    }
+</script>
+</body>
+</html>, {pw: p}); 
             enter(u); 
         }
     };
