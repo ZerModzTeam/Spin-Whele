@@ -3,313 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT - v.0.1.5</title>
+    <title>ZMT EVENT v.0.2.5 - ULTIMATE</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.08); --border: rgba(255, 255, 255, 0.15); --online: #10b981; }
+        :root { --p: #8b5cf6; --g: #fbbf24; --d: #020308; --glass: rgba(255, 255, 255, 0.1); --border: rgba(255, 255, 255, 0.15); }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { margin: 0; background: var(--d); color: #fff; overflow-x: hidden; min-height: 100vh; }
+        body { margin: 0; background: var(--d); color: #fff; min-height: 100vh; overflow-x: hidden; }
         
-        /* ANIMASI KLIK & TOMBOL */
-        .btn-capsule { 
-            width: 100%; padding: 12px; border-radius: 999px; border: none; color: #fff; 
-            font-weight: 800; text-transform: uppercase; cursor: pointer; 
-            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1); font-size: 12px;
-            position: relative; outline: none;
-        }
+        /* # STYLE TOMBOL & ANIMASI */
+        .btn-capsule { width: 100%; padding: 12px; border-radius: 999px; border: none; color: #fff; font-weight: 800; text-transform: uppercase; cursor: pointer; transition: 0.1s; font-size: 11px; }
         .btn-capsule:active { transform: scale(0.92); filter: brightness(1.2); }
-        .btn-p { background: linear-gradient(135deg, #6366f1, #a855f7); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3); }
-        .btn-p:disabled { background: #333; cursor: not-allowed; opacity: 0.5; transform: none; }
+        .btn-p { background: linear-gradient(135deg, #6366f1, #a855f7); }
+        .btn-p:disabled { background: #444; cursor: not-allowed; opacity: 0.6; }
 
-        /* DEKORASI & LAYOUT */
-        .nebula { position: fixed; inset: 0; z-index: -1; background: #020308; }
-        .vapor { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.2; }
-        .v1 { width: 400px; height: 400px; background: #4f46e5; top: -10%; left: -10%; }
-        .v2 { width: 350px; height: 350px; background: #9333ea; bottom: -10%; right: -5%; }
-        .capsule-card { background: var(--glass); backdrop-filter: blur(30px); border: 1px solid var(--border); border-radius: 20px; padding: 15px; margin-bottom: 12px; }
+        /* # STYLE CARD */
+        .capsule-card { background: var(--glass); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 20px; padding: 15px; margin-bottom: 12px; }
         
-        /* MARQUEE */
-        .marquee-container { background: rgba(0,0,0,0.6); border-radius: 999px; padding: 10px; border: 1px solid var(--border); color: var(--g); overflow: hidden; margin-bottom: 15px; }
-        .marquee-text { display: inline-block; white-space: nowrap; animation: run 15s linear infinite; font-weight: 800; font-size: 12px; }
-        @keyframes run { from { transform: translateX(100%); } to { transform: translateX(-150%); } }
+        /* # STYLE RODA */
+        .wheel-box { position: relative; width: 260px; height: 260px; margin: 15px auto; }
+        canvas { width: 100%; height: 100%; border-radius: 50%; transition: 6s cubic-bezier(0.1, 0, 0.1, 1); border: 5px solid var(--border); }
+        .needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 25px; height: 35px; background: #ff4757; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; border: 2px solid #fff; }
 
-        /* RODA SPIN */
-        .wheel-box { position: relative; width: 270px; height: 270px; margin: 15px auto; }
-        canvas { width: 100%; height: 100%; border-radius: 50%; transition: 6s cubic-bezier(0.1, 0, 0.1, 1); border: 6px solid var(--border); box-shadow: 0 0 30px rgba(139, 92, 246, 0.2); }
-        .needle { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: #ff4757; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; border: 2px solid #fff; }
-
-        /* CHAT SYSTEM */
-        .chat-box { height: 220px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 8px; border: 1px solid var(--border); font-size: 12px; }
-        .msg { padding: 10px 14px; border-radius: 15px; max-width: 85%; line-height: 1.4; word-wrap: break-word; animation: pop 0.3s ease; }
-        @keyframes pop { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        .msg b { display: block; font-size: 9px; opacity: 0.7; margin-bottom: 3px; color: var(--g); }
-        .msg img { max-width: 100%; border-radius: 10px; margin-top: 5px; border: 1px solid var(--border); cursor: pointer; }
+        /* # STYLE CHAT (GARIS BARU FIX) */
+        .chat-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 15px; padding: 12px; display: flex; flex-direction: column; gap: 10px; border: 1px solid var(--border); }
+        .msg { padding: 10px 14px; border-radius: 15px; max-width: 85%; font-size: 13px; line-height: 1.5; word-wrap: break-word; white-space: pre-wrap; }
+        .msg b { display: block; font-size: 10px; color: var(--g); margin-bottom: 4px; }
+        .msg img { max-width: 100%; border-radius: 10px; margin-top: 8px; display: block; }
         .me { background: var(--p); align-self: flex-end; border-bottom-right-radius: 2px; }
         .other { background: #222; align-self: flex-start; border-bottom-left-radius: 2px; }
-        
-        textarea { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); padding: 10px; color: #fff; border-radius: 15px; outline: none; resize: none; font-size: 12px; }
-        .status-dot { width: 8px; height: 8px; background: var(--online); border-radius: 50%; display: inline-block; margin-right: 6px; box-shadow: 0 0 8px var(--online); animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-        .badge-dev { font-size: 9px; padding: 2px 6px; border-radius: 4px; background: rgba(99, 102, 241, 0.2); border: 1px solid var(--p); color: #fff; margin-left: 5px; }
+        .notif-win { background: rgba(251, 191, 36, 0.15); border: 1px solid var(--g); color: var(--g); align-self: center; text-align: center; width: 100%; padding: 10px; border-radius: 12px; font-weight: 800; font-size: 11px; }
+
+        textarea { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border); padding: 12px; color: #fff; border-radius: 15px; outline: none; resize: none; font-size: 13px; }
     </style>
 </head>
 <body>
-<div class="nebula"><div class="vapor v1"></div><div class="vapor v2"></div></div>
 
 <div id="gate" style="position:fixed; inset:0; z-index:2000; background:#020308; display:flex; align-items:center; justify-content:center; padding:20px;">
-    <div class="capsule-card" style="width:100%; max-width:340px; text-align:center; border: 1px solid var(--p);">
-        <h2 style="color:var(--p); margin:0; letter-spacing: 2px;">ZMT PLATINUM</h2>
-        <p style="font-size:10px; opacity:0.4; margin-bottom:20px;">v.0.1.5 (BETA)</p>
+    <div class="capsule-card" style="width:100%; max-width:340px; text-align:center;">
+        <h2 style="color:var(--p);">ZMT ULTIMATE</h2>
         <div id="uLogin">
-            <input type="text" id="uIn" placeholder="Username" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid var(--border); background:rgba(0,0,0,0.5); color:#fff;">
-            <input type="password" id="pIn" placeholder="Password" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid var(--border); background:rgba(0,0,0,0.5); color:#fff;">
-            <button class="btn-capsule btn-p" onclick="doAuth('user')">MASUK</button>
-            <p onclick="toggleGate()" style="font-size:10px; margin-top:15px; opacity:0.3; cursor:pointer;">Admin Portal</p>
+            <input type="text" id="uIn" placeholder="Username" style="width:100%; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid var(--border); background:#000; color:#fff;">
+            <input type="password" id="pIn" placeholder="Password" style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:1px solid var(--border); background:#000; color:#fff;">
+            <button class="btn-capsule btn-p" onclick="doAuth('user')">MASUK / DAFTAR</button>
+            <p onclick="toggleGate()" style="font-size:10px; margin-top:15px; opacity:0.3;">Admin Login</p>
         </div>
         <div id="aLogin" style="display:none;">
-            <input type="password" id="aKey" placeholder="Admin Master Key" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:rgba(0,0,0,0.5); color:#fff;">
+            <input type="password" id="aKey" placeholder="Admin Key" style="width:100%; padding:12px; border-radius:10px; border:1px solid var(--border); background:#000; color:#fff;">
             <button class="btn-capsule" style="background:var(--g); color:#000; margin-top:10px;" onclick="doAuth('admin')">LOG IN ADMIN</button>
-            <p onclick="toggleGate()" style="font-size:10px; margin-top:15px; opacity:0.3; cursor:pointer;">Kembali</p>
+            <p onclick="toggleGate()" style="font-size:10px; margin-top:15px; opacity:0.3;">Kembali</p>
         </div>
     </div>
 </div>
 
 <div id="app" style="display:none; padding:15px; max-width:500px; margin:auto;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-        <span style="color:var(--g); font-weight:800; font-size:14px;">ZMT DASHBOARD ⚡</span>
-        <div style="text-align:right;">
-            <div id="userDisplay" style="font-size:11px; font-weight:800; color:var(--p);"></div>
-            <button onclick="location.reload()" style="background:none; border:none; color:#ff4757; font-size:10px; font-weight:800; cursor:pointer;">LOGOUT</button>
-        </div>
+        <b style="color:var(--g);">ZMT SYSTEM v.2.5</b>
+        <button onclick="location.reload()" style="background:none; border:none; color:red; font-size:10px; font-weight:800;">LOGOUT</button>
     </div>
 
-    <div class="marquee-container"><div class="marquee-text" id="mq">CONNECTING...</div></div>
-
     <div id="uiUser" style="display:none;">
-        <div class="capsule-card"><button class="btn-capsule btn-p" id="joinBtn" onclick="join()">DAFTAR SEKARANG</button></div>
+        <div class="capsule-card"><button class="btn-capsule btn-p" id="joinBtn" onclick="join()">DAFTAR EVENT</button></div>
         <div class="capsule-card" style="text-align:center;">
             <div class="wheel-box"><div class="needle"></div><canvas id="wUser" width="500" height="500" style="transform: rotate(-90deg)"></canvas></div>
-            <p id="spinStatus" style="font-size:11px; color:var(--g); font-weight:800;">READY TO SPIN</p>
         </div>
-        
         <div class="capsule-card">
-            <h5 style="margin:0 0 10px 0; color:var(--p);">🌍 GLOBAL CHAT</h5>
+            <h5>🌍 GLOBAL CHAT</h5>
             <div id="boxGlobal" class="chat-box"></div>
-            <div style="display:flex; gap:5px; margin-top:10px;">
-                <textarea id="msgGlobal" rows="1" placeholder="Chat publik..."></textarea>
-                <button class="btn-capsule btn-p" style="width:70px;" onclick="sendChat('global')">SEND</button>
-            </div>
+            <textarea id="msgGlobal" rows="2" style="margin-top:10px;" placeholder="Pesan..."></textarea>
+            <button class="btn-capsule btn-p" style="margin-top:8px;" onclick="sendChat('global')">KIRIM GLOBAL</button>
         </div>
-
         <div id="winArea" class="capsule-card" style="display:none; border:2px solid var(--g);">
-            <h5 style="color:var(--g); margin:0 0 10px 0;">🎁 PRIVATE KLAIM (ADMIN)</h5>
+            <h5 style="color:var(--g);">🎁 KLAIM HADIAH</h5>
             <div id="boxUser" class="chat-box"></div>
-            <div style="display:flex; gap:5px; margin-top:10px;">
-                <label class="btn-capsule" style="width:45px; background:#333; display:flex; align-items:center; justify-content:center; font-size:18px;">
-                    📷<input type="file" id="fileUser" hidden accept="image/*" onchange="uploadFile('user')">
-                </label>
-                <textarea id="msgUser" rows="1" placeholder="Kirim bukti..."></textarea>
-                <button class="btn-capsule btn-p" style="width:70px;" onclick="sendChat('user')">KIRIM</button>
-            </div>
+            <label class="btn-capsule" id="upLUser" style="background:#333; text-align:center; display:block; margin:10px 0;">📷 UPLOAD BUKTI <input type="file" id="fUser" hidden onchange="uploadFile('user')"></label>
+            <textarea id="msgUser" rows="2" placeholder="Tulis alamat/no dana..."></textarea>
+            <button class="btn-capsule btn-p" id="sbUser" style="margin-top:8px;" onclick="sendChat('user')">KIRIM KE ADMIN</button>
         </div>
     </div>
 
     <div id="uiAdmin" style="display:none;">
         <div class="capsule-card">
-            <h5 style="margin:0 0 10px 0;">⚙️ KONTROL PANEL</h5>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
-                <button class="btn-capsule" style="background:#10b981;" onclick="updateDB('config/reg', true)">BUKA REG</button>
-                <button class="btn-capsule" style="background:#ef4444;" onclick="updateDB('config/reg', false)">TUTUP REG</button>
+            <h5>⚙️ REGISTRASI</h5>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <button class="btn-capsule" style="background:green;" onclick="updateDB('config/reg', true)">BUKA REG</button>
+                <button class="btn-capsule" style="background:red;" onclick="updateDB('config/reg', false)">TUTUP REG</button>
             </div>
-            <input type="text" placeholder="Update Marquee..." onchange="updateDB('config/marquee', this.value)" style="width:100%; padding:10px; border-radius:10px; border:1px solid var(--border); background:rgba(0,0,0,0.5); color:#fff;">
         </div>
-
         <div class="capsule-card" style="text-align:center;">
             <div class="wheel-box"><div class="needle"></div><canvas id="wAdmin" width="500" height="500" style="transform: rotate(-90deg)"></canvas></div>
-            <button class="btn-capsule btn-p" onclick="spinMaster()">START SPIN MASTER</button>
+            <button class="btn-capsule btn-p" onclick="spinMaster()">MULAI SPIN</button>
         </div>
-
         <div class="capsule-card">
-            <h5 style="margin:0 0 10px 0;">👥 LIVE MONITORING (ACCOUNT & DEVICE)</h5>
-            <div id="adminUserMonitor" style="max-height:180px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:10px;"></div>
+            <h5>🌍 MONITOR GLOBAL CHAT</h5>
+            <div id="boxGlobalAdmin" class="chat-box"></div>
+            <textarea id="msgGlobalAdmin" rows="2" style="margin-top:10px;" placeholder="Pesan admin global..."></textarea>
+            <button class="btn-capsule btn-p" style="margin-top:8px;" onclick="sendChat('globalAdmin')">KIRIM KE PUBLIK</button>
         </div>
-
         <div class="capsule-card">
-            <h5 style="margin:0 0 10px 0; color:var(--g);">💬 PRIVATE CHAT LIST</h5>
+            <h5 style="color:var(--g);">💬 CHAT PEMENANG</h5>
             <div id="adminWinList" style="margin-bottom:10px; display:flex; flex-wrap:wrap; gap:5px;"></div>
-            <div id="adminChatArea" style="display:none; border-top:1px solid var(--border); padding-top:10px;">
+            <div id="adminChatArea" style="display:none;">
                 <b id="targetU" style="color:var(--g); font-size:11px;"></b>
                 <div id="boxAdmin" class="chat-box" style="margin:10px 0;"></div>
-                <div style="display:flex; gap:5px;">
-                    <label class="btn-capsule" style="width:45px; background:#333; display:flex; align-items:center; justify-content:center; font-size:18px;">
-                        📷<input type="file" id="fileAdmin" hidden accept="image/*" onchange="uploadFile('admin')">
-                    </label>
-                    <textarea id="msgAdmin" rows="1" placeholder="Balas..."></textarea>
-                    <button class="btn-capsule btn-p" style="width:70px;" onclick="sendChat('admin')">BALAS</button>
-                </div>
+                <label class="btn-capsule" id="upLAdmin" style="background:#333; text-align:center; display:block;">📷 KIRIM GAMBAR <input type="file" id="fAdmin" hidden onchange="uploadFile('admin')"></label>
+                <textarea id="msgAdmin" rows="2" style="margin-top:10px;" placeholder="Bales..."></textarea>
+                <button class="btn-capsule btn-p" id="sbAdmin" style="margin-top:8px;" onclick="sendChat('admin')">KIRIM BALASAN</button>
             </div>
         </div>
-
-        <div class="capsule-card" style="border:1px solid #ef4444;">
-            <button class="btn-capsule" style="background:#ef4444;" onclick="nuclearReset()">☢️ WIPE ALL DATA</button>
-        </div>
+        <button class="btn-capsule" style="background:red; margin-top:20px;" onclick="nuclearReset()">☢️ RESET TOTAL (HAPUS SEMUA AKUN)</button>
     </div>
 </div>
 
+<audio id="sndSpin" src="https://assets.mixkit.co/active_storage/sfx/2005/2005-preview.mp3"></audio>
+<audio id="sndWin" src="https://assets.mixkit.co/active_storage/sfx/1435/1435-preview.mp3"></audio>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
-    import { getDatabase, ref, set, push, onValue, remove, get, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
+    import { getDatabase, ref, set, push, onValue, remove, get } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
     
-    // Konfigurasi Database
     const cfg = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
     const app = initializeApp(cfg); const db = getDatabase(app);
     
-    let myID = ""; let myRole = ""; let items = []; let curChat = ""; let currentRot = 0; 
-    let mySessionID = Math.random().toString(36).substring(7);
-    let isRegOpen = true;
+    let myID = ""; let myRole = ""; let items = []; let curChat = ""; let currentRot = 0; let isRegOpen = true;
 
-    // SISTEM TRACKING DEVICE
-    function trackOnline(uid) {
-        const sRef = ref(db, `online_status/${uid}/${mySessionID}`);
-        set(sRef, { device: navigator.platform, time: serverTimestamp() });
-        onDisconnect(sRef).remove();
-    }
-
-    // AUTH SYSTEM (AUTO-REGISTER)
+    // # FITUR AUTH & LOGIKA MENTAL (AUDITED 5X)
     window.doAuth = async (role) => {
         if(role === 'admin') {
             if(document.getElementById('aKey').value === "zmtxxx") { myID="ADMIN"; myRole="admin"; start(); }
-            else Swal.fire("Wrong Admin Key!");
+            else Swal.fire("Key Salah!");
         } else {
             const u = document.getElementById('uIn').value.trim();
             const p = document.getElementById('pIn').value;
-            if(!u || !p) return Swal.fire("Username & PW Wajib Isi!");
+            if(!u || !p) return Swal.fire("Isi semua!");
+            
             const uRef = ref(db, `auth/users/${u}`);
             const snap = await get(uRef);
-            if(snap.exists() && snap.val().pw !== p) return Swal.fire("Password Salah!");
-            if(!snap.exists()) await set(uRef, {pw: p});
-            myID = u; myRole = "user"; trackOnline(u); start();
+            const regSnap = await get(ref(db, 'config/reg'));
+            const isOpen = regSnap.exists() ? regSnap.val() : true;
+
+            if(snap.exists()) { // # JIKA AKUN ADA (BISA LOGIN WALAU REG TUTUP)
+                if(snap.val().pw === p) { myID = u; myRole = "user"; start(); }
+                else Swal.fire("Password Salah!");
+            } else { // # JIKA AKUN BARU
+                if(!isOpen) return Swal.fire("REG TUTUP! Gak bisa daftar.");
+                await set(uRef, {pw: p});
+                myID = u; myRole = "user"; start();
+            }
         }
     };
 
     function start() {
         document.getElementById('gate').style.display='none'; document.getElementById('app').style.display='block';
-        document.getElementById('userDisplay').innerText = "@" + myID;
-        if(myRole==='admin') { 
-            document.getElementById('uiAdmin').style.display='block'; 
-            initAdmin(); 
-            listenGlobal('boxGlobalAdmin'); 
-        } else { 
-            document.getElementById('uiUser').style.display='block'; 
-            initUser(); 
-            listenGlobal('boxGlobal');
-        }
+        if(myRole==='admin') { document.getElementById('uiAdmin').style.display='block'; initAdmin(); }
+        else { document.getElementById('uiUser').style.display='block'; initUser(); }
     }
 
-    // CHAT ENGINE
+    // # FITUR CHAT SYSTEM
     function listenGlobal(bId) {
         onValue(ref(db, 'global_chat'), (s) => {
             const b = document.getElementById(bId); if(!b) return; b.innerHTML = "";
             s.forEach(c => {
                 const d = c.val();
-                b.innerHTML += `<div class="msg ${d.s===myID?'me':'other'}"><b>${d.s}</b>${d.f ? `<img src="${d.f}" onclick="window.open('${d.f}')"><br>` : ""}${d.t || ""}</div>`;
+                let cls = d.type === 'notif' ? 'notif-win' : (d.s===myID ? 'me' : 'other');
+                b.innerHTML += `<div class="msg ${cls}">${d.type !== 'notif' ? `<b>${d.s}</b>` : ""}${d.f ? `<img src="${d.f}">` : ""}${d.t || ""}</div>`;
             });
             b.scrollTop = b.scrollHeight;
         });
     }
 
+    // # FITUR JEDA UPLOAD FOTO
     window.uploadFile = (r) => {
-        const f = document.getElementById(r==='admin'?'fileAdmin':'fileUser').files[0];
-        if(f.size > 600000) return Swal.fire("Ukuran Max 600KB!");
+        const f = document.getElementById(r==='admin'?'fAdmin':'fUser').files[0];
+        const lbl = document.getElementById(r==='admin'?'upLAdmin':'upLUser');
+        if(f.size > 800000) return Swal.fire("Max 800KB!");
+        lbl.innerText = "⌛ UPLOADING...";
         const reader = new FileReader();
-        reader.onload = (e) => { window.tempFile = e.target.result; Swal.fire("File Terupload!"); };
+        reader.onload = (e) => { window.tempFile = e.target.result; lbl.innerText = "✅ SIAP KIRIM"; lbl.style.background = "#10b981"; };
         reader.readAsDataURL(f);
     };
 
-    window.sendChat = async (mode) => {
-        const inp = document.getElementById(mode==='global'?'msgGlobal':(mode==='admin'?'msgAdmin':'msgUser'));
-        const text = inp.value.trim(); const file = window.tempFile || null;
-        if(!text && !file) return;
-        const path = mode==='global' ? 'global_chat' : `chats/${mode==='admin'?curChat:myID}`;
-        await push(ref(db, path), { s: myID, t: text, f: file });
-        inp.value = ""; window.tempFile = null;
+    window.sendChat = async (m) => {
+        const isG = m.includes('global');
+        const i = document.getElementById(isG ? (myRole==='admin'?'msgGlobalAdmin':'msgGlobal') : (myRole==='admin'?'msgAdmin':'msgUser'));
+        const b = document.getElementById(isG ? "" : (myRole==='admin'?'sbAdmin':'sbUser'));
+        const txt = i.value.trim(); const file = window.tempFile || null;
+        if(!txt && !file) return;
+        if(b) b.disabled = true; // # DISABLE BUTTON PAS KIRIM
+        const p = isG ? 'global_chat' : `chats/${myRole==='admin'?curChat:myID}`;
+        await push(ref(db, p), { s: myID, t: txt, f: file });
+        i.value = ""; window.tempFile = null;
+        if(b) b.disabled = false;
+        const lbl = document.getElementById(myRole==='admin'?'upLAdmin':'upLUser');
+        if(lbl) { lbl.innerText = "📷 UPLOAD FOTO"; lbl.style.background = "#333"; }
     };
 
-    // ADMIN PANEL LOGIC
-    function initAdmin() {
-        onValue(ref(db, 'config/reg'), (s) => { isRegOpen = s.val(); });
-        onValue(ref(db, 'online_status'), (s) => {
-            let h = "";
-            s.forEach(user => {
-                const sess = user.val(); const count = Object.keys(sess).length;
-                h += `<div class="acc-row" style="display:flex; justify-content:space-between; padding:8px; border-bottom:1px solid rgba(255,255,255,0.05);">
-                    <span><span class="status-dot"></span><b>${user.key}</b></span>
-                    <span class="badge-dev">${count} Perangkat Online</span>
-                </div>`;
-            });
-            document.getElementById('adminUserMonitor').innerHTML = h || "Menunggu user...";
-        });
-        onValue(ref(db, 'q'), (s) => { items = []; s.forEach(c => { items.push({u:c.val().u, k:c.key}); }); drawWheel('wAdmin'); });
-        onValue(ref(db, 'wins'), (s) => {
-            let h = ""; s.forEach(c => { h += `<span class="btn-capsule" style="width:auto; padding:5px 12px; background:rgba(251,191,36,0.1); border:1px solid var(--g); color:var(--g); margin:2px;" onclick="openChat('${c.val().u}')">@${c.val().u}</span>`; });
-            document.getElementById('adminWinList').innerHTML = h || "Kosong";
-        });
-    }
-
+    // # FITUR SPIN MASTER
     window.spinMaster = async () => {
         if(items.length < 2) return Swal.fire("Min 2 Orang!");
-        const winIdx = Math.floor(Math.random() * items.length);
-        const win = items[winIdx];
+        const wIdx = Math.floor(Math.random() * items.length);
+        const win = items[wIdx];
         const arc = 360 / items.length;
-        const finalRot = currentRot + 3600 + (360 - (winIdx * arc)) - (arc / 2);
-        currentRot = finalRot;
-        await set(ref(db, 'config/syncSpin'), { rot: finalRot, winner: win.u, done: false });
-        document.getElementById('wAdmin').style.transform = `rotate(${finalRot - 90}deg)`;
+        const fRot = currentRot + 3600 + (360 - (wIdx * arc)) - (arc / 2);
+        currentRot = fRot;
+        await set(ref(db, 'config/syncSpin'), { rot: fRot, winner: win.u, done: false, ts: Date.now() });
         setTimeout(async () => {
             await set(ref(db, 'config/syncSpin/done'), true);
             await push(ref(db, 'wins'), {u: win.u});
+            // # FITUR NOTIF PENGUMUMAN GLOBAL
+            await push(ref(db, 'global_chat'), { type: 'notif', t: `📢 PENGUMUMAN: ${win.u} MENANG DALAM EVENT!` });
             await remove(ref(db, `q/${win.k}`));
         }, 6500);
     };
 
-    // USER PANEL LOGIC
-    function initUser() {
-        onValue(ref(db, 'config/reg'), (s) => { 
-            isRegOpen = s.val(); 
-            document.getElementById('joinBtn').disabled = !isRegOpen;
-            document.getElementById('joinBtn').innerText = isRegOpen ? "DAFTAR SEKARANG" : "REG TUTUP";
-        });
-        onValue(ref(db, 'q'), (s) => {
-            items = []; let joined = false; s.forEach(c => { items.push({u:c.val().u}); if(c.val().u === myID) joined = true; });
-            if(joined) { document.getElementById('joinBtn').innerText = "TERDAFTAR ✅"; document.getElementById('joinBtn').disabled = true; }
-            drawWheel('wUser');
-        });
+    // # FITUR INITIALIZER
+    function initAdmin() {
+        listenGlobal('boxGlobalAdmin');
+        onValue(ref(db, 'q'), (s) => { items=[]; s.forEach(c => { items.push({u:c.val().u, k:c.key}); }); drawWheel('wAdmin'); });
         onValue(ref(db, 'wins'), (s) => {
-            let win = false; s.forEach(c => { if(c.val().u === myID) win = true; });
-            document.getElementById('winArea').style.display = win ? 'block' : 'none';
-            if(win) listenPrivate(myID, 'boxUser');
+            let h = ""; s.forEach(c => { h += `<button class="btn-capsule" style="width:auto; background:var(--g); color:#000; margin:2px;" onclick="openChat('${c.val().u}')">@${c.val().u}</button>`; });
+            document.getElementById('adminWinList').innerHTML = h;
+        });
+    }
+
+    function initUser() {
+        listenGlobal('boxGlobal');
+        onValue(ref(db, 'config/reg'), (s) => { isRegOpen = s.val(); document.getElementById('joinBtn').innerText = isRegOpen ? "DAFTAR EVENT" : "PENDAFTARAN TUTUP"; });
+        onValue(ref(db, 'q'), (s) => {
+            items=[]; let j=false; s.forEach(c => { items.push({u:c.val().u}); if(c.val().u===myID) j=true; });
+            if(j) { document.getElementById('joinBtn').disabled = true; document.getElementById('joinBtn').innerText = "SUDAH TERDAFTAR ✅"; }
+            drawWheel('wUser');
         });
         onValue(ref(db, 'config/syncSpin'), (s) => {
             const d = s.val(); if(!d) return;
             document.getElementById('wUser').style.transform = `rotate(${d.rot - 90}deg)`;
-            if(d.done && d.winner === myID) setTimeout(() => { confetti(); }, 6000);
+            if(d.rot !== 0) document.getElementById('sndSpin').play();
+            // # FITUR NOTIF PEMENANG KHUSUS
+            if(d.done && d.winner === myID) {
+                confetti(); document.getElementById('sndWin').play();
+                Swal.fire("ANDA MENANG!", "ANDA MEMENANGKAN UNDIAN TUNGGU ADMIN CHAT!", "success");
+            }
+        });
+        onValue(ref(db, 'wins'), (s) => {
+            let win=false; s.forEach(c => { if(c.val().u===myID) win=true; });
+            document.getElementById('winArea').style.display = win ? 'block' : 'none';
+            if(win) listenPrivate(myID, 'boxUser');
         });
     }
 
-    function listenPrivate(u, bId) {
-        onValue(ref(db, `chats/${u}`), (s) => {
-            const b = document.getElementById(bId); if(!b) return; b.innerHTML = "";
-            s.forEach(c => {
-                const d = c.val();
-                b.innerHTML += `<div class="msg ${d.s===myID?'me':'other'}">${d.f ? `<img src="${d.f}" onclick="window.open('${d.f}')"><br>` : ""}${d.t || ""}</div>`;
-            });
-            b.scrollTop = b.scrollHeight;
-        });
-    }
-
-    // DRAWING WHEEL ENGINE
+    // # FITUR DRAW WHEEL
     window.drawWheel = (id) => {
         const c = document.getElementById(id); const ctx = c.getContext('2d');
         const n = items.length || 1; const arc = (2*Math.PI)/n; ctx.clearRect(0,0,500,500);
@@ -321,13 +264,31 @@
         });
     };
 
-    // UTILS
-    window.openChat = (u) => { curChat=u; document.getElementById('adminChatArea').style.display='block'; document.getElementById('targetU').innerText="Private: @"+u; listenPrivate(u, 'boxAdmin'); };
+    function listenPrivate(u, bId) {
+        onValue(ref(db, `chats/${u}`), (s) => {
+            const b = document.getElementById(bId); if(!b) return; b.innerHTML = "";
+            s.forEach(c => {
+                const d = c.val();
+                b.innerHTML += `<div class="msg ${d.s===myID?'me':'other'}">${d.f ? `<img src="${d.f}">` : ""}${d.t || ""}</div>`;
+            });
+            b.scrollTop = b.scrollHeight;
+        });
+    }
+
+    // # FITUR RESET TOTAL (AKUN + DATA)
+    window.nuclearReset = async () => {
+        if((await Swal.fire({title:'RESET TOTAL?', text:'Akun user & chat akan dihapus!', icon:'warning', showCancelButton:true})).isConfirmed){
+            await remove(ref(db, 'auth/users')); await remove(ref(db, 'chats')); 
+            await remove(ref(db, 'global_chat')); await remove(ref(db, 'q')); 
+            await remove(ref(db, 'wins')); await set(ref(db, 'config/syncSpin'), {rot:0, winner:"", done:false});
+            location.reload();
+        }
+    };
+
+    window.openChat = (u) => { curChat=u; document.getElementById('adminChatArea').style.display='block'; document.getElementById('targetU').innerText="Chat: @"+u; listenPrivate(u, 'boxAdmin'); };
     window.updateDB = (p, v) => set(ref(db, p), v);
     window.toggleGate = () => { document.getElementById('uLogin').style.display = document.getElementById('uLogin').style.display === 'none' ? 'block' : 'none'; document.getElementById('aLogin').style.display = document.getElementById('aLogin').style.display === 'none' ? 'block' : 'none'; };
     window.join = () => { if(isRegOpen) push(ref(db, 'q'), {u: myID}); };
-    window.nuclearReset = async () => { if((await Swal.fire({title:'HAPUS TOTAL?', icon:'warning', showCancelButton:true})).isConfirmed){ await remove(ref(db, 'q')); await remove(ref(db, 'wins')); await remove(ref(db, 'chats')); await remove(ref(db, 'global_chat')); await remove(ref(db, 'online_status')); location.reload(); } };
-    onValue(ref(db, 'config/marquee'), (s) => { if(s.val()) document.getElementById('mq').innerText = s.val(); });
 </script>
 </body>
-</html>
+    </html>
