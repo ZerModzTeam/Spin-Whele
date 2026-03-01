@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
-        /* # (CSS: NEBULA NEON KAPSUL FULL) */
+        /* # (CSS: NEBULA NEON KAPSUL CORE) */
         body {
             margin: 0; padding: 0;
             font-family: 'Segoe UI', Roboto, sans-serif;
@@ -17,53 +17,67 @@
         body::after {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: url('https://www.transparenttextures.com/patterns/stardust.png');
-            opacity: 0.3; z-index: -1; pointer-events: none;
+            opacity: 0.2; z-index: -1; pointer-events: none;
         }
+
+        /* HEADER AREA (FITUR LAMA: KANAN ATAS USN & LOGOUT) */
         .header {
-            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(15px); padding: 25px;
-            text-align: center; border-bottom: 2px solid #00f2fe; box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(20px); padding: 15px 25px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 2px solid #00f2fe; box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+            position: sticky; top: 0; z-index: 1000;
         }
-        .main-title { font-size: 30px; font-weight: 900; margin: 0; letter-spacing: 5px; color: #00f2fe; text-shadow: 0 0 15px #00f2fe; }
-        .sub-title { font-size: 14px; color: #71ff00; margin-top: 5px; letter-spacing: 2px; font-weight: 600; text-transform: uppercase; }
-        .version { font-size: 10px; color: rgba(255,255,255,0.4); margin-top: 5px; }
+        .header-titles { text-align: left; }
+        .main-title { font-size: 22px; font-weight: 900; margin: 0; letter-spacing: 3px; color: #00f2fe; text-shadow: 0 0 10px #00f2fe; }
+        .sub-title { font-size: 10px; color: #71ff00; margin: 0; letter-spacing: 1px; font-weight: 600; text-transform: uppercase; }
+        
+        .user-meta { text-align: right; }
+        .usn-display { font-size: 13px; font-weight: 800; color: #00f2fe; margin-bottom: 2px; text-transform: uppercase; }
+        .btn-logout { 
+            background: linear-gradient(45deg, #ff0844, #ffb199); color: #fff; border: none; 
+            padding: 4px 12px; border-radius: 20px; font-size: 9px; cursor: pointer; font-weight: bold;
+        }
 
-        .container { max-width: 500px; margin: 25px auto; padding: 0 20px; }
+        .container { max-width: 480px; margin: 20px auto; padding: 0 15px; }
+        
+        /* CARD KAPSUL DASHBOARD */
         .card {
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px);
-            border-radius: 40px; border: 1px solid rgba(0, 242, 254, 0.2);
-            padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px);
+            border-radius: 35px; border: 1px solid rgba(0, 242, 254, 0.15);
+            padding: 20px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
         }
 
-        /* INFO AKUN STYLE */
-        .info-box { font-size: 12px; line-height: 1.8; color: #fff; }
+        /* FITUR LAMA: DASHBOARD ACCOUNT INFO MENU */
+        .account-info-menu { font-size: 11px; line-height: 2; }
+        .info-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.03); padding: 6px 0; }
         .info-label { color: #00f2fe; font-weight: bold; }
         .status-on { color: #71ff00; font-weight: bold; }
         .status-off { color: #ff0844; font-weight: bold; }
 
         input, textarea {
-            width: 100%; padding: 16px 25px; margin-bottom: 15px;
-            border: 1px solid rgba(0, 242, 254, 0.4); border-radius: 35px;
-            background: rgba(0, 0, 0, 0.5); color: #71ff00; outline: none; box-sizing: border-box;
+            width: 100%; padding: 14px 22px; margin-bottom: 12px;
+            border: 1px solid rgba(0, 242, 254, 0.3); border-radius: 30px;
+            background: rgba(0, 0, 0, 0.4); color: #71ff00; outline: none; box-sizing: border-box; font-size: 13px;
         }
         .btn {
-            width: 100%; padding: 16px; border: none; border-radius: 35px;
-            font-size: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s;
+            width: 100%; padding: 14px; border: none; border-radius: 30px;
+            font-size: 13px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.3s;
         }
-        .btn-primary { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; }
+        .btn-primary { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); }
         .btn-danger { background: linear-gradient(45deg, #ff0844, #ffb199); color: #fff; }
 
-        .wheel-container { position: relative; width: 240px; height: 240px; margin: 0 auto 20px; }
-        #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; border: 6px solid #00f2fe; transition: 7s cubic-bezier(0.1, 0, 0.1, 1); }
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 20px; height: 35px; background: #71ff00; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100; }
+        .wheel-container { position: relative; width: 230px; height: 230px; margin: 0 auto 15px; }
+        #wheelCanvas { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #00f2fe; transition: 7s cubic-bezier(0.1, 0, 0.1, 1); box-shadow: 0 0 30px rgba(0, 242, 254, 0.3); }
+        .pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 18px; height: 30px; background: #71ff00; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 100; }
 
-        .chat-box { height: 280px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 25px; padding: 15px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { max-width: 85%; padding: 12px 18px; border-radius: 22px; font-size: 13px; }
-        .msg-me { background: rgba(0, 242, 254, 0.2); border: 1px solid #00f2fe; align-self: flex-end; }
-        .msg-ot { background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255,255,255,0.2); align-self: flex-start; }
-        .msg-bot { background: #71ff00; color: #000; align-self: center; text-align: center; width: 100%; font-weight: 900; }
+        .chat-box { height: 260px; overflow-y: auto; background: rgba(0,0,0,0.2); border-radius: 20px; padding: 12px; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .msg { max-width: 80%; padding: 10px 16px; border-radius: 20px; font-size: 12px; word-wrap: break-word; }
+        .msg-me { background: rgba(0, 242, 254, 0.15); border: 1px solid #00f2fe; align-self: flex-end; color: #fff; }
+        .msg-ot { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.15); align-self: flex-start; color: #ccc; }
+        .msg-bot { background: #71ff00; color: #000; align-self: center; text-align: center; width: 100%; font-weight: 900; box-shadow: 0 0 10px #71ff00; }
 
         #pg-login { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #090a0f; z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .login-card { width: 330px; padding: 40px; background: rgba(255, 255, 255, 0.05); border-radius: 45px; border: 2px solid #00f2fe; text-align: center; }
+        .login-card { width: 310px; padding: 35px; background: rgba(255, 255, 255, 0.03); border-radius: 40px; border: 2px solid #00f2fe; text-align: center; box-shadow: 0 0 40px rgba(0, 242, 254, 0.2); }
     </style>
 </head>
 <body>
@@ -72,72 +86,82 @@
     <div class="login-card">
         <h1 class="main-title">ZMT EVENT</h1>
         <p class="sub-title">SILAHKAN DAFTAR</p>
-        <div id="u-form" style="margin-top: 30px;">
-            <input type="text" id="log-u" placeholder="USERNAME (Case Sensitive)">
+        <div id="u-form" style="margin-top: 25px;">
+            <input type="text" id="log-u" placeholder="USERNAME (A-z)">
             <input type="password" id="log-p" placeholder="PASSWORD">
-            <button class="btn btn-primary" onclick="auth('user')">LOGIN / REGISTER</button>
-            <p onclick="setA(true)" style="color:#222; cursor:pointer; font-size:10px; margin-top:20px;">ADMIN ACCESS</p>
+            <button class="btn btn-primary" onclick="auth('user')">MASUK / DAFTAR</button>
+            <p onclick="setA(true)" style="color:#222; cursor:pointer; font-size:9px; margin-top:15px;">ADMIN MODE</p>
         </div>
-        <div id="a-form" style="display:none; margin-top: 30px;">
+        <div id="a-form" style="display:none; margin-top: 25px;">
             <input type="password" id="a-key" placeholder="ADMIN MASTER KEY">
-            <button class="btn btn-danger" onclick="auth('admin')">BYPASS ADMIN</button>
-            <p onclick="setA(false)" style="color:#222; cursor:pointer; font-size:10px; margin-top:20px;">BACK</p>
+            <button class="btn btn-danger" onclick="auth('admin')">BYPASS ACCESS</button>
+            <p onclick="setA(false)" style="color:#222; cursor:pointer; font-size:9px; margin-top:15px;">KEMBALI KE USER</p>
         </div>
-        <p class="version">v0.1.5 (BETA)</p>
+        <p style="font-size:9px; color:rgba(255,255,255,0.2); margin-top:15px;">v0.1.5 (BETA)</p>
     </div>
 </div>
 
 <div id="pg-app" style="display:none;">
     <div class="header">
-        <h1 class="main-title">ZMT EVENT</h1>
-        <p class="sub-title">SILAHKAN DAFTAR</p>
+        <div class="header-titles">
+            <h1 class="main-title">ZMT EVENT</h1>
+            <p class="sub-title">v0.1.5 (BETA)</p>
+        </div>
+        <div class="user-meta">
+            <div class="usn-display" id="top-usn">USN: ---</div>
+            <button class="btn-logout" onclick="location.reload()">Logout</button>
+        </div>
     </div>
 
     <div class="container">
         <div class="card">
-            <div class="info-box">
-                <div><span class="info-label">User :</span> <span id="info-u">---</span></div>
-                <div><span class="info-label">Pass :</span> <span id="info-p">---</span></div>
-                <div><span class="info-label">Device login :</span> <span id="info-dev">0</span></div>
-                <div><span class="info-label">Status :</span> <span id="info-stat">---</span></div>
-                <div><span class="info-label">Login on :</span> <span id="info-time">---</span></div>
+            <div class="sub-title" style="margin-bottom:12px; color:#00f2fe;">📋 DATA AKUN AKTIF</div>
+            <div class="account-info-menu" id="acc-menu">
+                <div class="info-row"><span class="info-label">User :</span> <span id="info-u">---</span></div>
+                <div class="info-row"><span class="info-label">Pass :</span> <span id="info-p">---</span></div>
+                <div class="info-row"><span class="info-label">Device login :</span> <span id="info-dev">0</span></div>
+                <div class="info-row"><span class="info-label">Status :</span> <span id="info-stat">---</span></div>
+                <div class="info-row"><span class="info-label">Login on :</span> <span id="info-time">---</span></div>
             </div>
         </div>
 
         <div id="ui-user" style="display:none;">
-            <div class="card"><button id="btn-join" class="btn btn-primary" onclick="join()">JOIN QUEUE</button></div>
+            <div class="card"><button id="btn-join" class="btn btn-primary" onclick="join()">AMBIL ANTRIAN</button></div>
             <div class="card" style="text-align:center;">
                 <div class="wheel-container"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div>
             </div>
             <div class="card">
+                <div class="sub-title" style="margin-bottom:10px;">GLOBAL CHAT</div>
                 <div id="chat-u" class="chat-box"></div>
-                <textarea id="msg-u" placeholder="Chat Global..."></textarea>
-                <button class="btn btn-primary" onclick="send('global')">SEND</button>
+                <textarea id="msg-u" placeholder="Ketik pesan..."></textarea>
+                <button class="btn btn-primary" onclick="send('global')">KIRIM</button>
             </div>
             <div id="box-win" class="card" style="display:none; border:2px solid #71ff00;">
                 <div id="chat-p-u" class="chat-box"></div>
                 <input type="file" id="f-u" onchange="up('user')">
-                <textarea id="msg-p-u" placeholder="Klaim Data..."></textarea>
-                <button id="sb-u" class="btn btn-primary" onclick="send('private-u')">SEND KLAIM</button>
+                <textarea id="msg-p-u" placeholder="Klaim Data (Dana/Alamat)..."></textarea>
+                <button id="sb-u" class="btn btn-primary" onclick="send('private-u')">KIRIM KLAIM</button>
             </div>
         </div>
 
         <div id="ui-admin" style="display:none;">
             <div class="card">
-                <button class="btn btn-primary" onclick="reg(true)">OPEN REG</button>
-                <button class="btn btn-danger" onclick="reg(false)" style="margin-top:10px;">CLOSE REG</button>
+                <button class="btn btn-primary" onclick="reg(true)">BUKA REGISTRASI</button>
+                <button class="btn btn-danger" onclick="reg(false)" style="margin-top:10px;">TUTUP REGISTRASI</button>
             </div>
             <div class="card" style="text-align:center;">
                 <div class="wheel-container"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
-                <button class="btn btn-primary" onclick="spin()">START SPIN</button>
+                <button class="btn btn-primary" onclick="spin()">PUTAR RODA</button>
             </div>
             <div class="card">
+                <div class="sub-title" style="margin-bottom:10px;">ADMIN CONSOLE (CMD: /ban user)</div>
                 <div id="chat-a" class="chat-box"></div>
-                <textarea id="msg-a" placeholder="Admin Chat (/ban user)..."></textarea>
+                <textarea id="msg-a" placeholder="Broadcast pesan..."></textarea>
                 <button class="btn btn-primary" onclick="send('global-a')">TRANSMIT</button>
             </div>
             <div class="card">
-                <div id="win-tags" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:10px;"></div>
+                <div class="sub-title" style="margin-bottom:10px;">LIST WINNER</div>
+                <div id="win-tags" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>
                 <div id="box-p-a" style="display:none;">
                     <b id="target-n" style="color:#00f2fe;"></b>
                     <div id="chat-p-a" class="chat-box"></div>
@@ -146,7 +170,7 @@
                     <button id="sb-a" class="btn btn-primary" onclick="send('private-a')">BALAS</button>
                 </div>
             </div>
-            <button class="btn btn-danger" onclick="wipe()">☢️ RESET DB</button>
+            <button class="btn btn-danger" onclick="wipe()" style="margin-top:20px;">☢️ CLEAN ALL DATABASE</button>
         </div>
     </div>
 </div>
@@ -161,18 +185,18 @@
     const cfg = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
     const app = initializeApp(cfg); const db = getDatabase(app);
 
-    let myU = "", myR = "", q = [], curT = "", imgB = null, mySession = "";
+    let myU = "", myR = "", q = [], curT = "", imgB = null;
 
     window.setA = (v) => { document.getElementById('u-form').style.display = v ? 'none' : 'block'; document.getElementById('a-form').style.display = v ? 'block' : 'none'; };
 
     window.auth = async (role) => {
         if(role === 'admin') {
             if(document.getElementById('a-key').value === "zmtxxx") { myU="ADMIN"; myR="admin"; launch(); }
-            else Swal.fire('Error', 'Key Salah!', 'error');
+            else Swal.fire('Error', 'Master Key Salah!', 'error');
         } else {
             const u = document.getElementById('log-u').value.trim();
             const p = document.getElementById('log-p').value;
-            if(!u || !p) return Swal.fire('Error', 'Isi semua!', 'warning');
+            if(!u || !p) return Swal.fire('Error', 'Username & Pass wajib isi!', 'warning');
             
             const uRef = ref(db, `auth/users/${u}`);
             const snap = await get(uRef);
@@ -183,10 +207,10 @@
                 if(snap.val().pw === p) { myU=u; myR="user"; launch(p); }
                 else Swal.fire('Error', 'Password Salah!', 'error');
             } else {
-                if(!isOpen) return Swal.fire('Closed', 'Registrasi ditutup!', 'info');
+                if(!isOpen) return Swal.fire('Tutup', 'Registrasi sudah ditutup Admin!', 'info');
                 const now = new Date();
-                const timeStr = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
-                await set(uRef, {pw: p, loginOn: timeStr});
+                const ts = `${now.getFullYear()}-${now.getMonth()+1}-${now.getDate()} ${now.getHours()}:${now.getMinutes()}`;
+                await set(uRef, {pw: p, loginOn: ts});
                 myU=u; myR="user"; launch(p);
             }
         }
@@ -195,65 +219,64 @@
     function launch(pass = "") {
         document.getElementById('pg-login').style.display='none';
         document.getElementById('pg-app').style.display='block';
-        if(myR==='admin') { document.getElementById('ui-admin').style.display='block'; initA(); }
-        else { 
+        document.getElementById('top-usn').innerText = `USN: ${myU}`;
+        
+        if(myR==='admin') { 
+            document.getElementById('ui-admin').style.display='block'; 
+            initA(); 
+        } else { 
             document.getElementById('ui-user').style.display='block'; 
             initU(); 
-            // Update Info Akun
             document.getElementById('info-u').innerText = myU;
             document.getElementById('info-p').innerText = pass;
             handlePresence();
         }
     }
 
-    // # (PRESENCE & DEVICE TRACKING)
+    // # (FITUR LAMA: TRACKING PRESENCE & BAN)
     function handlePresence() {
-        const presenceRef = ref(db, `presence/${myU}`);
-        const sessionRef = push(presenceRef);
-        mySession = sessionRef.key;
+        const pRef = ref(db, `presence/${myU}`);
+        const sRef = push(pRef);
+        set(sRef, { state: 'online', ts: serverTimestamp() });
+        onDisconnect(sRef).remove();
 
-        // Set Online
-        set(sessionRef, { state: 'online', last_changed: serverTimestamp() });
-        onDisconnect(sessionRef).remove();
-
-        // Listen Info
-        onValue(presenceRef, (s) => {
-            const sessions = s.val() || {};
-            const count = Object.keys(sessions).length;
+        onValue(pRef, (s) => {
+            const count = s.exists() ? Object.keys(s.val()).length : 0;
             document.getElementById('info-dev').innerText = count;
             document.getElementById('info-stat').innerText = count > 0 ? "Online" : "Offline";
             document.getElementById('info-stat').className = count > 0 ? "status-on" : "status-off";
         });
 
-        // Get Login Time
         get(ref(db, `auth/users/${myU}/loginOn`)).then(s => {
-            document.getElementById('info-time').innerText = s.val() || "Unknown";
+            document.getElementById('info-time').innerText = s.val() || "---";
         });
 
-        // Auto Logout if Banned
+        // DETEKSI BAN REAL-TIME
         onValue(ref(db, `auth/users/${myU}`), (s) => {
-            if(!s.exists()) { alert("AKUN ANDA DI-BAN & DIHAPUS!"); location.reload(); }
+            if(!s.exists()) { alert("AKUN ANDA TELAH DIHAPUS/BAN OLEH ADMIN!"); location.reload(); }
         });
     }
 
-    // # (CHAT & BAN SYSTEM)
+    // # (CHAT & FITUR LAMA: /BAN)
     window.send = async (m) => {
         const isG = m.includes('global');
         const inpId = isG ? (myR==='admin'?'msg-a':'msg-u') : (myR==='admin'?'msg-p-a':'msg-p-u');
         const inp = document.getElementById(inpId);
         let txt = inp.value.trim();
 
+        // FITUR BAN (ONLY GLOBAL)
         if(myR==='admin' && txt.startsWith('/ban ')) {
             const target = txt.split(' ')[1];
             if(target) {
                 await remove(ref(db, `auth/users/${target}`));
                 await remove(ref(db, `presence/${target}`));
                 await remove(ref(db, `chats/private/${target}`));
-                await push(ref(db, 'chats/global'), { s: 'SYSTEM', m: `USER @${target} AUTO MENTAL & DATA KERESET!`, type: 'bot' });
+                await push(ref(db, 'chats/global'), { s: 'SYSTEM', m: `USER @${target} TELAH DIBAN & DATA KERESET!`, type: 'bot' });
                 inp.value = ""; return;
             }
         }
 
+        if(!txt && !imgB) return;
         const path = isG ? 'chats/global' : `chats/private/${myR==='admin'?curT:myU}`;
         await push(ref(db, path), { s: myU, m: txt, f: imgB });
         inp.value = ""; imgB = null;
@@ -265,7 +288,7 @@
             s.forEach(c => {
                 const d = c.val();
                 let cls = d.type === 'bot' ? 'msg-bot' : (d.s === myU ? 'msg-me' : 'msg-ot');
-                b.innerHTML += `<div class="msg ${cls}"><b>${d.s}:</b><br>${d.f ? `<img src="${d.f}" style="max-width:100%; border-radius:10px;"><br>` : ""}${d.m}</div>`;
+                b.innerHTML += `<div class="msg ${cls}"><b>${d.s}:</b><br>${d.f ? `<img src="${d.f}" style="max-width:100%; border-radius:12px; margin-top:5px;"><br>` : ""}${d.m}</div>`;
             });
             b.scrollTop = b.scrollHeight;
         });
@@ -274,12 +297,12 @@
     window.up = (r) => {
         const file = document.getElementById(r==='admin'?'f-a':'f-u').files[0];
         const reader = new FileReader();
-        reader.onload = (e) => { imgB = e.target.result; Swal.fire('Ready', 'Gambar siap kirim!', 'success'); };
+        reader.onload = (e) => { imgB = e.target.result; Swal.fire('OK', 'Gambar siap dikirim!', 'success'); };
         reader.readAsDataURL(file);
     };
 
     window.spin = async () => {
-        if(q.length < 2) return Swal.fire('Hoi', 'Min 2 user!', 'warning');
+        if(q.length < 2) return Swal.fire('Hoi', 'Antrian minimal 2 orang!', 'warning');
         const wIdx = Math.floor(Math.random() * q.length);
         const win = q[wIdx];
         const rot = 3600 + (360 - (wIdx * (360/q.length))) - ((360/q.length)/2);
@@ -287,7 +310,7 @@
         setTimeout(async () => {
             await update(ref(db, 'config/sync'), { d: true });
             await push(ref(db, 'wins'), { u: win.u });
-            await push(ref(db, 'chats/global'), { s: 'BOT_SYSTEM', m: `🎉 @${win.u} MENANG!`, type: 'bot' });
+            await push(ref(db, 'chats/global'), { s: 'BOT', m: `🎉 PENGUMUMAN: @${win.u} TELAH MENANG!`, type: 'bot' });
             await remove(ref(db, `queue/${win.k}`));
         }, 7200);
     };
@@ -300,7 +323,7 @@
             ctx.beginPath(); ctx.fillStyle = i%2===0 ? '#001529' : '#002140'; ctx.strokeStyle = '#00f2fe';
             ctx.moveTo(250,250); ctx.arc(250,250,240,i*a,(i+1)*a); ctx.fill(); ctx.stroke();
             ctx.save(); ctx.translate(250,250); ctx.rotate(i*a + a/2);
-            ctx.fillStyle = "#00f2fe"; ctx.font = "bold 18px Arial"; ctx.textAlign="right";
+            ctx.fillStyle = "#00f2fe"; ctx.font = "bold 16px Arial"; ctx.textAlign="right";
             ctx.fillText(p.u, 230, 8); ctx.restore();
         });
     }
@@ -310,7 +333,7 @@
         onValue(ref(db, 'queue'), (s) => { q=[]; s.forEach(c => { q.push({u:c.val().u, k:c.key}); }); draw('cv-a', q); });
         onValue(ref(db, 'wins'), (s) => {
             const l = document.getElementById('win-tags'); l.innerHTML = "";
-            s.forEach(c => { const n = c.val().u; l.innerHTML += `<button class="btn btn-primary" style="width:auto; padding:5px 10px;" onclick="openP('${n}')">@${n}</button>`; });
+            s.forEach(c => { const n = c.val().u; l.innerHTML += `<button class="btn btn-primary" style="width:auto; padding:5px 12px; margin:2px;" onclick="openP('${n}')">@${n}</button>`; });
         });
     }
 
@@ -319,14 +342,14 @@
         onValue(ref(db, 'queue'), (s) => {
             let l=[]; let j=false;
             s.forEach(c => { l.push({u:c.val().u}); if(c.val().u===myU) j=true; });
-            if(j) { document.getElementById('btn-join').disabled=true; document.getElementById('btn-join').innerText="TERDAFTAR"; }
+            if(j) { document.getElementById('btn-join').disabled=true; document.getElementById('btn-join').innerText="SUDAH TERDAFTAR ✅"; }
             draw('cv-u', l);
         });
         onValue(ref(db, 'config/sync'), (s) => {
             const d = s.val(); if(!d) return;
             document.getElementById('cv-u').style.transform = `rotate(${d.r - 90}deg)`;
             if(d.r > 0 && !d.d) document.getElementById('s-spin').play();
-            if(d.d && d.w === myU) { confetti(); document.getElementById('s-win').play(); Swal.fire('JACKPOT!', 'Cek menu Klaim!', 'success'); }
+            if(d.d && d.w === myU) { confetti(); document.getElementById('s-win').play(); Swal.fire('JACKPOT!', 'Klaim hadiah lo di menu bawah!', 'success'); }
         });
         onValue(ref(db, 'wins'), (s) => {
             let w=false; s.forEach(c => { if(c.val().u===myU) w=true; });
@@ -335,10 +358,10 @@
         });
     }
 
-    window.openP = (u) => { curT=u; document.getElementById('box-p-a').style.display='block'; document.getElementById('target-n').innerText="CHAT: @"+u; listen(`chats/private/${u}`, 'chat-p-a'); };
+    window.openP = (u) => { curT=u; document.getElementById('box-p-a').style.display='block'; document.getElementById('target-n').innerText="REPLY: @"+u; listen(`chats/private/${u}`, 'chat-p-a'); };
     window.reg = (v) => set(ref(db, 'config/regStatus'), v);
     window.join = () => push(ref(db, 'queue'), {u: myU});
-    window.wipe = async () => { if(confirm("RESET SEMUA?")) { await remove(ref(db, '/')); location.reload(); } };
+    window.wipe = async () => { if(confirm("HAPUS TOTAL SEMUA DATA?")) { await remove(ref(db, '/')); location.reload(); } };
 </script>
 </body>
 </html>
