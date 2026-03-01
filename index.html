@@ -3,43 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT EVENT v0.1.5 - ULTIMATE</title>
+    <title>ZMT EVENT v0.1.5</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
+        /* STYLE KHAS ZMT - DARK & NEON */
         body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #090A0F; color: #e0e0e0; }
         .header { background: #000; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00f2fe; box-shadow: 0 0 15px #00f2fe; position: sticky; top: 0; z-index: 1000; }
-        .main-title { font-size: 20px; font-weight: 900; color: #00f2fe; margin: 0; }
-        .sub-title { font-size: 10px; color: #71ff00; text-transform: uppercase; }
+        .main-title { font-size: 20px; font-weight: 900; color: #00f2fe; margin: 0; text-shadow: 0 0 10px #00f2fe; }
         .container { max-width: 480px; margin: auto; padding: 15px; }
         .card { background: rgba(255, 255, 255, 0.05); border-radius: 25px; border: 1px solid rgba(0, 242, 254, 0.2); padding: 20px; margin-bottom: 20px; }
         
-        /* WHEEL */
+        /* WHEEL LOGIC */
         .wheel-container { position: relative; width: 280px; height: 280px; margin: auto; }
         #cv-u, #cv-a { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #00f2fe; transition: 7.5s cubic-bezier(0.1, 0, 0.1, 1); }
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 20px; height: 35px; background: #71ff00; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 20px; height: 35px; background: #71ff00; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; filter: drop-shadow(0 0 5px #71ff00); }
 
-        /* CHAT */
-        .chat-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 15px; padding: 15px; display: flex; flex-direction: column; gap: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        /* CHAT SYSTEM */
+        .chat-box { height: 250px; overflow-y: auto; background: rgba(0,0,0,0.6); border-radius: 15px; padding: 15px; display: flex; flex-direction: column; gap: 8px; border: 1px solid rgba(255,255,255,0.05); }
         .msg { max-width: 85%; padding: 10px 15px; border-radius: 15px; font-size: 13px; word-wrap: break-word; }
-        .msg-me { background: rgba(0, 242, 254, 0.2); border: 1px solid #00f2fe; align-self: flex-end; }
+        .msg-me { background: rgba(0, 242, 254, 0.3); border: 1px solid #00f2fe; align-self: flex-end; color: #fff; }
         .msg-ot { background: rgba(255, 255, 255, 0.1); align-self: flex-start; }
-        .msg-bot { background: #71ff00; color: #000; font-weight: bold; align-self: center; text-align: center; width: 95%; border-radius: 5px; }
+        .msg-bot { background: linear-gradient(to right, #71ff00, #00f2fe); color: #000; font-weight: bold; align-self: center; text-align: center; width: 95%; border-radius: 5px; padding: 5px; }
 
-        /* FORMS */
+        /* INPUTS & BTN */
         input, textarea { width: 100%; padding: 14px; margin-bottom: 10px; border: 1px solid #30363d; border-radius: 20px; background: #0d1117; color: #71ff00; outline: none; box-sizing: border-box; }
-        .btn { width: 100%; padding: 15px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
-        .btn-primary { background: #00f2fe; color: #000; }
+        .btn { width: 100%; padding: 15px; border: none; border-radius: 20px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.2s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-primary { background: #00f2fe; color: #000; box-shadow: 0 0 10px rgba(0, 242, 254, 0.5); }
         .btn-danger { background: #ff0844; color: #fff; }
-        .btn-upload { border: 2px dashed #00f2fe; color: #00f2fe; padding: 10px; border-radius: 15px; text-align: center; margin-bottom: 10px; cursor: pointer; font-size: 12px; }
+        .btn-upload { border: 2px dashed #00f2fe; color: #00f2fe; padding: 10px; border-radius: 15px; text-align: center; margin-bottom: 10px; cursor: pointer; font-size: 11px; font-weight: bold; }
 
-        /* LOGIN */
+        /* BLACKLIST UI */
         #pg-login { position: fixed; inset: 0; background: #090a0f; z-index: 9999; display: flex; align-items: center; justify-content: center; }
         .login-card { width: 310px; padding: 40px; background: #161b22; border-radius: 30px; border: 2px solid #00f2fe; text-align: center; }
-        
-        /* MISC */
-        .bl-item { background: #000; padding: 10px; border-radius: 10px; margin-bottom: 5px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+        .bl-screen { background: #000; color: #fff; height: 100vh; width: 100vw; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: sans-serif; }
     </style>
 </head>
 <body>
@@ -50,39 +49,39 @@
         <div id="u-form" style="margin-top: 25px;">
             <input type="text" id="log-u" placeholder="USERNAME">
             <input type="password" id="log-p" placeholder="PASSWORD">
-            <button class="btn btn-primary" onclick="auth('user')">MASUK / DAFTAR</button>
-            <p onclick="setA(true)" style="color:#222; cursor:pointer; font-size:10px; margin-top:15px;">ADMIN PANEL</p>
+            <button class="btn btn-primary" onclick="auth('user')">LOGIN / SIGNUP</button>
+            <p onclick="setA(true)" style="color:#222; cursor:pointer; font-size:10px; margin-top:15px;">ADMIN MODE</p>
         </div>
         <div id="a-form" style="display:none; margin-top: 25px;">
-            <input type="password" id="a-key" placeholder="ADMIN KEY">
-            <button class="btn btn-danger" onclick="auth('admin')">BYPASS ADMIN</button>
-            <p onclick="setA(false)" style="color:#222; cursor:pointer; font-size:10px; margin-top:15px;">BACK</p>
+            <input type="password" id="a-key" placeholder="MASTER KEY">
+            <button class="btn btn-danger" onclick="auth('admin')">BYPASS SYSTEM</button>
+            <p onclick="setA(false)" style="color:#222; cursor:pointer; font-size:10px; margin-top:15px;">CANCEL</p>
         </div>
     </div>
 </div>
 
 <div id="pg-app" style="display:none;">
     <div class="header">
-        <h1 class="main-title">ZMT v0.1.5</h1>
-        <button onclick="location.reload()" style="background:#ff0844; border:none; color:#fff; padding:5px 12px; border-radius:10px; cursor:pointer;">LOGOUT</button>
+        <div><h1 class="main-title">ZMT v0.1.5</h1></div>
+        <button onclick="location.reload()" style="background:#ff0844; border:none; color:#fff; padding:6px 15px; border-radius:15px; font-weight:bold; cursor:pointer;">EXIT</button>
     </div>
 
     <div class="container">
         <div class="card">
             <div style="font-size:11px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <div>USER: <span id="info-u" style="color:#71ff00;">-</span></div>
-                <div>PASS: <span id="info-p" style="color:#71ff00;">-</span></div>
+                <div>USERNAME: <span id="info-u" style="color:#71ff00;">-</span></div>
+                <div>PASSWORD: <span id="info-p" style="color:#71ff00;">-</span></div>
                 <div>DEVICE: <span id="info-dev" style="color:#71ff00;">0</span></div>
-                <div>STAT: <span id="info-stat" style="color:#71ff00;">-</span></div>
-                <div style="grid-column: span 2;">IP: <span id="info-ip" style="color:#71ff00;">...</span></div>
+                <div>STATUS: <span id="info-stat" style="color:#71ff00;">-</span></div>
+                <div style="grid-column: span 2;">IP ADDRESS: <span id="info-ip" style="color:#71ff00;">...</span></div>
             </div>
         </div>
 
         <div id="ui-user" style="display:none;">
-            <div class="card"><button id="btn-join" class="btn btn-primary" onclick="join()">AMBIL ANTRIAN SPIN</button></div>
+            <div class="card"><button id="btn-join" class="btn btn-primary" onclick="join()">DAFTAR ANTRIAN SPIN</button></div>
             <div class="card">
                 <div class="wheel-container"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div>
-                <p id="spin-msg" style="text-align:center; color:#71ff00; font-size:12px; font-weight:bold;">READY</p>
+                <p id="spin-msg" style="text-align:center; color:#71ff00; font-size:12px; font-weight:bold; margin-top:10px;">MENUNGGU SPIN DIMULAI</p>
             </div>
             <div class="card">
                 <div id="chat-u" class="chat-box"></div>
@@ -90,44 +89,46 @@
                 <button class="btn btn-primary" onclick="send('global')">KIRIM</button>
             </div>
             <div id="box-win" class="card" style="display:none; border:2px solid #71ff00;">
-                <p style="color:#71ff00; font-weight:bold;">🎁 KLAIM HADIAH</p>
+                <p style="color:#71ff00; font-weight:bold; margin-bottom:10px;">🎁 FORM KLAIM HADIAH</p>
                 <div id="chat-p-u" class="chat-box" style="height:150px;"></div>
                 <input type="file" id="f-u" style="display:none;" onchange="up('user')">
-                <div class="btn-upload" onclick="document.getElementById('f-u').click()">UPLOAD SS BUKTI</div>
-                <textarea id="msg-p-u" placeholder="No Dana / Detail..."></textarea>
+                <div class="btn-upload" onclick="document.getElementById('f-u').click()">📁 UPLOAD SS BUKTI</div>
+                <textarea id="msg-p-u" placeholder="Tulis No Dana / Keterangan..."></textarea>
                 <button class="btn btn-primary" onclick="send('private-u')">KIRIM KLAIM</button>
             </div>
         </div>
 
         <div id="ui-admin" style="display:none;">
             <div class="card">
-                <textarea id="msg-a" placeholder="Chat / Broad / CMD (/Ban, /Crash, /Bl @user YYYY-MM-DD-HH-MM-SS)"></textarea>
-                <button class="btn btn-primary" onclick="handleCmd()">EXECUTE</button>
+                <p style="font-size:10px; color:#00f2fe; font-weight:bold;">COMMAND / CHAT ADMIN</p>
+                <textarea id="msg-a" placeholder="/Ban @user | /Crash @user | /Bl @user 2026-03-02-15-00-00"></textarea>
+                <button class="btn btn-primary" onclick="handleCmd()">EXECUTE / BROADCAST</button>
             </div>
             <div class="card">
                 <div class="wheel-container"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
-                <button class="btn btn-primary" onclick="spin()" style="margin-top:10px;">SPIN SEKARANG</button>
+                <button class="btn btn-primary" onclick="spin()" style="margin-top:15px;">PUTAR RODA SEKARANG</button>
             </div>
             <div class="card">
                 <div id="chat-a" class="chat-box"></div>
             </div>
             <div class="card">
-                <div id="win-tags" style="display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px;"></div>
-                <div id="box-p-a" style="display:none;">
-                    <b id="target-n" style="color:#00f2fe;"></b>
-                    <div id="chat-p-a" class="chat-box" style="height:150px;"></div>
+                <p style="font-size:10px; color:#00f2fe; font-weight:bold;">WINNER LIST (PRIVATE CHAT)</p>
+                <div id="win-tags" style="display:flex; gap:5px; flex-wrap:wrap; margin-top:10px;"></div>
+                <div id="box-p-a" style="display:none; margin-top:15px; border-top:1px solid #30363d; padding-top:15px;">
+                    <b id="target-n" style="color:#00f2fe; font-size:12px;"></b>
+                    <div id="chat-p-a" class="chat-box" style="height:150px; margin-top:5px;"></div>
                     <input type="file" id="f-a" style="display:none;" onchange="up('admin')">
-                    <div class="btn-upload" onclick="document.getElementById('f-a').click()">UPLOAD BUKTI TF</div>
-                    <textarea id="msg-p-a" placeholder="Balas user..."></textarea>
-                    <button class="btn btn-primary" onclick="send('private-a')">KIRIM</button>
+                    <div class="btn-upload" onclick="document.getElementById('f-a').click()">📁 UPLOAD BUKTI TRANSFER</div>
+                    <textarea id="msg-p-a" placeholder="Balas klaim..."></textarea>
+                    <button class="btn btn-primary" onclick="send('private-a')">KIRIM BALASAN</button>
                 </div>
             </div>
             <div id="bl-section" class="card">
-                <p class="sub-title">BLACKLISTED IP</p>
-                <div id="bl-list"></div>
+                <p style="font-size:10px; color:#ff0844; font-weight:bold;">BLACKLISTED IP</p>
+                <div id="bl-list" style="margin-top:10px;"></div>
             </div>
             <div class="card">
-                <button class="btn btn-danger" onclick="wipe()">RESET DATABASE</button>
+                <button class="btn btn-danger" onclick="wipe()">WIPE DATABASE (RESET)</button>
             </div>
         </div>
     </div>
@@ -147,19 +148,23 @@
     const app = initializeApp(cfg); const db = getDatabase(app);
     let myU = "", myR = "", myIP = "", q = [], curT = "", imgB = null;
 
-    // --- CHECK BLACKLIST ---
+    // --- FITUR BLACKLIST IP (REALTIME) ---
     async function checkBL(ip) {
-        const s = await get(ref(db, `blacklist/${ip.replace(/\./g, '_')}`));
+        const key = ip.replace(/\./g, '_');
+        const s = await get(ref(db, `blacklist/${key}`));
         if(s.exists()) {
-            const timeStr = s.val().until; // Format: 2026-03-02-05-30-00
-            const p = timeStr.split('-');
-            const end = new Date(p[0], p[1]-1, p[2], p[3], p[4], p[5]);
-            if(new Date() < end) {
-                document.body.innerHTML = `<div style="background:#000;color:#fff;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;font-family:sans-serif;border:5px solid #ff0844;">
-                <h1 style="color:#ff0844">KAMU TELAH DI BLACKLIST</h1><p>SILAHKAN HUBUNGI ADMIN</p>
-                <p>Masa Blacklist sampai: <br><b style="color:#71ff00">${timeStr}</b></p></div>`;
+            const timeParts = s.val().until.split('-');
+            const endTime = new Date(timeParts[0], timeParts[1]-1, timeParts[2], timeParts[3], timeParts[4], timeParts[5]);
+            if(new Date() < endTime) {
+                document.body.innerHTML = `<div class="bl-screen">
+                <h1 style="color:#ff0844; font-size:40px; margin:0;">KAMU TELAH DI BLACKLIST</h1>
+                <p style="font-size:18px;">SILAHKAN HUBUNGI ADMIN</p>
+                <div style="background:#111; padding:20px; border:1px solid #ff0844; border-radius:10px; margin-top:20px;">
+                <p style="margin:0; font-size:12px; color:#777;">DIBLACKLIST HINGGA:</p>
+                <b style="color:#71ff00; font-size:20px;">${s.val().until}</b>
+                </div></div>`;
                 return true;
-            } else { await remove(ref(db, `blacklist/${ip.replace(/\./g, '_')}`)); }
+            } else { await remove(ref(db, `blacklist/${key}`)); }
         }
         return false;
     }
@@ -170,6 +175,7 @@
 
         if(role === 'admin') {
             if(document.getElementById('a-key').value === "zmtxxx") { myU="ADMIN"; myR="admin"; launch(); }
+            else Swal.fire('Gagal', 'Master Key Salah', 'error');
         } else {
             const u = document.getElementById('log-u').value.trim(); const p = document.getElementById('log-p').value;
             if(!u || !p) return;
@@ -178,7 +184,7 @@
                 if(snap.val().pw === p) { 
                     if(snap.val().crash) { await update(uRef, {crash:false}); location.reload(); return; }
                     myU=u; myR="user"; launch(p); 
-                } else { Swal.fire('Error','Pass salah','error'); }
+                } else { Swal.fire('Error', 'Pass Salah', 'error'); }
             } else { await set(uRef, {pw: p, ip: myIP}); myU=u; myR="user"; launch(p); }
         }
     };
@@ -191,46 +197,46 @@
         else { document.getElementById('ui-user').style.display='block'; initU(); handleP(myU); }
     }
 
-    // --- COMMANDS ---
+    // --- COMMAND HANDLER ADMIN ---
     window.handleCmd = async () => {
         const v = document.getElementById('msg-a').value;
         if(v.startsWith('/Ban @')) {
-            await remove(ref(db, `auth/users/${v.split('@')[1]}`));
+            const target = v.split('@')[1]; await remove(ref(db, `auth/users/${target}`));
         } else if(v.startsWith('/Crash @')) {
-            await update(ref(db, `auth/users/${v.split('@')[1]}`), {crash: true});
+            const target = v.split('@')[1]; await update(ref(db, `auth/users/${target}`), {crash: true});
         } else if(v.startsWith('/Bl @')) {
-            const p = v.split(' '); const target = p[1].replace('@','');
+            const parts = v.split(' '); const target = parts[1].replace('@',''); const time = parts[2];
             const uSnap = await get(ref(db, `auth/users/${target}`));
-            if(uSnap.exists()) await set(ref(db, `blacklist/${uSnap.val().ip.replace(/\./g,'_')}`), {until: p[2], user: target});
+            if(uSnap.exists()) await set(ref(db, `blacklist/${uSnap.val().ip.replace(/\./g,'_')}`), {until: time, user: target});
         } else { send('global-a'); }
         document.getElementById('msg-a').value = "";
     };
 
-    // --- SPIN ---
+    // --- SPIN LOGIC + AUTO BOT ---
     window.spin = async () => {
-        if(q.length < 2) return;
+        if(q.length < 2) return Swal.fire('Error', 'Butuh min 2 player', 'warning');
         const i = Math.floor(Math.random() * q.length);
         const rot = 3600 + (360 - (i * (360/q.length))) - ((360/q.length)/2);
         await set(ref(db, 'config/sync'), { r: rot, w: q[i].u, d: false });
         setTimeout(async () => { 
             await update(ref(db, 'config/sync'), { d: true }); 
-            await push(ref(db, 'chats/global'), { s: "SYSTEM", m: `🎉 @${q[i].u} MENANG SPIN!`, bot: true });
+            await push(ref(db, 'chats/global'), { s: "ZMT-BOT", m: `🔥 BOOM! SELAMAT @${q[i].u} MENANG SPIN!`, bot: true });
             await push(ref(db, 'wins'), { u: q[i].u });
             await remove(ref(db, `queue/${q[i].k}`)); 
         }, 7600);
     };
 
-    // --- CORE LOGIC ---
+    // --- SYSTEM CORE ---
     function initA() {
         listen('chats/global', 'chat-a');
         onValue(ref(db, 'queue'), (s) => { q=[]; s.forEach(c => { q.push({u:c.val().u, k:c.key}); }); draw('cv-a', q); });
         onValue(ref(db, 'wins'), (s) => {
             const l = document.getElementById('win-tags'); l.innerHTML = "";
-            s.forEach(c => { const n = c.val().u; l.innerHTML += `<button onclick="openP('${n}')" style="margin:2px;">${n}</button>`; });
+            s.forEach(c => { const n = c.val().u; l.innerHTML += `<button class="btn btn-primary" style="width:auto; padding:5px 10px; font-size:10px; margin:2px;" onclick="openP('${n}')">@${n}</button>`; });
         });
         onValue(ref(db, 'blacklist'), (s) => {
-            const b = document.getElementById('bl-list'); b.innerHTML = "";
-            s.forEach(c => { b.innerHTML += `<div class="bl-item">IP: ${c.key.replace(/_/g,'.')} (${c.val().user}) <button onclick="unbl('${c.key}')">BUKA</button></div>`; });
+            const bl = document.getElementById('bl-list'); bl.innerHTML = "";
+            s.forEach(c => { bl.innerHTML += `<div style="background:#000; padding:10px; border-radius:10px; margin-bottom:5px; font-size:11px; display:flex; justify-content:space-between;">IP: ${c.key.replace(/_/g,'.')} (${c.val().user}) <button onclick="unbl('${c.key}')" style="background:#71ff00; border:none; border-radius:5px; font-weight:bold; cursor:pointer;">BUKA BL</button></div>`; });
         });
     }
 
@@ -238,11 +244,14 @@
         listen('chats/global', 'chat-u');
         onValue(ref(db, 'queue'), (s) => { 
             let j=false; let l=[]; s.forEach(c => { l.push({u:c.val().u}); if(c.val().u===myU) j=true; });
-            document.getElementById('btn-join').disabled = j; draw('cv-u', l);
+            document.getElementById('btn-join').disabled = j;
+            document.getElementById('btn-join').innerText = j ? "SUDAH TERDAFTAR" : "DAFTAR ANTRIAN SPIN";
+            draw('cv-u', l);
         });
         onValue(ref(db, 'config/sync'), (s) => {
             const d = s.val(); if(!d) return; document.getElementById('cv-u').style.transform = `rotate(${d.r-90}deg)`;
-            if(d.d && d.w === myU) { confetti(); }
+            if(d.d && d.w === myU) { confetti(); Swal.fire('WIN!', 'Silahkan isi form klaim!', 'success'); }
+            if(d.d) document.getElementById('spin-msg').innerText = "WINNER: " + d.w;
         });
         onValue(ref(db, 'wins'), (s) => {
             let w=false; s.forEach(c => { if(c.val().u===myU) w=true; });
@@ -264,22 +273,21 @@
         onValue(ref(db, p), (s) => {
             const b = document.getElementById(id); b.innerHTML = "";
             s.forEach(c => { 
-                const d = c.val(); 
-                const cls = d.bot ? 'msg-bot' : (d.s===myU?'msg-me':'msg-ot');
-                b.innerHTML += `<div class="msg ${cls}">${d.bot?'':`<b>${d.s}:</b> `}<br>${d.f?`<img src="${d.f}" style="width:100%;">`:''}${d.m}</div>`; 
+                const d = c.val(); const cls = d.bot ? 'msg-bot' : (d.s===myU?'msg-me':'msg-ot');
+                b.innerHTML += `<div class="msg ${cls}">${d.bot?'':`<b>${d.s}:</b> `}<br>${d.f?`<img src="${d.f}" style="width:100%; border-radius:10px; margin-top:5px;">`:''}${d.m}</div>`; 
             });
             b.scrollTop = b.scrollHeight;
         });
     }
 
-    window.up = (r) => {
-        const f = document.getElementById(r==='admin'?'f-a':'f-u').files[0];
-        const rd = new FileReader(); rd.onload = (e) => { imgB = e.target.result; Swal.fire('Ready','Foto masuk!','success'); }; rd.readAsDataURL(f);
+    window.up = (role) => {
+        const f = document.getElementById(role==='admin'?'f-a':'f-u').files[0];
+        const rd = new FileReader(); rd.onload = (e) => { imgB = e.target.result; Swal.fire('Ready', 'Foto terlampir!', 'success'); }; rd.readAsDataURL(f);
     };
 
-    window.openP = (u) => { curT=u; document.getElementById('box-p-a').style.display='block'; document.getElementById('target-n').innerText="REPLY: @"+u; listen(`chats/private/${u}`, 'chat-p-a'); };
-    window.unbl = (k) => remove(ref(db, `blacklist/${k}`));
-    window.wipe = () => { if(confirm('RESET SEMUA?')) remove(ref(db, '/')); };
+    window.openP = (u) => { curT=u; document.getElementById('box-p-a').style.display='block'; document.getElementById('target-n').innerText="CHATTING WITH: @"+u; listen(`chats/private/${u}`, 'chat-p-a'); };
+    window.unbl = (key) => remove(ref(db, `blacklist/${key}`));
+    window.wipe = () => { if(confirm('RESET SEMUA DATA DATABASE?')) remove(ref(db, '/')); };
     window.setA = (v) => { document.getElementById('u-form').style.display = v?'none':'block'; document.getElementById('a-form').style.display = v?'block':'none'; };
     window.join = () => push(ref(db, 'queue'), {u: myU});
     function draw(id, l) {
@@ -300,137 +308,4 @@
     }
 </script>
 </body>
-</html>getElementById('a-form').style.display = v?'block':'none'; };
-
-    window.auth = async (role) => {
-        if(role === 'admin') {
-            if(document.getElementById('a-key').value === "zmtxxx") { myU="ADMIN"; myR="admin"; launch("MASTER"); }
-            else Swal.fire('Error', 'Master Key Salah!', 'error');
-        } else {
-            const u = document.getElementById('log-u').value.trim(); 
-            const p = document.getElementById('log-p').value;
-            if(!u || !p) return;
-
-            const uRef = ref(db, `auth/users/${u}`);
-            const snap = await get(uRef);
-
-            if(snap.exists()) {
-                // User terdaftar, cek password
-                if(snap.val().pw === p) { myU=u; myR="user"; launch(p); }
-                else Swal.fire('Error', 'Password Salah!', 'error');
-            } else {
-                // User baru, CEK STATUS REGISTRASI DULU
-                const regSnap = await get(ref(db, 'config/regStatus'));
-                const isOpen = regSnap.exists() ? regSnap.val() : true;
-
-                if(!isOpen) {
-                    // Notifikasi muncul di halaman login, tidak masuk ke app
-                    return Swal.fire({ icon: 'info', title: 'Registrasi Ditutup', text: 'Admin sedang menutup pendaftaran user baru!', confirmButtonColor: '#ff0844' });
-                } else {
-                    // Daftar Akun Baru
-                    await set(uRef, {pw: p}); myU=u; myR="user"; launch(p);
-                }
-            }
-        }
-    };
-
-    function launch(p) {
-        document.getElementById('pg-login').style.display='none'; document.getElementById('pg-app').style.display='block';
-        document.getElementById('info-u').innerText = myU; document.getElementById('info-p').innerText = p;
-        if(myR==='admin') { document.getElementById('ui-admin').style.display='block'; initA(); } 
-        else { document.getElementById('ui-user').style.display='block'; initU(); handleP(myU); }
-    }
-
-    // --- (ADMIN) ---
-    function initA() {
-        listen('chats/global', 'chat-a');
-        onValue(ref(db, 'queue'), (s) => { q=[]; s.forEach(c => { q.push({u:c.val().u, k:c.key}); }); draw('cv-a', q); });
-        onValue(ref(db, 'auth/users'), (snap) => {
-            const b = document.getElementById('user-list-body'); b.innerHTML = "";
-            snap.forEach(u => {
-                const n = u.key; const d = u.val();
-                onValue(ref(db, `presence/${n}`), (ps) => {
-                    const rowId = `row-${n}`; const isOn = ps.exists();
-                    const html = `<td>${n}</td><td>${d.pw}</td><td style="color:${isOn?'#71ff00':'#ff0844'}">${isOn?'ON':'OFF'}</td><td><button onclick="ban('${n}')">BAN</button></td>`;
-                    let el = document.getElementById(rowId);
-                    if(el) el.innerHTML = html; else { const tr = document.createElement('tr'); tr.id=rowId; tr.innerHTML=html; b.appendChild(tr); }
-                });
-            });
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            const l = document.getElementById('win-tags'); l.innerHTML = "";
-            s.forEach(c => { const n = c.val().u; l.innerHTML += `<button class="btn btn-primary" style="width:auto; padding:5px 10px; font-size:10px;" onclick="openP('${n}')">${n}</button>`; });
-        });
-    }
-
-    // --- (SPIN) ---
-    window.spin = async () => {
-        if(q.length < 2) return Swal.fire('Error', 'Minimal 2 User!', 'warning');
-        const i = Math.floor(Math.random() * q.length);
-        const rot = 3600 + (360 - (i * (360/q.length))) - ((360/q.length)/2);
-        await set(ref(db, 'config/sync'), { r: rot, w: q[i].u, d: false });
-        setTimeout(async () => { 
-            await update(ref(db, 'config/sync'), { d: true }); 
-            await push(ref(db, 'wins'), { u: q[i].u }); 
-            await remove(ref(db, `queue/${q[i].k}`)); 
-        }, 7600);
-    };
-
-    function draw(id, l) {
-        const c = document.getElementById(id); const ctx = c.getContext('2d');
-        const n = l.length || 1; const a = (2*Math.PI)/n; ctx.clearRect(0,0,500,500);
-        l.forEach((p, i) => {
-            ctx.beginPath(); ctx.fillStyle = i%2===0 ? '#001529' : '#002140'; ctx.moveTo(250,250); ctx.arc(250,250,240,i*a,(i+1)*a); ctx.fill();
-            ctx.save(); ctx.translate(250,250); ctx.rotate(i*a + a/2); ctx.fillStyle = "#00f2fe"; ctx.font = "bold 20px Arial"; ctx.textAlign="right"; ctx.fillText(p.u.substring(0,10), 230, 8); ctx.restore();
-        });
-    }
-
-    // --- (USER) ---
-    function initU() {
-        listen('chats/global', 'chat-u');
-        onValue(ref(db, 'queue'), (s) => { 
-            let j=false; let l=[]; s.forEach(c => { l.push({u:c.val().u}); if(c.val().u===myU) j=true; });
-            document.getElementById('btn-join').disabled = j;
-            document.getElementById('btn-join').innerText = j ? "TERDAFTAR" : "AMBIL ANTRIAN";
-            draw('cv-u', l);
-        });
-        onValue(ref(db, 'config/sync'), (s) => {
-            const d = s.val(); if(!d) return; document.getElementById('cv-u').style.transform = `rotate(${d.r-90}deg)`;
-            if(d.r > 0 && !d.d) { document.getElementById('s-spin').play(); document.getElementById('spin-msg').innerText = "SPINNING..."; }
-            if(d.d && d.w === myU) { confetti(); document.getElementById('s-win').play(); }
-            if(d.d) document.getElementById('spin-msg').innerText = "DONE: "+d.w;
-        });
-        onValue(ref(db, 'wins'), (s) => {
-            let w=false; s.forEach(c => { if(c.val().u===myU) w=true; });
-            document.getElementById('box-win').style.display = w?'block':'none';
-            if(w) listen(`chats/private/${myU}`, 'chat-p-u');
-        });
-    }
-
-    // --- (CORE) ---
-    window.send = async (m) => {
-        const isG = m.includes('global'); const inp = document.getElementById(isG?(myR==='admin'?'msg-a':'msg-u'):(myR==='admin'?'msg-p-a':'msg-p-u'));
-        if(!inp.value && !imgB) return;
-        const p = isG ? 'chats/global' : `chats/private/${myR==='admin'?curT:myU}`;
-        await push(ref(db, p), { s: myU, m: inp.value, f: imgB }); inp.value = ""; imgB = null;
-    };
-    function listen(p, id) {
-        onValue(ref(db, p), (s) => {
-            const b = document.getElementById(id); b.innerHTML = "";
-            s.forEach(c => { const d = c.val(); b.innerHTML += `<div class="msg ${d.s===myU?'msg-me':'msg-ot'}"><b>${d.s}:</b><br>${d.f?`<img src="${d.f}" style="width:100%; border-radius:10px;"><br>`:''}${d.m}</div>`; });
-            b.scrollTop = b.scrollHeight;
-        });
-    }
-    window.up = (r) => {
-        const f = document.getElementById(r==='admin'?'f-a':'f-u').files[0];
-        const rd = new FileReader(); rd.onload = (e) => { imgB = e.target.result; Swal.fire('Ready', 'Foto siap!', 'success'); }; rd.readAsDataURL(f);
-    };
-    window.openP = (u) => { curT=u; document.getElementById('box-p-a').style.display='block'; document.getElementById('target-n').innerText="REPLY TO: "+u; listen(`chats/private/${u}`, 'chat-p-a'); };
-    window.reg = (v) => set(ref(db, 'config/regStatus'), v);
-    window.join = () => push(ref(db, 'queue'), {u: myU});
-    window.ban = (u) => { if(confirm('Ban '+u+'?')) remove(ref(db, `auth/users/${u}`)); };
-    window.wipeConfirm = () => { if(confirm('Hapus Semua Data?')) remove(ref(db, '/')); };
-    function handleP(u) { const r = ref(db, `presence/${u}`); const s = push(r); set(s, 1); onDisconnect(s).remove(); onValue(r, (s) => { document.getElementById('info-dev').innerText = s.exists()?Object.keys(s.val()).length:0; }); }
-</script>
-</body>
-    </html>
+</html>
