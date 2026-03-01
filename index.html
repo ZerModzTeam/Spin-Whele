@@ -47,7 +47,7 @@
 <div id="gate">
     <div class="card" style="width: 100%; max-width: 350px; text-align: center;">
         <h2 style="color: var(--p); margin: 0; letter-spacing: 2px;">ZMT EVENT</h2>
-        <p style="font-size: 10px; opacity: 0.5; margin-bottom: 25px;">V0.0.3 (CLEAN VERSION)</p>
+        <p style="font-size: 10px; opacity: 0.5; margin-bottom: 25px;">V0.0.3 (REALTIME FIX)</p>
         <div id="loginUserBox">
             <input type="text" id="userInput" placeholder="Username">
             <input type="password" id="passInput" placeholder="Password">
@@ -139,6 +139,13 @@
 
     onValue(ref(db, 'config/wipeTrigger'), (s) => { if(s.val() && myID !== "MASTER_ADMIN") handleLogout(); });
 
+    // --- REALTIME WHEEL SYNC ---
+    onValue(ref(db, 'q'), (s) => { 
+        wheelItems = []; 
+        if(s.exists()) s.forEach(c => wheelItems.push({u: c.val().u, key: c.key})); 
+        draw(); // REDRAW OTOMATIS SETIAP ADA PERUBAHAN
+    });
+
     window.authNow = async (role) => {
         if (role === 'admin') {
             if (document.getElementById('adminKeyInput').value === "zmtxxx") startApp("MASTER_ADMIN");
@@ -168,7 +175,6 @@
     if (saved) startApp(saved);
     window.handleLogout = () => { localStorage.clear(); location.reload(); };
 
-    // SPIN LOGIC
     window.doSpin = () => {
         if(wheelItems.length < 2) return Swal.fire("Minimal 2 orang!");
         const winIdx = Math.floor(Math.random() * wheelItems.length);
@@ -189,9 +195,6 @@
         onValue(ref(db, 'auth'), (s) => {
             const tb = document.getElementById('userTableBody'); tb.innerHTML = "";
             s.forEach(c => { tb.innerHTML += `<tr><td>@${c.key}</td><td>${c.val().pw}</td></tr>`; });
-        });
-        onValue(ref(db, 'q'), (s) => { 
-            wheelItems = []; if(s.exists()) s.forEach(c => wheelItems.push({u: c.val().u, key: c.key})); draw(); 
         });
         onValue(ref(db, 'wins'), (s) => {
             const list = document.getElementById('adminChatList'); list.innerHTML = "";
@@ -240,16 +243,15 @@
         });
     }
 
-    // --- FIX: RESET TOTAL (TERMASUK AKUN) ---
     window.resetDB = async () => {
         if(confirm("HAPUS SEMUA DATA, SEMUA AKUN, & TENDANG SEMUA USER?")) {
             await set(ref(db, 'config/wipeTrigger'), true);
-            await remove(ref(db, 'auth')); // Hapus Akun (Sandi & USN)
-            await remove(ref(db, 'q'));    // Hapus Antrian
-            await remove(ref(db, 'wins')); // Hapus Pemenang
-            await remove(ref(db, 'chats'));// Hapus Chat
+            await remove(ref(db, 'auth'));
+            await remove(ref(db, 'q'));
+            await remove(ref(db, 'wins'));
+            await remove(ref(db, 'chats'));
             setTimeout(() => set(ref(db, 'config/wipeTrigger'), false), 1500);
-            Swal.fire("Selesai! Database Mulus Lagi.");
+            Swal.fire("Selesai!");
         }
     };
 
@@ -258,4 +260,4 @@
     window.switchGate = (m) => { document.getElementById('loginUserBox').style.display = m==='user'?'block':'none'; document.getElementById('loginAdminBox').style.display = m==='admin'?'block':'none'; };
 </script>
 </body>
-</html>
+                                                                          </html>
