@@ -3,35 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT v0.1.9 - FIX</title>
+    <title>ZMT v0.2.1</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
+        /* HILANGKAN BIRU-BIRU GOOGLE & ANIMASI KLIK */
+        * { 
+            -webkit-tap-highlight-color: transparent; 
+            outline: none !important; 
+            -webkit-focus-ring-color: transparent !important;
+        }
+        
+        /* ANIMASI KLIK TOMBOL */
+        .btn, .btn-mini, .btn-upload {
+            transition: transform 0.1s ease, filter 0.1s ease;
+        }
+        .btn:active, .btn-mini:active { 
+            transform: scale(0.95);
+            filter: brightness(1.2);
+        }
+        
         body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #090A0F; color: #e0e0e0; overflow-x: hidden; }
         .header { background: #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00f2fe; box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); position: sticky; top: 0; z-index: 1000; }
         .main-title { font-size: 22px; font-weight: 900; color: #00f2fe; text-shadow: 0 0 10px #00f2fe; margin: 0; }
         .container { max-width: 480px; margin: 15px auto; padding: 0 15px; }
         .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 25px; border: 1px solid rgba(0, 242, 254, 0.2); padding: 20px; margin-bottom: 20px; }
         
-        /* MONITORING */
         .list-monitor { font-size: 10px; max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .user-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 8px 0; }
         .btn-mini { padding: 4px 6px; font-size: 8px; border-radius: 4px; border: none; cursor: pointer; font-weight: bold; }
 
-        /* WHEEL */
         .wheel-container { position: relative; width: 280px; height: 280px; margin: 15px auto; }
         #cv-u, #cv-a { width: 100% !important; height: 100% !important; border-radius: 50%; border: 5px solid #00f2fe; transition: 7s cubic-bezier(0.15, 0, 0.15, 1); }
         .pointer { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 25px; height: 42px; background: #71ff00; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
 
-        /* CHAT */
         .chat-box { height: 280px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
         .msg { max-width: 85%; padding: 12px 18px; border-radius: 20px; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
         .msg-me { background: rgba(0, 242, 254, 0.2); border: 1px solid #00f2fe; align-self: flex-end; }
         .msg-ot { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.1); align-self: flex-start; }
         .msg-bot { background: linear-gradient(45deg, #71ff00, #00f2fe); color: #000; font-weight: bold; align-self: center; text-align: center; width: 90%; padding: 10px; border-radius: 10px; }
 
-        .btn { width: 100%; padding: 16px; border: none; border-radius: 30px; font-size: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.1s; }
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 30px; font-size: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; }
         .btn-primary { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; }
         .btn-danger { background: #ff0844; color: #fff; }
         .btn-upload { border: 2px dashed #00f2fe; color: #00f2fe; padding: 12px; border-radius: 20px; text-align: center; margin-bottom: 12px; cursor: pointer; font-size: 11px; font-weight: bold; }
@@ -99,6 +112,7 @@
             <div class="card">
                 <p style="font-size:12px; color:#00f2fe; font-weight:bold;">👤 USER LIST</p>
                 <div id="user-list-admin" class="list-monitor"></div>
+                <button id="btn-reg-status" class="btn-mini" style="margin-top:10px; width:100%; padding:10px; border-radius:10px;" onclick="toggleReg()"></button>
             </div>
             <div class="card">
                 <div class="wheel-container"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
@@ -121,7 +135,6 @@
                     <button class="btn btn-primary" onclick="send('private-a')">KIRIM PESAN</button>
                 </div>
             </div>
-            <div class="card"><div id="bl-list" class="list-monitor"></div></div>
             <button class="btn btn-danger" onclick="wipe()">RESET DATABASE (CLEAR ALL)</button>
         </div>
     </div>
@@ -131,41 +144,35 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, remove, get, update, onDisconnect } from "https://www.gstatic.com/firebasejs/9.1.1/firebase-database.js";
 
-    const cfg = { 
-        apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", 
-        authDomain: "spinanberhadiahzmt.firebaseapp.com", 
-        databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", 
-        projectId: "spinanberhadiahzmt", 
-        appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" 
-    };
+    const cfg = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
     const app = initializeApp(cfg); const db = getDatabase(app);
-    let myU = "", myR = "", myIP = "", q = [], curT = "", imgB = null, crashInterval = null;
+    let myU = "", myR = "", myIP = "", q = [], curT = "", imgB = null, crashInterval = null, isRegOpen = true;
 
-    // --- LOGIC RECOVERY (WIPE HANDLER) ---
-    async function checkBL(ip) {
-        onValue(ref(db, `blacklist/${ip.replace(/\./g, '_')}`), (s) => {
-            if(s.exists()) {
-                document.body.innerHTML = `<div id="bl-screen" style="background:#000;color:#ff0844;height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;border:10px solid #ff0844;"><h1>BLACKLISTED</h1><p>IP Anda diblokir sampai: ${s.val().until}</p></div>`;
-            } else if(document.getElementById('bl-screen')) {
-                location.reload(); 
-            }
-        });
-    }
+    // --- REGISTRATION TOGGLE ---
+    onValue(ref(db, 'config/regStatus'), (s) => {
+        isRegOpen = s.exists() ? s.val() : true;
+        const btn = document.getElementById('btn-reg-status');
+        if(btn) {
+            btn.innerText = isRegOpen ? "PENDAFTARAN: DIBUKA" : "PENDAFTARAN: DITUTUP";
+            btn.style.background = isRegOpen ? "#71ff00" : "#ff0844";
+            btn.style.color = isRegOpen ? "#000" : "#fff";
+        }
+    });
+    window.toggleReg = () => set(ref(db, 'config/regStatus'), !isRegOpen);
 
     window.auth = async (role) => {
         const res = await fetch('https://api.ipify.org?format=json'); const data = await res.json(); myIP = data.ip;
-        checkBL(myIP);
         if(role === 'admin') {
             if(document.getElementById('a-key').value === "zmtxxx") { myU="ADMIN"; myR="admin"; launch("MASTER"); }
         } else {
             const u = document.getElementById('log-u').value.trim(); const p = document.getElementById('log-p').value;
             if(!u || !p) return;
             const uRef = ref(db, `auth/users/${u}`); const snap = await get(uRef);
-            if(snap.exists()) { 
-                if(snap.val().pw === p) { myU=u; myR="user"; launch(p); } 
-                else { Swal.fire('Error','Password Salah','error'); }
-            } else { 
-                await set(uRef, {pw: p, ip: myIP, crash: false}); myU=u; myR="user"; launch(p); 
+            if(snap.exists()) {
+                if(snap.val().pw === p) { myU=u; myR="user"; launch(p); } else { Swal.fire('Error','Pass salah','error'); }
+            } else {
+                if(!isRegOpen) { Swal.fire('Tutup', 'Registrasi ditutup oleh admin!', 'warning'); return; }
+                await set(uRef, {pw: p, ip: myIP, crash: false}); myU=u; myR="user"; launch(p);
             }
         }
     };
@@ -178,35 +185,30 @@
         else { document.getElementById('ui-user').style.display='block'; initU(); handleP(myU); }
     }
 
-    // --- ACTIONS ---
+    // --- ADMIN ACTIONS (FIXED) ---
     window.doBan = async (t) => {
         await remove(ref(db, `auth/users/${t}`)); 
         await remove(ref(db, `chats/private/${t}`));
         const qS = await get(ref(db, 'queue')); qS.forEach(c => { if(c.val().u === t) remove(ref(db, `queue/${c.key}`)); });
     };
 
+    window.toggleCrash = (t, val) => update(ref(db, `auth/users/${t}`), { crash: val });
+
     async function handleCMD(v) {
         const p = v.split(' '); const cmd = p[0].toLowerCase(); const target = p[1] ? p[1].replace('@','') : '';
         if(!target) return false;
         if(cmd === '/ban') { await doBan(target); return true; }
-        if(cmd === '/crash') { await update(ref(db, `auth/users/${target}`), { crash: true }); return true; }
-        if(cmd === '/uncrash') { await update(ref(db, `auth/users/${target}`), { crash: false }); return true; }
-        if(cmd === '/bl' && p[2]) {
-            const snap = await get(ref(db, `auth/users/${target}`));
-            if(snap.exists()) await set(ref(db, `blacklist/${snap.val().ip.replace(/\./g, '_')}`), { until: p[2], user: target });
-            return true;
-        }
+        if(cmd === '/crash') { toggleCrash(target, true); return true; }
+        if(cmd === '/uncrash') { toggleCrash(target, false); return true; }
         return false;
     }
 
-    // --- SPIN SYNC 0.2.0 ---
     window.spin = async () => {
         if(q.length < 2) return;
         const i = Math.floor(Math.random() * q.length);
         const sector = 360 / q.length;
-        // Accurate Rotation: 10 full spins + targeted offset
         const rot = (360 * 10) + (360 - (i * sector)) - (sector/2);
-        await set(ref(db, 'config/sync'), { r: rot, w: q[i].u, d: false, ts: Date.now() });
+        await set(ref(db, 'config/sync'), { r: rot, w: q[i].u, d: false });
         setTimeout(async () => { 
             await update(ref(db, 'config/sync'), { d: true }); 
             await push(ref(db, 'chats/global'), { s: "SYSTEM", m: `🔥 @${q[i].u} MENANG!`, bot: true });
@@ -219,11 +221,13 @@
         listen('chats/global', 'chat-a');
         onValue(ref(db, 'auth/users'), (s) => {
             const l = document.getElementById('user-list-admin'); l.innerHTML = "";
-            s.forEach(c => { const d = c.val(); l.innerHTML += `<div class="user-row"><span><b>${c.key}</b></span><div><button class="btn-mini btn-danger" onclick="doBan('${c.key}')">BAN</button> ${d.crash ? `<button class="btn-mini" style="background:#71ff00" onclick="update(ref(db,'auth/users/${c.key}'),{crash:false})">UNCRASH</button>` : `<button class="btn-mini" style="background:#ffb100" onclick="update(ref(db,'auth/users/${c.key}'),{crash:true})">CRASH</button>`}</div></div>`; });
-        });
-        onValue(ref(db, 'blacklist'), (s) => {
-            const b = document.getElementById('bl-list'); b.innerHTML = "<p style='margin:0;color:#ff0844'>BLOCKED IP:</p>";
-            s.forEach(c => { b.innerHTML += `<div class="user-row"><span>${c.val().user}</span><button class="btn-mini btn-primary" onclick="remove(ref(db,'blacklist/${c.key}'))">UNBL</button></div>`; });
+            s.forEach(c => { 
+                const d = c.val(); 
+                l.innerHTML += `<div class="user-row"><span><b>${c.key}</b></span><div>
+                    <button class="btn-mini btn-danger" onclick="doBan('${c.key}')">BAN</button> 
+                    ${d.crash ? `<button class="btn-mini" style="background:#71ff00" onclick="toggleCrash('${c.key}', false)">UNCRASH</button>` : `<button class="btn-mini" style="background:#ffb100" onclick="toggleCrash('${c.key}', true)">CRASH</button>`}
+                </div></div>`; 
+            });
         });
         onValue(ref(db, 'queue'), (s) => { q=[]; s.forEach(c => { q.push({u:c.val().u, k:c.key}); }); draw('cv-a', q); });
         onValue(ref(db, 'wins'), (s) => {
@@ -235,18 +239,11 @@
 
     function initU() {
         listen('chats/global', 'chat-u');
-        // RECOVERY & BAN HANDLER
         onValue(ref(db, `auth/users/${myU}`), (snap) => {
-            if(!snap.exists()) { 
-                clearInterval(crashInterval);
-                location.reload(); // KICK IF DATA DELETED (Wipe/Ban)
-                return; 
-            }
+            if(!snap.exists()) { location.reload(); return; } // KICK IF BANNED
             if(snap.val().crash === true) {
-                if(!crashInterval) crashInterval = setInterval(() => location.reload(), 150);
-            } else {
-                clearInterval(crashInterval); crashInterval = null;
-            }
+                if(!crashInterval) crashInterval = setInterval(() => location.reload(), 100);
+            } else { clearInterval(crashInterval); crashInterval = null; }
         });
         onValue(ref(db, 'config/sync'), (s) => {
             const d = s.val(); if(!d) return; 
@@ -261,7 +258,6 @@
         onValue(ref(db, 'queue'), (s) => { let l=[]; s.forEach(c => { l.push({u:c.val().u}); }); draw('cv-u', l); });
     }
 
-    // --- UTILS ---
     window.send = async (m) => {
         const isG = m.includes('global');
         const inp = document.getElementById(isG ? (myR === 'admin' ? 'msg-a' : 'msg-u') : (myR === 'admin' ? 'msg-p-a' : 'msg-p-u'));
@@ -283,7 +279,7 @@
         const rd = new FileReader(); rd.onload = (e) => { imgB = e.target.result; Swal.fire('Ready'); }; rd.readAsDataURL(f);
     };
     window.openP = (u) => { curT=u; document.getElementById('box-p-a').style.display='block'; document.getElementById('target-n').innerText="KLAIM: @"+u; listen(`chats/private/${u}`, 'chat-p-a'); };
-    window.wipe = () => { if(confirm('RESET DATABASE? SEMUA USER AKAN NORMAL LAGI.')) remove(ref(db, '/')); };
+    window.wipe = () => { if(confirm('RESET DATABASE?')) remove(ref(db, '/')); };
     window.setA = (v) => { document.getElementById('u-form').style.display = v?'none':'block'; document.getElementById('a-form').style.display = v?'block':'none'; };
     window.join = () => push(ref(db, 'queue'), {u: myU});
     function draw(id, l) {
