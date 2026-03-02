@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT v0.2.4 - ULTIMATE</title>
+    <title>ZMT v0.2.5</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
     <style>
-        /* HILANGKAN BIRU GOOGLE & ANIMASI KLIK */
+        /* FIX BIRU GOOGLE & ANIMASI */
         * { -webkit-tap-highlight-color: transparent; outline: none !important; }
-        .btn, .btn-mini, .btn-upload { transition: transform 0.1s ease; cursor: pointer; }
-        .btn:active, .btn-mini:active { transform: scale(0.92); filter: brightness(1.1); }
+        .btn, .btn-mini { transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
+        .btn:active, .btn-mini:active { transform: scale(0.9); filter: brightness(1.2); }
         
         body { margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; background: #090A0F; color: #e0e0e0; overflow-x: hidden; }
         .header { background: #000; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00f2fe; box-shadow: 0 0 20px rgba(0, 242, 254, 0.4); position: sticky; top: 0; z-index: 1000; }
@@ -19,26 +19,25 @@
         .container { max-width: 480px; margin: 15px auto; padding: 0 15px; }
         .card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px); border-radius: 25px; border: 1px solid rgba(0, 242, 254, 0.2); padding: 20px; margin-bottom: 20px; }
         
-        /* USER LIST ADMIN DENGAN PW */
-        .list-monitor { font-size: 11px; max-height: 250px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
+        /* ADMIN MONITOR */
+        .list-monitor { font-size: 11px; max-height: 300px; overflow-y: auto; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
         .user-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.05); padding: 12px 0; }
-        .u-data { display: flex; flex-direction: column; }
+        .u-info { display: flex; flex-direction: column; gap: 2px; }
         .u-name { color: #00f2fe; font-weight: bold; font-size: 14px; }
-        .u-pw { color: #71ff00; font-size: 10px; opacity: 0.8; }
-        .btn-mini { padding: 6px 12px; font-size: 9px; border-radius: 8px; border: none; font-weight: bold; }
+        .u-det { color: #71ff00; font-size: 9px; opacity: 0.7; }
+        .btn-mini { padding: 6px 10px; font-size: 9px; border-radius: 8px; border: none; font-weight: bold; margin-left: 3px; }
 
-        /* WHEEL STYLE */
+        /* WHEEL */
         .wheel-container { position: relative; width: 280px; height: 280px; margin: 15px auto; }
         #cv-u, #cv-a { width: 100% !important; height: 100% !important; border-radius: 50%; border: 5px solid #00f2fe; transition: 7s cubic-bezier(0.15, 0, 0.15, 1); }
         .pointer { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 25px; height: 42px; background: #71ff00; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
 
-        .chat-box { height: 280px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(255,255,255,0.05); margin-bottom: 10px; }
-        .msg { max-width: 85%; padding: 12px 18px; border-radius: 20px; font-size: 13px; line-height: 1.4; word-wrap: break-word; }
+        .chat-box { height: 280px; overflow-y: auto; background: rgba(0,0,0,0.5); border-radius: 20px; padding: 15px; display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(255,255,255,0.05); }
+        .msg { max-width: 85%; padding: 12px 18px; border-radius: 20px; font-size: 13px; line-height: 1.4; }
         .msg-me { background: rgba(0, 242, 254, 0.2); border: 1px solid #00f2fe; align-self: flex-end; }
         .msg-ot { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255,255,255,0.1); align-self: flex-start; }
-        .msg-bot { background: linear-gradient(45deg, #71ff00, #00f2fe); color: #000; font-weight: bold; align-self: center; text-align: center; width: 90%; padding: 10px; border-radius: 10px; }
 
-        .btn { width: 100%; padding: 16px; border: none; border-radius: 30px; font-size: 14px; font-weight: 800; text-transform: uppercase; }
+        .btn { width: 100%; padding: 16px; border: none; border-radius: 30px; font-size: 14px; font-weight: 800; text-transform: uppercase; margin-top: 10px; }
         .btn-primary { background: linear-gradient(45deg, #00f2fe, #4facfe); color: #000; }
         .btn-danger { background: #ff0844; color: #fff; }
         
@@ -77,8 +76,8 @@
             <div style="font-size:11px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div>USER: <span id="info-u" style="color:#71ff00;">-</span></div>
                 <div>PASS: <span id="info-p" style="color:#71ff00;">-</span></div>
-                <div>ON: <span id="info-dev" style="color:#71ff00;">0</span></div>
-                <div>STAT: <span id="info-stat" style="color:#71ff00;">AKTIF</span></div>
+                <div>ONLINE: <span id="info-dev" style="color:#71ff00;">0</span></div>
+                <div>STATUS: <span id="info-stat" style="color:#71ff00;">AKTIF</span></div>
                 <div style="grid-column: span 2;">IP: <span id="info-ip" style="color:#71ff00;">...</span></div>
             </div>
         </div>
@@ -88,27 +87,22 @@
             <div class="card"><div class="wheel-container"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div></div>
             <div class="card">
                 <div id="chat-u" class="chat-box"></div>
-                <input type="text" id="msg-u" placeholder="Chat global...">
-                <button class="btn btn-primary" onclick="send('global')">KIRIM PESAN</button>
+                <input type="text" id="msg-u" placeholder="Kirim pesan..." style="margin-top:10px;">
+                <button class="btn btn-primary" onclick="send()">KIRIM</button>
             </div>
         </div>
 
         <div id="ui-admin" style="display:none;">
             <div class="card">
-                <p style="font-size:12px; color:#00f2fe; font-weight:bold;">👤 USER MONITOR (PASSWORD)</p>
+                <p style="font-size:12px; color:#00f2fe; font-weight:bold;">👤 MONITOR USER (PW & IP)</p>
                 <div id="user-list-admin" class="list-monitor"></div>
-                <button id="btn-reg-status" class="btn-mini" style="margin-top:10px; width:100%; padding:12px; border-radius:12px;" onclick="toggleReg()"></button>
+                <button id="btn-reg-status" class="btn" style="padding:12px; border-radius:15px;" onclick="toggleReg()"></button>
             </div>
             <div class="card">
                 <div class="wheel-container"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
                 <button class="btn btn-primary" onclick="spin()">PUTAR RODA</button>
             </div>
-            <div class="card">
-                <div id="chat-a" class="chat-box"></div>
-                <input type="text" id="msg-a" placeholder="Tulis pesan atau CMD...">
-                <button class="btn btn-primary" onclick="send('global')">KIRIM</button>
-            </div>
-            <button class="btn btn-danger" onclick="wipe()">RESET DATABASE</button>
+            <button class="btn btn-danger" onclick="wipe()">RESET SEMUA DATA</button>
         </div>
     </div>
 </div>
@@ -119,26 +113,21 @@
 
     const cfg = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
     const app = initializeApp(cfg); const db = getDatabase(app);
-    let myU = "", myR = "", myIP = "", q = [], crashInterval = null, isRegOpen = true;
+    let myU = "", myR = "", myIP = "", crashInterval = null, isRegOpen = true;
 
-    // --- HELPER NOTIF (MUNCUL DIMANA SAJA) ---
-    const flashMsg = (title, text, icon) => {
-        Swal.fire({ title, text, icon, background: '#161b22', color: '#fff', confirmButtonColor: '#00f2fe', timer: 3000 });
+    // --- ALERT SYSTEM ---
+    const popup = (title, text, icon) => {
+        Swal.fire({ title, text, icon, background: '#161b22', color: '#fff', confirmButtonColor: '#00f2fe' });
     };
 
-    // --- MONITOR REGISTER STATUS ---
+    // --- REGISTRATION LOGIC ---
     onValue(ref(db, 'config/regStatus'), (s) => {
-        const oldStatus = isRegOpen;
         isRegOpen = s.exists() ? s.val() : true;
         const btn = document.getElementById('btn-reg-status');
         if(btn) {
             btn.innerText = isRegOpen ? "REGISTRASI: TERBUKA" : "REGISTRASI: DITUTUP";
             btn.style.background = isRegOpen ? "#71ff00" : "#ff0844";
             btn.style.color = isRegOpen ? "#000" : "#fff";
-        }
-        // Notif Global pas status berubah
-        if(oldStatus !== isRegOpen) {
-            flashMsg('Info Registrasi', `Pendaftaran sekarang ${isRegOpen ? 'DIBUKA' : 'DITUTUP'}!`, 'info');
         }
     });
 
@@ -152,11 +141,15 @@
             const u = document.getElementById('log-u').value.trim(); const p = document.getElementById('log-p').value;
             if(!u || !p) return;
             const uRef = ref(db, `auth/users/${u}`); const snap = await get(uRef);
+            
             if(snap.exists()) {
-                if(snap.val().pw === p) { myU=u; myR="user"; launch(p); } else { flashMsg('Error','Password salah!','error'); }
+                // Jika user sudah ada (LOGIN)
+                if(snap.val().pw === p) { myU=u; myR="user"; launch(p); } 
+                else { popup('Error','Password salah!','error'); }
             } else {
-                if(!isRegOpen) { flashMsg('Maaf','Pendaftaran ditutup Admin!','warning'); return; }
-                await set(uRef, {pw: p, ip: myIP, crash: false}); myU=u; myR="user"; launch(p);
+                // Jika user baru (DAFTAR)
+                if(!isRegOpen) { popup('Maaf','Pendaftaran sedang ditutup oleh Admin!','warning'); return; }
+                await set(uRef, {pw: p, ip: myIP, crash: false, bl: false}); myU=u; myR="user"; launch(p);
             }
         }
     };
@@ -169,66 +162,59 @@
         else { document.getElementById('ui-user').style.display='block'; initU(); handleP(myU); }
     }
 
-    // --- ADMIN ENGINE ---
-    window.doBan = async (t) => {
-        await remove(ref(db, `auth/users/${t}`));
-        flashMsg('Sukses', `@${t} telah diblokir!`, 'success');
+    // --- ADMIN ACTIONS ---
+    window.doBan = (t) => {
+        localStorage.setItem('zmt_kick', `🚫 Akun @${t} telah di-BAN permanen!`);
+        remove(ref(db, `auth/users/${t}`));
     };
-    window.setCrash = (t, v) => {
+    window.doCrash = (t, v) => {
+        if(v) localStorage.setItem('zmt_kick', `☣️ Perangkat @${t} terkena serangan CRASH!`);
         update(ref(db, `auth/users/${t}`), { crash: v });
-        flashMsg('Status Updated', `@${t} crash set: ${v}`, 'info');
+    };
+    window.doBL = (t, v) => {
+        update(ref(db, `auth/users/${t}`), { bl: v });
+        popup('Blacklist', `@${t} status BL: ${v}`, 'info');
     };
 
     function initA() {
-        listen('chats/global', 'chat-a');
         onValue(ref(db, 'auth/users'), (s) => {
             const l = document.getElementById('user-list-admin'); l.innerHTML = "";
             s.forEach(c => { 
                 const d = c.val(); 
                 l.innerHTML += `<div class="user-row">
-                    <div class="u-data"><span class="u-name">${c.key}</span><span class="u-pw">PW: ${d.pw}</span></div>
+                    <div class="u-info"><span class="u-name">${c.key}</span><span class="u-det">PW: ${d.pw} | IP: ${d.ip}</span></div>
                     <div>
-                        <button class="btn-mini btn-danger" onclick="doBan('${c.key}')">BAN</button> 
-                        ${d.crash ? `<button class="btn-mini" style="background:#71ff00;color:#000;" onclick="setCrash('${c.key}', false)">FIX</button>` : `<button class="btn-mini" style="background:#ffb100;color:#000;" onclick="setCrash('${c.key}', true)">CRASH</button>`}
+                        <button class="btn-mini" style="background:#ffb100" onclick="doBL('${c.key}', ${!d.bl})">${d.bl?'UNBL':'BL'}</button>
+                        <button class="btn-mini" style="background:#ff0844;color:#fff" onclick="doBan('${c.key}')">BAN</button> 
+                        <button class="btn-mini" style="background:${d.crash?'#71ff00':'#4facfe'}" onclick="doCrash('${c.key}', ${!d.crash})">${d.crash?'FIX':'CRSH'}</button>
                     </div>
                 </div>`; 
             });
         });
         onValue(ref(db, 'queue'), (s) => { q=[]; s.forEach(c => { q.push({u:c.val().u, k:c.key}); }); draw('cv-a', q); });
-        onValue(ref(db, 'config/sync'), (s) => { if(s.val()) document.getElementById('cv-a').style.transform = `rotate(${s.val().r}deg)`; });
     }
 
     function initU() {
-        listen('chats/global', 'chat-u');
         onValue(ref(db, `auth/users/${myU}`), (snap) => {
-            // JIKA AKUN DIHAPUS (BAN)
-            if(!snap.exists()) { 
-                localStorage.setItem('zmt_alert', '🚫 Akun Anda telah di-BAN oleh Admin!');
-                location.reload(); 
-                return; 
-            }
-            // JIKA STATUS CRASH TRUE
+            if(!snap.exists()) { location.reload(); return; }
             if(snap.val().crash === true) {
-                localStorage.setItem('zmt_alert', '☣️ Perangkat Anda sedang di-CRASH oleh Admin!');
                 if(!crashInterval) crashInterval = setInterval(() => location.reload(), 150);
-            } else { 
-                clearInterval(crashInterval); crashInterval = null; 
-            }
+            } else { clearInterval(crashInterval); crashInterval = null; }
         });
-        onValue(ref(db, 'config/sync'), (s) => {
-            const d = s.val(); if(!d) return; 
-            document.getElementById('cv-u').style.transform = `rotate(${d.r}deg)`;
-            if(d.d && d.w === myU) { confetti(); flashMsg('SELAMAT!','Kamu Menang Spin!','success'); }
+        onValue(ref(db, 'chats/global'), (s) => {
+            const b = document.getElementById('chat-u'); b.innerHTML = "";
+            s.forEach(c => { const d = c.val(); b.innerHTML += `<div class="msg ${d.s===myU?'msg-me':'msg-ot'}"><b>${d.s}:</b><br>${d.m}</div>`; });
+            b.scrollTop = b.scrollHeight;
         });
         onValue(ref(db, 'queue'), (s) => { let l=[]; s.forEach(c => { l.push({u:c.val().u}); }); draw('cv-u', l); });
     }
 
-    // --- CEK NOTIF SETELAH RELOAD (PAS DI MENU LOGIN) ---
+    // --- CEK NOTIF SETELAH RELOAD ---
     window.onload = () => {
-        const msg = localStorage.getItem('zmt_alert');
+        const msg = localStorage.getItem('zmt_kick');
         if(msg) {
-            flashMsg('PERINGATAN', msg, 'error');
-            localStorage.removeItem('zmt_alert');
+            popup('SISTEM ZMT', msg, 'error');
+            localStorage.removeItem('zmt_kick');
         }
     };
 
@@ -240,28 +226,16 @@
         await set(ref(db, 'config/sync'), { r: rot, w: q[i].u, d: false });
         setTimeout(async () => { 
             await update(ref(db, 'config/sync'), { d: true }); 
-            await push(ref(db, 'chats/global'), { s: "SYSTEM", m: `🔥 @${q[i].u} MENANG!`, bot: true });
             await remove(ref(db, `queue/${q[i].k}`)); 
         }, 7100);
     };
 
-    window.send = async (m) => {
-        const isG = m.includes('global');
-        const inp = document.getElementById(isG ? (myR === 'admin' ? 'msg-a' : 'msg-u') : 'msg-u');
-        if(!inp.value) return;
-        await push(ref(db, 'chats/global'), { s: myU, m: inp.value }); inp.value = "";
+    window.send = () => {
+        const i = document.getElementById('msg-u'); if(!i.value) return;
+        push(ref(db, 'chats/global'), { s: myU, m: i.value }); i.value = "";
     };
 
-    function listen(p, id) {
-        onValue(ref(db, p), (s) => {
-            const b = document.getElementById(id); b.innerHTML = "";
-            s.forEach(c => { const d = c.val(); const cls = d.bot ? 'msg-bot' : (d.s===myU?'msg-me':'msg-ot');
-            b.innerHTML += `<div class="msg ${cls}">${d.bot?'':`<b>${d.s}:</b> `}<br>${d.m}</div>`; });
-            b.scrollTop = b.scrollHeight;
-        });
-    }
-
-    window.wipe = () => { if(confirm('RESET DATABASE?')) remove(ref(db, '/')); };
+    window.wipe = () => { if(confirm('HAPUS SEMUA DATA?')) remove(ref(db, '/')); };
     window.setA = (v) => { document.getElementById('u-form').style.display = v?'none':'block'; document.getElementById('a-form').style.display = v?'block':'none'; };
     window.join = () => push(ref(db, 'queue'), {u: myU});
 
