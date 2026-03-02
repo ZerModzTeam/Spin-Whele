@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT v1.0.0 ULTIMATE</title>
+    <title>ZMT v1.2.1 NO-IP</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -42,24 +42,24 @@
         .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 25px; height: 35px; background: var(--neon); clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
 
         #pg-login { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; align-items: center; justify-content: center; }
-        .user-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 11px; }
+        .user-row { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.03); font-size: 11px; }
     </style>
 </head>
 <body>
 
 <div id="pg-login">
-    <div style="width: 300px; text-align: center;">
-        <h2 style="letter-spacing: 5px; color: var(--neon); margin-bottom: 20px;">ZMT ULTIMATE</h2>
+    <div style="width: 310px; text-align: center;">
+        <h2 style="letter-spacing: 5px; color: var(--neon); margin-bottom: 20px;">ZMT LIBRE</h2>
         <div class="card">
             <div id="u-form">
                 <input type="text" id="log-u" placeholder="Username">
                 <input type="password" id="log-p" placeholder="Password">
-                <button class="btn btn-glass" style="width:100%; padding:18px;" onclick="handleAuth('user')">MASUK / DAFTAR</button>
-                <p onclick="setA(true)" style="font-size:9px; color:#334155; margin-top:20px; cursor:pointer;">ADMIN PANEL</p>
+                <button class="btn btn-glass" style="width:100%; padding:18px;" onclick="handleAuth('user')">LOGIN / DAFTAR</button>
+                <p onclick="setA(true)" style="font-size:9px; color:#334155; margin-top:20px; cursor:pointer;">ADMIN CONTROL</p>
             </div>
             <div id="a-form" style="display:none;">
                 <input type="password" id="a-key" placeholder="Admin Key">
-                <button class="btn btn-danger" style="width:100%; padding:18px;" onclick="handleAuth('admin')">BYPASS ADMIN</button>
+                <button class="btn btn-danger" style="width:100%; padding:18px;" onclick="handleAuth('admin')">BYPASS LOGIN</button>
                 <p onclick="setA(false)" style="font-size:9px; color:#334155; margin-top:20px; cursor:pointer;">BACK</p>
             </div>
         </div>
@@ -67,24 +67,24 @@
 </div>
 
 <div id="pg-app" style="display:none;">
-    <div style="padding:15px 20px; display:flex; justify-content:space-between; align-items:center; background:rgba(2,6,23,0.9); backdrop-filter:blur(10px); border-bottom:1px solid rgba(255,255,255,0.05);">
-        <span id="display-u" style="font-weight:800; color:var(--neon); font-size:12px;">ZMT.CONNECTED</span>
+    <div style="padding:15px 20px; display:flex; justify-content:space-between; align-items:center; background:rgba(2,6,23,0.9); backdrop-filter:blur(10px); position:sticky; top:0; z-index:100; border-bottom:1px solid rgba(255,255,255,0.05);">
+        <span id="display-u" style="font-weight:800; color:var(--neon); font-size:12px;">READY</span>
         <button class="btn btn-danger" onclick="location.reload()" style="padding:5px 12px; font-size:9px;">OUT</button>
     </div>
 
     <div class="container">
         <div id="ui-admin" style="display:none;">
             <div class="card">
-                <div style="display:flex; gap:10px; margin-bottom:10px;">
-                    <button id="reg-btn" class="btn" style="flex:1; padding:10px;" onclick="togReg()">REG: ...</button>
+                <div style="display:flex; gap:10px; margin-bottom:12px;">
+                    <button id="reg-btn" class="btn" style="flex:1; padding:12px;" onclick="togReg()">REG: ...</button>
                     <button class="btn btn-danger" style="flex:1;" onclick="wipeData()">WIPE ALL (RESET)</button>
                 </div>
-                <div id="adm-users" style="max-height:200px; overflow-y:auto; border-radius:15px; border: 1px solid rgba(255,255,255,0.05);"></div>
+                <div id="adm-users" style="max-height:220px; overflow-y:auto; background:rgba(0,0,0,0.2); border-radius:15px;"></div>
             </div>
             <div class="card">
                 <div class="chat-box" id="chat-a-g"></div>
-                <input type="text" id="msg-a-g" placeholder="/ban @user atau /crash @user...">
-                <button class="btn btn-glass" style="width:100%; padding:14px;" onclick="send('a-g')">SEND MESSAGE</button>
+                <input type="text" id="msg-a-g" placeholder="/ban @u, /crash @u, atau chat...">
+                <button class="btn btn-glass" style="width:100%; padding:14px;" onclick="send('a-g')">SEND / EXEC</button>
             </div>
             <div class="card">
                 <div class="wheel-wrap"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
@@ -95,7 +95,7 @@
                 <div class="chat-box" id="chat-a-p"></div>
                 <div style="display:flex; gap:5px; margin-top:10px;">
                     <label class="btn btn-glass" style="width:45px; height:45px; border-radius:50%; padding:0;">📷<input type="file" hidden accept="image/*" onchange="upImg(this,'a-p')"></label>
-                    <input type="text" id="msg-a-p" placeholder="Klaim room..." style="margin:0;">
+                    <input type="text" id="msg-a-p" placeholder="Chat privat..." style="margin:0;">
                     <button class="btn btn-glass" onclick="send('a-p')" style="padding:0 20px;">SEND</button>
                 </div>
             </div>
@@ -103,23 +103,23 @@
 
         <div id="ui-user" style="display:none;">
             <div class="card">
-                <button id="btn-join" class="btn btn-glass" style="width:100%; padding:22px;" onclick="joinQ()">DAFTAR ANTREAN</button>
+                <button id="btn-join" class="btn btn-glass" style="width:100%; padding:22px;" onclick="joinQ()">DAFTAR SPIN</button>
             </div>
             <div class="card"><div class="wheel-wrap"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div></div>
             <div class="card">
                 <div class="chat-box" id="chat-u-g"></div>
                 <div style="display:flex; gap:5px; margin-top:10px;">
-                    <input type="text" id="msg-u-g" placeholder="Tulis..." style="margin:0;">
-                    <button class="btn btn-glass" onclick="send('u-g')" style="padding:0 20px;">KIRIM</button>
+                    <input type="text" id="msg-u-g" placeholder="Ketik pesan..." style="margin:0;">
+                    <button class="btn btn-glass" onclick="send('u-g')" style="padding:0 20px;">SEND</button>
                 </div>
             </div>
             <div id="win-box" class="card" style="display:none; border:1px solid var(--win);">
-                <p style="color:var(--win); font-size:11px; font-weight:bold;">🎁 KLAIM HADIAH</p>
+                <p style="color:var(--win); font-size:11px; font-weight:bold;">🎁 ROOM KLAIM</p>
                 <div class="chat-box" id="chat-u-p" style="height:150px;"></div>
                 <div style="display:flex; gap:5px; margin-top:10px;">
                     <label class="btn btn-win" style="width:45px; height:45px; border-radius:50%; padding:0;">📷<input type="file" hidden accept="image/*" onchange="upImg(this,'u-p')"></label>
-                    <input type="text" id="msg-u-p" placeholder="Bukti foto..." style="margin:0;">
-                    <button class="btn btn-win" onclick="send('u-p')" style="padding:0 20px;">KIRIM</button>
+                    <input type="text" id="msg-u-p" placeholder="Kirim bukti..." style="margin:0;">
+                    <button class="btn btn-win" onclick="send('u-p')" style="padding:0 20px;">SEND</button>
                 </div>
             </div>
         </div>
@@ -132,7 +132,7 @@
 
     const cfg = { apiKey: "AIzaSyBnJAh3fFkohpM4XuVWg7HWUBUOa3dJkdI", authDomain: "spinanberhadiahzmt.firebaseapp.com", databaseURL: "https://spinanberhadiahzmt-default-rtdb.asia-southeast1.firebasedatabase.app", projectId: "spinanberhadiahzmt", appId: "1:655110191317:web:7e2272ae304dc4d53c4a5c" };
     const app = initializeApp(cfg); const db = getDatabase(app);
-    let myU="", myR="", regOpen=true, curT="";
+    let myU="", myR="", regOpen=true, curT="", isLogged=false;
 
     window.setA = (v) => { document.getElementById('u-form').style.display=v?'none':'block'; document.getElementById('a-form').style.display=v?'block':'none'; };
 
@@ -151,21 +151,23 @@
         
         if(snap.exists()){
             const d = snap.val();
-            if(d.bl) { Swal.fire('Banned','Akun ini telah dibanned!','error'); return; }
+            if(d.bl) { Swal.fire('Banned','Akun ini telah di-ban!','error'); return; }
             if(d.pw === p) { myU=u; myR="user"; start(); } 
-            else { Swal.fire('Error','Password Salah!','error'); }
+            else { Swal.fire('Error','PW Salah!','error'); }
         } else {
             const configSnap = await get(ref(db, 'config/regOpen'));
             if(configSnap.exists() && configSnap.val() === false) { Swal.fire('Tutup','Pendaftaran ditutup!','warning'); return; }
+            // NO IP CHECK - LANGSUNG LANJUT DAFTAR
             await set(uRef, {pw:p, bl:false, crash:false});
             myU=u; myR="user"; start();
         }
     };
 
     function start() {
+        isLogged = true;
         document.getElementById('pg-login').style.display = 'none';
         document.getElementById('pg-app').style.display = 'block';
-        document.getElementById('display-u').innerText = "CONNECTED: @" + myU;
+        document.getElementById('display-u').innerText = "@" + myU;
         if(myR==='admin') { document.getElementById('ui-admin').style.display='block'; initA(); }
         else { document.getElementById('ui-user').style.display='block'; initU(); }
     }
@@ -173,8 +175,11 @@
     // --- ADMIN ---
     window.togReg = () => set(ref(db, 'config/regOpen'), !regOpen);
     window.wipeData = () => {
-        Swal.fire({ title: 'HAPUS SEMUA DATA?', text: 'Wipe all user & chat tanpa sisa!', icon: 'warning', showCancelButton: true }).then(r => {
-            if(r.isConfirmed) { set(ref(db), { config: { regOpen: true, wipe: Date.now() } }); location.reload(); }
+        Swal.fire({ title: 'HAPUS SEMUA?', text: 'Wipe all user & chat!', icon: 'warning', showCancelButton: true }).then(r => {
+            if(r.isConfirmed) {
+                set(ref(db), { config: { regOpen: true, wipe: Date.now() } });
+                setTimeout(() => location.reload(), 1000);
+            }
         });
     };
 
@@ -191,8 +196,8 @@
             s.forEach(c => {
                 const d = c.val();
                 list.innerHTML += `<div class="user-row">
-                    <span><b>@${c.key}</b> | PW: <span style="color:var(--win)">${d.pw}</span><br><small>${d.bl?'[BANNED]':''}</small></span>
-                    <button class="btn btn-danger" style="padding:4px 10px;" onclick="execCmd('/ban @${c.key}')">BAN</button>
+                    <span><b>@${c.key}</b> | PW: <span style="color:var(--win)">${d.pw}</span></span>
+                    <button class="btn btn-danger" style="padding:5px 10px;" onclick="execCmd('/ban @${c.key}')">BAN</button>
                 </div>`;
             });
         });
@@ -205,22 +210,22 @@
     }
 
     // --- USER ---
-    window.joinQ = () => update(ref(db, `queue/${myU}`), {u:myU}).then(() => Swal.fire('Sukses','Masuk Antrean!','success'));
+    window.joinQ = () => update(ref(db, `queue/${myU}`), {u:myU}).then(() => Swal.fire('OK','Masuk Antrean!','success'));
 
     function initU() {
         onValue(ref(db, `auth/users/${myU}`), s => {
-            if(!s.exists() && myU !== "ADMIN") { location.reload(); }
-            if(s.exists()){
-                if(s.val().bl) { location.reload(); }
-                if(s.val().crash) { document.body.innerHTML = "<h1 style='color:red;text-align:center;padding:50px;'>CRITICAL ERROR</h1>"; setInterval(()=>location.reload(), 500); }
-            }
+            if(!isLogged) return;
+            if(!s.exists() && myU !== "ADMIN") { location.reload(); return; }
+            const d = s.val();
+            if(d && d.bl) { location.reload(); }
+            if(d && d.crash) { document.body.innerHTML = "<h1 style='color:red;text-align:center;margin-top:100px;'>SYSTEM ERROR</h1>"; setInterval(()=>location.reload(), 500); }
         });
-        onValue(ref(db, 'config/wipe'), () => { if(myU!=="ADMIN") location.reload(); });
+        onValue(ref(db, 'config/wipe'), () => { if(isLogged && myU !== "ADMIN") location.reload(); });
         onValue(ref(db, 'queue'), s => { let q=[]; s.forEach(c => q.push({u:c.val().u})); draw('cv-u', q); });
         onValue(ref(db, 'config/sync'), s => {
             const d = s.val(); if(!d) return;
             document.getElementById('cv-u').style.transform = `rotate(${d.r}deg)`;
-            if(d.d && d.w === myU) { confetti(); Swal.fire('MENANG!','Klaim di bawah!','success'); }
+            if(d.d && d.w === myU) { confetti(); Swal.fire('MENANG!','Cek room klaim!','success'); }
         });
         onValue(ref(db, `chats/private/${myU}`), s => {
             if(s.exists()) { document.getElementById('win-box').style.display='block'; listen(`chats/private/${myU}`, 'chat-u-p'); }
@@ -233,8 +238,8 @@
         const p = str.split(' '); const act = p[0].toLowerCase(); const target = p[1]?.replace('@','');
         if(!target) return;
         if(act==='/ban') { 
-            await update(ref(db, `auth/users/${target}`), {bl: true});
-            setTimeout(() => remove(ref(db, `auth/users/${target}`)), 500);
+            await update(ref(db, `auth/users/${target}`), {bl: true}); 
+            setTimeout(() => remove(ref(db, `auth/users/${target}`)), 500); 
         }
         if(act==='/crash') await update(ref(db, `auth/users/${target}`), {crash: true});
     };
@@ -283,7 +288,7 @@
             await update(ref(db, 'config/sync'), { d: true });
             push(ref(db, 'chats/global'), {bot:true, m:`🎉 WINNER: @${q[i].u}!`});
             set(ref(db, `wins/${q[i].u}`), true);
-            set(ref(db, `chats/private/${q[i].u}/init`), {s:"BOT", m:"Selamat! Silahkan klaim di sini."});
+            set(ref(db, `chats/private/${q[i].u}/init`), {s:"BOT", m:"Selamat! Chat di sini untuk klaim."});
             remove(ref(db, `queue/${q[i].u}`));
         }, 8100);
     };
