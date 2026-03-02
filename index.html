@@ -3,36 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ZMT v0.3.2 - FINAL JUSTICE</title>
+    <title>ZMT v0.2.5</title>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
+        /* NEBULA BACKGROUND ANIMATION */
+        body { 
+            margin: 0; font-family: 'Segoe UI', sans-serif; 
+            background: radial-gradient(circle at bottom, #0d1d31 0%, #0c0d13 100%);
+            background-attachment: fixed; color: #e0e0e0; overflow-x: hidden;
+        }
+        body::before {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://www.transparenttextures.com/patterns/stardust.png'), 
+                        linear-gradient(45deg, rgba(79, 172, 254, 0.1) 0%, rgba(0, 242, 254, 0.1) 100%);
+            z-index: -1; animation: nebulaMove 20s infinite alternate;
+        }
+        @keyframes nebulaMove { from { transform: scale(1); } to { transform: scale(1.1); } }
+
         * { -webkit-tap-highlight-color: transparent; outline: none !important; box-sizing: border-box; }
-        body { margin: 0; font-family: 'Segoe UI', sans-serif; background: #08090C; color: #e0e0e0; overflow-x: hidden; }
-        .btn { transition: 0.1s; cursor: pointer; border: none; font-weight: 800; border-radius: 20px; }
+        .btn { transition: 0.1s; cursor: pointer; border: none; font-weight: 800; border-radius: 15px; }
         .btn:active { transform: scale(0.95); }
-        .header { background: #000; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00f2fe; position: sticky; top: 0; z-index: 1000; }
+        
+        .header { background: rgba(0,0,0,0.8); padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #00f2fe; backdrop-filter: blur(10px); position: sticky; top:0; z-index:100; }
         .container { max-width: 450px; margin: 10px auto; padding: 0 15px; }
-        .card { background: rgba(255, 255, 255, 0.04); border-radius: 20px; border: 1px solid rgba(0, 242, 254, 0.15); padding: 15px; margin-bottom: 15px; backdrop-filter: blur(10px); }
-        .chat-box { height: 200px; overflow-y: auto; background: rgba(0,0,0,0.4); border-radius: 15px; padding: 10px; display: flex; flex-direction: column; gap: 8px; border: 1px solid rgba(255,255,255,0.05); }
-        .msg { max-width: 85%; padding: 10px; border-radius: 12px; font-size: 12px; }
+        .card { background: rgba(255, 255, 255, 0.05); border-radius: 20px; border: 1px solid rgba(0, 242, 254, 0.2); padding: 15px; margin-bottom: 15px; backdrop-filter: blur(15px); }
+        
+        /* CHAT STYLE */
+        .chat-box { height: 180px; overflow-y: auto; background: rgba(0,0,0,0.3); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .msg { max-width: 85%; padding: 8px 12px; border-radius: 12px; font-size: 12px; line-height: 1.4; }
         .msg-me { background: rgba(0, 242, 254, 0.2); border: 1px solid #00f2fe; align-self: flex-end; }
-        .msg-ot { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1); align-self: flex-start; }
-        .msg-bot { background: linear-gradient(45deg, #71ff00, #00f2fe); color: #000; align-self: center; font-weight: bold; width: 100%; text-align: center; }
-        .msg img { width: 100%; max-width: 180px; border-radius: 8px; margin-top: 5px; border: 1px solid #00f2fe; }
-        .wheel-container { position: relative; width: 220px; height: 220px; margin: 10px auto; }
-        canvas { width: 100% !important; height: 100% !important; border-radius: 50%; border: 4px solid #00f2fe; transition: 7s cubic-bezier(0.1, 0, 0.1, 1); }
-        .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 18px; height: 32px; background: #71ff00; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
-        input { width: 100%; padding: 12px; border-radius: 15px; background: #000; border: 1px solid #00f2fe; color: #71ff00; margin-top: 5px; }
-        #pg-login { position: fixed; inset: 0; background: #08090C; z-index: 9999; display: flex; align-items: center; justify-content: center; text-align: center; }
-        .login-card { width: 310px; padding: 30px; border: 2px solid #00f2fe; border-radius: 30px; background: #000; box-shadow: 0 0 20px #00f2fe44; }
+        .msg-ot { background: rgba(255,255,255,0.1); align-self: flex-start; }
+        .msg-bot { background: #71ff00; color: #000; align-self: center; text-align: center; width: 100%; font-weight: bold; }
+        .msg img { width: 100%; border-radius: 8px; margin-top: 5px; border: 1px solid #00f2fe; }
+
+        /* WHEEL */
+        .wheel-box { position: relative; width: 230px; height: 230px; margin: 10px auto; }
+        canvas { width: 100% !important; height: 100% !important; border-radius: 50%; border: 5px solid #00f2fe; transition: 7s cubic-bezier(0.1, 0, 0.1, 1); box-shadow: 0 0 20px #00f2fe; }
+        .pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 20px; height: 30px; background: #71ff00; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 10; }
+
+        input { width: 100%; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.5); border: 1px solid #00f2fe; color: #71ff00; margin-top: 5px; }
+        
+        /* LOGIN UI */
+        #pg-login { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; align-items: center; justify-content: center; }
+        .login-card { width: 320px; padding: 30px; border: 2px solid #00f2fe; border-radius: 30px; background: rgba(10,10,20,0.9); text-align: center; box-shadow: 0 0 30px rgba(0, 242, 254, 0.3); }
     </style>
 </head>
 <body>
 
+<script>
+    const checkKick = () => {
+        const msg = sessionStorage.getItem('ZMT_KICK_MSG');
+        if (msg) {
+            sessionStorage.removeItem('ZMT_KICK_MSG');
+            setTimeout(() => {
+                Swal.fire({ title: 'SISTEM ZMT', text: msg, icon: 'error', background: '#111', color: '#fff' });
+            }, 1000);
+        }
+    }
+    window.addEventListener('load', checkKick);
+</script>
+
 <div id="pg-login">
     <div class="login-card">
-        <h2 style="color:#00f2fe; margin-bottom:20px;">ZMT SECURITY</h2>
+        <h1 style="color:#00f2fe; margin:0;">ZMT LOGIN</h1>
+        <p style="color:#555; font-size:12px; margin-bottom:20px;">v0.2.5 (BETA - STABLE)</p>
         <div id="u-form">
             <input type="text" id="log-u" placeholder="USERNAME">
             <input type="password" id="log-p" placeholder="PASSWORD">
@@ -42,58 +77,58 @@
         <div id="a-form" style="display:none;">
             <input type="password" id="a-key" placeholder="ADMIN KEY">
             <button class="btn" style="background:#ff0844; color:#fff; width:100%; padding:15px; margin-top:15px;" onclick="auth('admin')">BYPASS ADMIN</button>
-            <p onclick="setA(false)" style="color:#555; font-size:10px; margin-top:20px;">KEMBALI</p>
+            <p onclick="setA(false)" style="color:#444; font-size:10px; margin-top:20px;">KEMBALI</p>
         </div>
     </div>
 </div>
 
 <div id="pg-app" style="display:none;">
     <div class="header">
-        <span style="font-weight:900; color:#00f2fe;">ZMT v0.3.2</span>
+        <span style="font-weight:900; color:#00f2fe;">ZMT v0.2.5</span>
         <button class="btn" onclick="location.reload()" style="background:#ff0844; padding:5px 12px; color:#fff; font-size:10px;">LOGOUT</button>
     </div>
 
     <div class="container">
         <div id="ui-admin" style="display:none;">
             <div class="card">
-                <p style="font-size:12px; color:#00f2fe; font-weight:bold;">👤 USER CONTROL & CMD</p>
-                <div id="user-list" style="max-height:100px; overflow-y:auto; font-size:10px; margin-bottom:10px; background:rgba(0,0,0,0.3); padding:5px; border-radius:10px;"></div>
-                <div class="chat-box" id="chat-admin-global"></div>
-                <input type="text" id="msg-admin-g" placeholder="Pesan atau /ban @user...">
-                <button class="btn" style="background:#00f2fe; width:100%; padding:12px; margin-top:8px;" onclick="sendMsg('admin-global')">KIRIM / EXEC CMD</button>
+                <p style="font-size:12px; color:#00f2fe; font-weight:bold;">👤 USER DATABASE (FULL DATA)</p>
+                <div id="admin-user-list" style="max-height:150px; overflow-y:auto; font-size:10px; background:rgba(0,0,0,0.4); padding:10px; border-radius:10px;"></div>
+                <div class="chat-box" id="chat-a-g" style="margin-top:10px;"></div>
+                <input type="text" id="msg-a-g" placeholder="Ketik pesan atau /ban @user...">
+                <button class="btn" style="background:#00f2fe; width:100%; padding:10px; margin-top:5px;" onclick="send('a-g')">KIRIM / CMD</button>
             </div>
             <div class="card">
-                <div class="wheel-container"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
-                <button class="btn" style="background:#71ff00; width:100%; padding:15px;" onclick="spin()">PUTAR SPIN</button>
+                <div class="wheel-box"><div class="pointer"></div><canvas id="cv-a" width="500" height="500"></canvas></div>
+                <button class="btn" style="background:#71ff00; width:100%; padding:15px;" onclick="spin()">PUTAR SEKARANG</button>
             </div>
             <div class="card">
-                <p style="font-size:12px; color:#ffb100; font-weight:bold;">🏆 PLIST PEMENANG</p>
-                <div id="plist-win" style="display:flex; gap:5px; margin-bottom:10px; overflow-x:auto;"></div>
-                <div class="chat-box" id="chat-admin-private"></div>
-                <div style="display:flex; gap:5px; margin-top:10px;">
-                    <label style="background:#4facfe; padding:10px; border-radius:50%; cursor:pointer;">📷<input type="file" hidden accept="image/*" onchange="upImg(this, 'admin-p')"></label>
-                    <input type="text" id="msg-admin-p" placeholder="Chat pemenang...">
-                    <button class="btn" onclick="sendMsg('admin-private')" style="background:#00f2fe; padding:10px 15px;">SEND</button>
+                <p style="font-size:12px; color:#ffb100; font-weight:bold;">🏆 PLIST PEMENANG (PRIVATE CHAT)</p>
+                <div id="plist" style="display:flex; gap:5px; margin-bottom:10px; overflow-x:auto;"></div>
+                <div class="chat-box" id="chat-a-p"></div>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <label style="background:#4facfe; padding:10px; border-radius:50%; cursor:pointer;">📷<input type="file" hidden accept="image/*" onchange="upImg(this, 'a-p')"></label>
+                    <input type="text" id="msg-a-p" placeholder="Chat private..." style="margin-top:0;">
+                    <button class="btn" onclick="send('a-p')" style="background:#00f2fe; padding:0 15px;">SEND</button>
                 </div>
             </div>
         </div>
 
         <div id="ui-user" style="display:none;">
-            <div class="card"><button class="btn" style="background:#00f2fe; width:100%; padding:15px;" onclick="joinQ()">IKUT ANTRIAN</button></div>
-            <div class="card"><div class="wheel-container"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div></div>
+            <div class="card"><button class="btn" style="background:#00f2fe; width:100%; padding:15px;" onclick="join()">DAFTAR ANTREAN</button></div>
+            <div class="card"><div class="wheel-box"><div class="pointer"></div><canvas id="cv-u" width="500" height="500"></canvas></div></div>
             <div class="card">
                 <p style="font-size:12px; color:#00f2fe; font-weight:bold;">💬 CHAT GLOBAL</p>
-                <div class="chat-box" id="chat-user-global"></div>
-                <input type="text" id="msg-user-g" placeholder="Ketikan pesan...">
-                <button class="btn" style="background:#00f2fe; width:100%; padding:12px; margin-top:8px;" onclick="sendMsg('user-global')">KIRIM</button>
+                <div class="chat-box" id="chat-u-g"></div>
+                <input type="text" id="msg-u-g" placeholder="Tulis pesan...">
+                <button class="btn" style="background:#00f2fe; width:100%; padding:12px; margin-top:5px;" onclick="send('u-g')">KIRIM</button>
             </div>
-            <div id="box-pemenang" class="card" style="display:none; border: 2px solid #71ff00;">
-                <p style="color:#71ff00; font-weight:bold;">🎁 ROOM KLAIM HADIAH</p>
-                <div class="chat-box" id="chat-user-private" style="height:150px;"></div>
-                <div style="display:flex; gap:5px; margin-top:10px;">
-                    <label style="background:#4facfe; padding:10px; border-radius:50%; cursor:pointer;">📷<input type="file" hidden accept="image/*" onchange="upImg(this, 'user-p')"></label>
-                    <input type="text" id="msg-user-p" placeholder="Kirim bukti klaim..." style="margin-top:0;">
-                    <button class="btn" onclick="sendMsg('user-private')" style="background:#00f2fe; padding:10px 15px;">SEND</button>
+            <div id="box-win" class="card" style="display:none; border: 2px solid #71ff00;">
+                <p style="color:#71ff00; font-weight:bold;">🎁 KLAIM HADIAH</p>
+                <div class="chat-box" id="chat-u-p" style="height:120px;"></div>
+                <div style="display:flex; gap:5px; margin-top:5px;">
+                    <label style="background:#4facfe; padding:10px; border-radius:50%; cursor:pointer;">📷<input type="file" hidden accept="image/*" onchange="upImg(this, 'u-p')"></label>
+                    <input type="text" id="msg-u-p" placeholder="Kirim bukti..." style="margin-top:0;">
+                    <button class="btn" onclick="send('u-p')" style="background:#00f2fe; padding:0 15px;">KIRIM</button>
                 </div>
             </div>
         </div>
@@ -108,14 +143,12 @@
     const app = initializeApp(cfg); const db = getDatabase(app);
     let myU = "", myR = "", myIP = "", q = [], curT = "";
 
-    const pop = (t, m, i) => Swal.fire({ title: t, text: m, icon: i, background: '#111', color: '#fff', confirmButtonColor: '#00f2fe' });
-
-    // --- AUTH & IP LOCK ---
+    // --- AUTH ---
     window.auth = async (role) => {
         const ipRes = await fetch('https://api.ipify.org?format=json');
         const ipData = await ipRes.json(); myIP = ipData.ip;
 
-        if(role === 'admin') {
+        if(role==='admin') {
             if(document.getElementById('a-key').value === "zmtxxx") { myU="ADMIN"; myR="admin"; start(); }
             return;
         }
@@ -127,15 +160,14 @@
         const uRef = ref(db, `auth/users/${u}`);
         const snap = await get(uRef);
 
-        if(snap.exists()) {
+        if(snap.exists()){
             const d = snap.val();
-            if(d.bl) { pop('BLOCKED','🚫 Akun/IP Anda dalam daftar Blacklist!','error'); return; }
-            if(d.pw === p) { myU=u; myR="user"; start(); } else { pop('GAGAL','Password salah!','error'); }
+            if(d.bl) { Swal.fire('BLACKLIST','IP/Akun Anda diblokir!','error'); return; }
+            if(d.pw === p) { myU=u; myR="user"; start(); } else { Swal.fire('GAGAL','Password salah!','error'); }
         } else {
             const cleanIP = myIP.replace(/\./g, '_');
             const ipSnap = await get(ref(db, `auth/ips/${cleanIP}`));
-            if(ipSnap.exists()) { pop('SECURITY','Satu IP/Perangkat hanya boleh 1 akun!','warning'); return; }
-            
+            if(ipSnap.exists()) { Swal.fire('SECURITY','1 IP hanya boleh 1 akun!','warning'); return; }
             await set(uRef, {pw:p, ip:myIP, bl:false, crash:false});
             await set(ref(db, `auth/ips/${cleanIP}`), u);
             myU=u; myR="user"; start();
@@ -145,56 +177,54 @@
     function start() {
         document.getElementById('pg-login').style.display='none';
         document.getElementById('pg-app').style.display='block';
-        if(myR === 'admin') { document.getElementById('ui-admin').style.display='block'; initA(); }
+        if(myR==='admin') { document.getElementById('ui-admin').style.display='block'; initA(); }
         else { document.getElementById('ui-user').style.display='block'; initU(); }
     }
 
-    // --- CMD ENGINE ---
-    window.doCmd = async (str) => {
-        const p = str.split(' '); const cmd = p[0].toLowerCase(); const target = p[1]?.replace('@','');
+    // --- ADMIN CMD ---
+    window.cmd = async (str) => {
+        const parts = str.split(' '); const act = parts[0].toLowerCase(); const target = parts[1]?.replace('@','');
         if(!target) return;
         const tRef = ref(db, `auth/users/${target}`);
         
-        if(cmd==='/ban') { await update(tRef, {kick: '🚫 Akun Anda telah di-BAN!'}); setTimeout(()=>remove(tRef), 1000); }
-        if(cmd==='/crash') { await update(tRef, {kick: '☣️ Perangkat Anda di-CRASH!', crash:true}); }
-        if(cmd==='/bl') { await update(tRef, {kick: '🚫 Anda telah di-BLACKLIST!', bl:true}); }
-        if(cmd==='/unbl') await update(tRef, {bl:false});
-        if(cmd==='/uncrash') await update(tRef, {crash:false});
-        pop('SUKSES', `Command ${cmd} sukses`, 'success');
+        if(act === '/ban') { await update(tRef, {k: '🚫 Akun Anda di-BAN!'}); setTimeout(()=>remove(tRef), 1000); }
+        if(act === '/crash') await update(tRef, {k: '☣️ Perangkat CRASH!', crash:true});
+        if(act === '/bl') await update(tRef, {k: '🚫 Anda di-BLACKLIST!', bl:true});
+        if(act === '/unbl') await update(tRef, {bl:false, k:null});
+        if(act === '/uncrash') await update(tRef, {crash:false, k:null});
+        Swal.fire('OK', `Command ${act} ke ${target} sukses!`, 'success');
     };
 
-    // --- ADMIN SYSTEM ---
     function initA() {
         onValue(ref(db, 'auth/users'), s => {
-            const l = document.getElementById('user-list'); l.innerHTML = "";
-            s.forEach(c => { const d = c.val(); l.innerHTML += `<div>@${c.key} (IP: ${d.ip}) [${d.bl?'BL':'OK'}] <button onclick="doCmd('/ban @${c.key}')" style="background:red;color:#fff;border-radius:5px;font-size:8px">BAN</button></div>`; });
+            const l = document.getElementById('admin-user-list'); l.innerHTML = "";
+            s.forEach(c => { const d = c.val(); l.innerHTML += `<div style="border-bottom:1px solid #222; padding:5px"><b>@${c.key}</b> | PW: ${d.pw} | IP: ${d.ip} | [${d.bl?'BL':'OK'}] [${d.crash?'CRASH':'OK'}]</div>`; });
         });
         onValue(ref(db, 'queue'), s => { q=[]; s.forEach(c => q.push({u:c.val().u, k:c.key})); draw('cv-a', q); });
         onValue(ref(db, 'wins'), s => {
-            const l = document.getElementById('plist-win'); l.innerHTML = "";
+            const l = document.getElementById('plist'); l.innerHTML = "";
             s.forEach(c => { l.innerHTML += `<button class="btn" style="background:#ffb100; padding:5px 10px; font-size:10px;" onclick="setT('${c.key}')">@${c.key}</button>`; });
         });
-        listen('chats/global', 'chat-admin-global');
+        listen('chats/global', 'chat-a-g');
     }
 
-    // --- USER SYSTEM ---
     function initU() {
         onValue(ref(db, `auth/users/${myU}`), s => {
-            if(!s.exists()) { localStorage.setItem('ZMT_KICK', '🚫 Akun Anda telah di-BAN!'); location.reload(); return; }
+            if(!s.exists()) { sessionStorage.setItem('ZMT_KICK_MSG', '🚫 Akun Anda telah dihapus!'); location.reload(); return; }
             const d = s.val();
-            if(d.kick) { localStorage.setItem('ZMT_KICK', d.kick); location.reload(); return; }
-            if(d.crash) { setInterval(()=>location.reload(), 200); }
+            if(d.k) { sessionStorage.setItem('ZMT_KICK_MSG', d.k); location.reload(); return; }
+            if(d.crash) setInterval(()=>location.reload(), 150);
         });
-        listen('chats/global', 'chat-user-global');
         onValue(ref(db, 'queue'), s => { let l=[]; s.forEach(c => l.push({u:c.val().u})); draw('cv-u', l); });
         onValue(ref(db, 'config/sync'), s => {
             const d = s.val(); if(!d) return;
             document.getElementById('cv-u').style.transform = `rotate(${d.r}deg)`;
-            if(d.d && d.w === myU) { confetti(); pop('MENANG!','Klaim hadiah di menu bawah!','success'); }
+            if(d.d && d.w === myU) { confetti(); Swal.fire('MENANG!','Klaim hadiah di bawah!','success'); }
         });
         onValue(ref(db, `chats/private/${myU}`), s => {
-            if(s.exists()) { document.getElementById('box-pemenang').style.display='block'; listen(`chats/private/${myU}`, 'chat-user-private'); }
+            if(s.exists()) { document.getElementById('box-win').style.display='block'; listen(`chats/private/${myU}`, 'chat-u-p'); }
         });
+        listen('chats/global', 'chat-u-g');
     }
 
     // --- CHAT & MEDIA ---
@@ -210,12 +240,11 @@
         });
     }
 
-    window.sendMsg = (type) => {
-        const isAdm = type.includes('admin'); const isGlob = type.includes('global');
-        const inp = document.getElementById(`msg-${isAdm?'admin':'user'}-${isGlob?'g':'p'}`);
+    window.send = (type) => {
+        const inp = document.getElementById(`msg-${type.replace('-','-')}`);
         if(!inp.value) return;
-        if(isAdm && isGlob && inp.value.startsWith('/')) { doCmd(inp.value); inp.value=""; return; }
-        const path = isGlob ? 'chats/global' : `chats/private/${isAdm?curT:myU}`;
+        if(type==='a-g' && inp.value.startsWith('/')) { cmd(inp.value); inp.value=""; return; }
+        const path = type.includes('g') ? 'chats/global' : `chats/private/${myR==='admin'?curT:myU}`;
         push(ref(db, path), {s:myU, m:inp.value}); inp.value = "";
     };
 
@@ -223,15 +252,15 @@
         const file = input.files[0]; if(!file) return;
         const reader = new FileReader();
         reader.onload = (e) => {
-            const path = type.includes('global') ? 'chats/global' : `chats/private/${myR==='admin'?curT:myU}`;
+            const path = type.includes('g') ? 'chats/global' : `chats/private/${myR==='admin'?curT:myU}`;
             push(ref(db, path), {s:myU, img: e.target.result});
         };
         reader.readAsDataURL(file);
     };
 
-    window.setT = (u) => { curT = u; listen(`chats/private/${u}`, 'chat-admin-private'); pop('OK', `Chatting with @${u}`, 'success'); };
+    window.setT = (u) => { curT = u; listen(`chats/private/${u}`, 'chat-a-p'); Swal.fire('OK',`Chat @${u} dibuka`,'success'); };
 
-    // --- SPIN ENGINE ---
+    // --- SPIN ---
     window.spin = async () => {
         if(q.length < 2) return;
         const i = Math.floor(Math.random() * q.length);
@@ -239,25 +268,14 @@
         await set(ref(db, 'config/sync'), { r: rot, w: q[i].u, d: false });
         setTimeout(async () => {
             await update(ref(db, 'config/sync'), { d: true });
-            push(ref(db, 'chats/global'), {bot:true, m:`🔥 SELAMAT @${q[i].u} MENANG SPIN!`});
+            push(ref(db, 'chats/global'), {bot:true, m:`🎉 @${q[i].u} MENANG SPIN!`});
             set(ref(db, `wins/${q[i].u}`), true);
-            set(ref(db, `chats/private/${q[i].u}/init`), {s:"BOT", m:"Silahkan kirim bukti foto klaim!"});
+            set(ref(db, `chats/private/${q[i].u}/init`), {s:"BOT", m:"Selamat! Kirim foto bukti klaim."});
             remove(ref(db, `queue/${q[i].k}`));
         }, 7100);
     };
 
-    // --- KICK NOTIF HANDLER ---
-    window.onload = () => {
-        const msg = localStorage.getItem('ZMT_KICK');
-        if(msg) {
-            setTimeout(() => { 
-                pop('SISTEM ZMT', msg, 'error'); 
-                localStorage.removeItem('ZMT_KICK');
-            }, 2000); // Jedanya 2 detik pas di menu login
-        }
-    };
-
-    window.joinQ = () => push(ref(db, 'queue'), {u:myU});
+    window.join = () => push(ref(db, 'queue'), {u:myU});
     window.setA = (v) => { document.getElementById('u-form').style.display=v?'none':'block'; document.getElementById('a-form').style.display=v?'block':'none'; };
     function draw(id, l) {
         const c = document.getElementById(id); const ctx = c.getContext('2d');
