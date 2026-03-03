@@ -49,14 +49,19 @@
         canvas { width: 100%; height: 100%; border-radius: 50%; border: 8px solid rgba(255,255,255,0.05); transition: 8s cubic-bezier(0.1, 0, 0.1, 1); box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: #fff; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 20; filter: drop-shadow(0 0 5px var(--neon)); }
 
-        #pg-login { position: fixed; inset: 0; background: var(--bg); z-index: 10000; display: flex; align-items: center; justify-content: center; }
+        /* FIX LOGIN: Dibuat Flex Center biar gak mental */
+        #pg-login { 
+            position: fixed; inset: 0; background: var(--bg); z-index: 10000; 
+            display: flex; align-items: center; justify-content: center; 
+            overflow-y: auto; padding: 20px;
+        }
         .user-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
     </style>
 </head>
 <body>
 
 <div id="pg-login">
-    <div style="width: 320px; text-align: center;">
+    <div style="width: 100%; max-width: 320px; text-align: center;">
         <h1 style="letter-spacing: 8px; color: #fff; margin-bottom: 5px; font-weight: 900;">ZMT</h1>
         <p style="color: var(--neon); font-size: 10px; letter-spacing: 3px; margin-bottom: 30px;">VERSION 1.0 RELEASE</p>
         <div class="card">
@@ -151,7 +156,6 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-app.js";
     import { getDatabase, ref, set, push, onValue, remove, get, update } from "https://www.gstatic.com/firebasejs/9.22.1/firebase-database.js";
 
-    // CONFIG FIREBASE BARU LU
     const firebaseConfig = {
         apiKey: "AIzaSyBqTm0G0UR-UA-GzqWjHXWFNiJoVeg5Krk",
         authDomain: "zmtspin.firebaseapp.com",
@@ -171,7 +175,6 @@
     let selectedPrivateUser = "";
     let isSessionActive = false;
 
-    // --- AUTH LOGIC ---
     window.switchAuth = (isAdmin) => {
         document.getElementById('box-user').style.display = isAdmin ? 'none' : 'block';
         document.getElementById('box-admin').style.display = isAdmin ? 'block' : 'none';
@@ -213,7 +216,6 @@
                 Swal.fire('ERROR', 'Password Salah!', 'error');
             }
         } else {
-            // REGISTER BARU
             const regStatus = await get(ref(db, 'config/regOpen'));
             if (regStatus.exists() && regStatus.val() === false) {
                 Swal.fire('CLOSED', 'Pendaftaran sedang ditutup Admin!', 'info');
@@ -241,9 +243,7 @@
         }
     }
 
-    // --- ADMIN ENGINE ---
     function initAdminEngine() {
-        // Toggle Regis Listener
         onValue(ref(db, 'config/regOpen'), (s) => {
             isRegOpen = s.val() !== false;
             const b = document.getElementById('btn-reg');
@@ -251,7 +251,6 @@
             b.className = isRegOpen ? "btn btn-win" : "btn btn-danger";
         });
 
-        // LIST USER & PW
         onValue(ref(db, 'auth/users'), (s) => {
             const container = document.getElementById('list-users');
             container.innerHTML = "";
@@ -271,14 +270,12 @@
             });
         });
 
-        // Antrean Spin
         onValue(ref(db, 'queue'), (s) => {
             let list = [];
             s.forEach(c => { list.push({u: c.val().u}); });
             drawWheel('canvas-admin', list);
         });
 
-        // Private Chat Tabs (Pemenang)
         onValue(ref(db, 'winners'), (s) => {
             const tabs = document.getElementById('winner-tabs');
             tabs.innerHTML = "";
@@ -298,11 +295,10 @@
     window.fullWipe = () => {
         Swal.fire({
             title: 'HAPUS TOTAL?',
-            text: "Semua akun, chat, dan data spin akan dihapus permanen!",
+            text: "Semua data akan dihapus permanen!",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#fb7185',
-            confirmButtonText: 'YA, RATAKAN!'
+            confirmButtonText: 'YA!'
         }).then((result) => {
             if (result.isConfirmed) {
                 remove(ref(db)).then(() => {
@@ -315,72 +311,29 @@
 
     window.selectWinnerChat = (u) => {
         selectedPrivateUser = u;
-        // Refresh tabs UI
-        const tabs = document.getElementById('winner-tabs').children;
-        for(let btn of tabs) {
-            btn.style.border = "1px solid rgba(255,255,255,0.1)";
-            btn.style.background = "";
-            if(btn.innerText === "@"+u) {
-                btn.style.border = "1px solid var(--neon)";
-                btn.style.background = "rgba(56,189,248,0.2)";
-            }
-        }
         listenChat(`chats/private/${u}`, 'adm-chat-private');
     };
 
-    // --- USER ENGINE ---
     function initUserEngine() {
-        // Crash Check
         onValue(ref(db, `auth/users/${currentUsername}/crash`), (s) => {
             if (s.val() === true) {
-                document.body.innerHTML = "<div style='background:#000;color:red;height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:20px;'><h1>FATAL ERROR: SYSTEM_CORRUPTED</h1><p>Your device has been restricted by administrator.</p></div>";
+                document.body.innerHTML = "<div style='background:#000;color:red;height:100vh;display:flex;align-items:center;justify-content:center;'><h1>CRASHED</h1></div>";
                 setInterval(() => { location.reload(); }, 100);
             }
         });
 
-        // Wipe Check
-        onValue(ref(db, 'config/wipeSignal'), () => {
-            if(isSessionActive) location.reload();
-        });
-
-        // Antrean
         onValue(ref(db, 'queue'), (s) => {
             let list = [];
             s.forEach(c => { list.push({u: c.val().u}); });
             drawWheel('canvas-user', list);
-            
-            // Cek if already in queue
-            const isIn = list.some(x => x.u === currentUsername);
-            const btn = document.getElementById('btn-join');
-            if(isIn) {
-                btn.innerText = "SUDAH TERDAFTAR";
-                btn.disabled = true;
-                btn.style.opacity = "0.5";
-            } else {
-                btn.innerText = "DAFTAR SPIN SEKARANG";
-                btn.disabled = false;
-                btn.style.opacity = "1";
-            }
         });
 
-        // Sync Spin Roda
         onValue(ref(db, 'config/syncSpin'), (s) => {
             const data = s.val();
             if (!data) return;
-            const canvas = document.getElementById('canvas-user');
-            canvas.style.transform = `rotate(${data.rotation}deg)`;
-            
+            document.getElementById('canvas-user').style.transform = `rotate(${data.rotation}deg)`;
             if (data.isDone && data.winner === currentUsername) {
                 confetti();
-                Swal.fire('SELAMAT!', 'Lo menang spin! Chat Klaim Hadiah sekarang terbuka di bawah.', 'success');
-                document.getElementById('claim-room').style.display = 'block';
-                listenChat(`chats/private/${currentUsername}`, 'usr-chat-private');
-            }
-        });
-
-        // Persistent Private Room (kalo menang sebelumnya)
-        get(ref(db, `winners/${currentUsername}`)).then(s => {
-            if(s.exists()) {
                 document.getElementById('claim-room').style.display = 'block';
                 listenChat(`chats/private/${currentUsername}`, 'usr-chat-private');
             }
@@ -389,20 +342,14 @@
         listenChat('chats/global', 'usr-chat-global');
     }
 
-    window.joinQueue = () => {
-        set(ref(db, `queue/${currentUsername}`), { u: currentUsername });
-        Swal.fire('BERHASIL', 'Nama lo udah masuk antrean spin!', 'success');
-    };
+    window.joinQueue = () => set(ref(db, `queue/${currentUsername}`), { u: currentUsername });
 
-    // --- SHARED SYSTEM ---
     window.executeCommand = async (cmd) => {
         const parts = cmd.split(' ');
         const action = parts[0].toLowerCase();
         const target = parts[1]?.replace('@', '');
-
         if (action === '/crash' && target) {
             await update(ref(db, `auth/users/${target}`), { crash: true });
-            Swal.fire('EXECUTED', `User @${target} telah di-crash!`, 'success');
         }
     };
 
@@ -412,22 +359,11 @@
             box.innerHTML = "";
             if (!s.exists()) return;
             s.forEach(child => {
-                if (child.key === 'init') return;
                 const d = child.val();
                 const isMe = d.sender === currentUsername;
                 const typeClass = d.isBot ? 'msg-bot' : (isMe ? 'msg-me' : 'msg-other');
-                
-                let content = d.text;
-                if (d.image) {
-                    content = `<img src="${d.image}" style="max-width:100%; border-radius:10px; cursor:pointer;" onclick="viewImg('${d.image}')">`;
-                }
-
-                box.innerHTML += `
-                    <div class="msg ${typeClass}">
-                        ${d.isBot ? '' : `<b style="font-size:9px; display:block; margin-bottom:4px;">@${d.sender}</b>`}
-                        ${content}
-                    </div>
-                `;
+                const content = d.image ? `<img src="${d.image}" style="max-width:100%; border-radius:10px;">` : d.text;
+                box.innerHTML += `<div class="msg ${typeClass}"><b>@${d.sender}</b><br>${content}</div>`;
             });
             box.scrollTop = box.scrollHeight;
         });
@@ -438,112 +374,36 @@
         const input = document.getElementById(inputId);
         const val = input.value.trim();
         if (!val) return;
-
-        // Command admin in global
-        if (role === 'admin' && type === 'global' && val.startsWith('/')) {
-            window.executeCommand(val);
-            input.value = "";
-            return;
-        }
-
         const path = type === 'global' ? 'chats/global' : `chats/private/${role === 'admin' ? selectedPrivateUser : currentUsername}`;
-        if (type === 'private' && role === 'admin' && !selectedPrivateUser) {
-            Swal.fire('ERROR', 'Pilih pemenang dulu!', 'warning');
-            return;
-        }
-
-        push(ref(db, path), {
-            sender: currentUsername,
-            text: val,
-            time: Date.now()
-        });
+        push(ref(db, path), { sender: currentUsername, text: val, time: Date.now() });
         input.value = "";
     };
 
     window.uploadImage = (input, type, role) => {
         const file = input.files[0];
-        if (!file) return;
-        if (file.size > 15728640) { // Limit 15MB
-            Swal.fire('OVERSZIED', 'Gambar maksimal 15MB!', 'error');
-            return;
-        }
-
+        if (!file || file.size > 15728640) return;
         const reader = new FileReader();
         reader.onload = (e) => {
             const path = type === 'global' ? 'chats/global' : `chats/private/${role === 'admin' ? selectedPrivateUser : currentUsername}`;
-            push(ref(db, path), {
-                sender: currentUsername,
-                image: e.target.result,
-                time: Date.now()
-            });
+            push(ref(db, path), { sender: currentUsername, image: e.target.result, time: Date.now() });
         };
         reader.readAsDataURL(file);
     };
 
-    window.viewImg = (src) => {
-        Swal.fire({
-            imageUrl: src,
-            imageWidth: '100%',
-            showConfirmButton: false,
-            background: 'transparent'
-        });
-    };
-
-    // --- SPIN ENGINE ---
     window.executeSpin = async () => {
         const snap = await get(ref(db, 'queue'));
-        if (!snap.exists() || Object.keys(snap.val()).length < 2) {
-            Swal.fire('GAK BISA', 'Butuh minimal 2 orang buat spin!', 'warning');
-            return;
-        }
-
+        if (!snap.exists()) return;
         const participants = [];
         snap.forEach(c => { participants.push(c.val().u); });
-
         const winIndex = Math.floor(Math.random() * participants.length);
         const winnerName = participants[winIndex];
-        
-        // Putaran Minimal 10 kali (3600 derajat) + offset winner
-        const degPerItem = 360 / participants.length;
-        const finalRotation = (360 * 10) + (360 - (winIndex * degPerItem)) - (degPerItem / 2);
-
-        // Start Sync
-        await set(ref(db, 'config/syncSpin'), {
-            rotation: finalRotation,
-            winner: winnerName,
-            isDone: false,
-            timestamp: Date.now()
-        });
-
-        // Efek Visual Admin
-        const canvas = document.getElementById('canvas-admin');
-        canvas.style.transform = `rotate(${finalRotation}deg)`;
-
+        const finalRotation = (360 * 10) + (360 - (winIndex * (360/participants.length))) - (180/participants.length);
+        await set(ref(db, 'config/syncSpin'), { rotation: finalRotation, winner: winnerName, isDone: false });
+        document.getElementById('canvas-admin').style.transform = `rotate(${finalRotation}deg)`;
         setTimeout(async () => {
-            // Selesai Spin
             await update(ref(db, 'config/syncSpin'), { isDone: true });
-            
-            // Broadcast ke Global
-            push(ref(db, 'chats/global'), {
-                sender: 'SYSTEM',
-                text: `🔥 @${winnerName} BARU SAJA MENANG SPIN! 🔥`,
-                isBot: true
-            });
-
-            // Set Winner Node
             await set(ref(db, `winners/${winnerName}`), { winAt: Date.now() });
-            
-            // Init Private Chat Klaim
-            set(ref(db, `chats/private/${winnerName}/init`), {
-                sender: 'SYSTEM',
-                text: `Selamat @${winnerName}! Silahkan kirim bukti/klaim lo di sini.`,
-                isBot: true
-            });
-
-            // Bersihkan winner dari queue
             remove(ref(db, `queue/${winnerName}`));
-            
-            Swal.fire('DONE', `Pemenangnya adalah @${winnerName}`, 'success');
         }, 8100);
     };
 
@@ -552,29 +412,19 @@
         const ctx = c.getContext('2d');
         const count = list.length || 1;
         const arc = (2 * Math.PI) / count;
-        const colors = ['#0f172a', '#1e293b', '#334155', '#111827'];
-
         ctx.clearRect(0,0,500,500);
-
         for (let i = 0; i < count; i++) {
-            const angle = i * arc;
             ctx.beginPath();
-            ctx.fillStyle = colors[i % colors.length];
+            ctx.fillStyle = i % 2 ? '#0f172a' : '#1e293b';
             ctx.moveTo(250, 250);
-            ctx.arc(250, 250, 240, angle, angle + arc);
+            ctx.arc(250, 250, 240, i*arc, (i+1)*arc);
             ctx.fill();
-            ctx.strokeStyle = "rgba(255,255,255,0.1)";
-            ctx.stroke();
-
-            // Nama User
             ctx.save();
             ctx.translate(250, 250);
-            ctx.rotate(angle + arc / 2);
-            ctx.textAlign = "right";
+            ctx.rotate(i*arc + arc/2);
             ctx.fillStyle = "#fff";
             ctx.font = "bold 18px Arial";
-            const name = list[i] ? list[i].u : "ZMT EVENT";
-            ctx.fillText(name.toUpperCase(), 230, 10);
+            ctx.fillText((list[i] ? list[i].u : "ZMT").toUpperCase(), 100, 10);
             ctx.restore();
         }
     }
