@@ -49,9 +49,9 @@
         canvas { width: 100%; height: 100%; border-radius: 50%; border: 8px solid rgba(255,255,255,0.05); transition: 8s cubic-bezier(0.1, 0, 0.1, 1); box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 30px; height: 40px; background: #fff; clip-path: polygon(50% 100%, 0 0, 100% 0); z-index: 20; filter: drop-shadow(0 0 5px var(--neon)); }
 
-        /* FIX LOGIN: Dibuat Flex Center biar gak mental */
+        /* FIX: Z-Index diatur supaya Swal (notif) bisa muncul di depan login */
         #pg-login { 
-            position: fixed; inset: 0; background: var(--bg); z-index: 10000; 
+            position: fixed; inset: 0; background: var(--bg); z-index: 9000; 
             display: flex; align-items: center; justify-content: center; 
             overflow-y: auto; padding: 20px;
         }
@@ -94,8 +94,7 @@
                     <button id="btn-reg" class="btn" style="flex:1;" onclick="toggleReg()">REGIS: ...</button>
                     <button class="btn btn-danger" style="flex:2;" onclick="fullWipe()">HAPUS SEMUA DATA</button>
                 </div>
-                <div id="list-users" style="max-height:250px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:15px; padding:5px;">
-                    </div>
+                <div id="list-users" style="max-height:250px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:15px; padding:5px;"></div>
             </div>
 
             <div class="card">
@@ -173,8 +172,16 @@
     let userRole = "";
     let isRegOpen = true;
     let selectedPrivateUser = "";
-    let isSessionActive = false;
-    let loginTime = 0; // Tweak dikit buat fix bug mental
+    let loginTime = Date.now();
+
+    // CEK PERSISTENCE NOTIFIKASI (PAS REFRESH)
+    window.onload = () => {
+        const kickMsg = localStorage.getItem('zmt_msg');
+        if (kickMsg) {
+            Swal.fire('INFORMATION', kickMsg, 'info');
+            localStorage.removeItem('zmt_msg');
+        }
+    };
 
     window.switchAuth = (isAdmin) => {
         document.getElementById('box-user').style.display = isAdmin ? 'none' : 'block';
@@ -187,11 +194,9 @@
             if (key === "zmtxxx") {
                 currentUsername = "ADMIN";
                 userRole = "admin";
-                isSessionActive = true;
-                loginTime = Date.now(); // Set waktu login
                 launchApp();
             } else {
-                Swal.fire('ERROR', 'Admin Key Salah!', 'error');
+                Swal.fire({ title: 'ERROR', text: 'Admin Key Salah!', icon: 'error', target: 'body' });
             }
             return;
         }
@@ -200,7 +205,7 @@
         const p = document.getElementById('in-p').value;
 
         if (u.length < 3 || p.length < 3) {
-            Swal.fire('ERROR', 'User/PW minimal 3 karakter!', 'warning');
+            Swal.fire({ title: 'WARNING', text: 'User/PW minimal 3 karakter!', icon: 'warning', target: 'body' });
             return;
         }
 
@@ -212,23 +217,19 @@
             if (userData.pw === p) {
                 currentUsername = u;
                 userRole = "user";
-                isSessionActive = true;
-                loginTime = Date.now(); // Set waktu login
                 launchApp();
             } else {
-                Swal.fire('ERROR', 'Password Salah!', 'error');
+                Swal.fire({ title: 'ERROR', text: 'Password Salah!', icon: 'error', target: 'body' });
             }
         } else {
             const regStatus = await get(ref(db, 'config/regOpen'));
             if (regStatus.exists() && regStatus.val() === false) {
-                Swal.fire('CLOSED', 'Pendaftaran sedang ditutup Admin!', 'info');
+                Swal.fire({ title: 'CLOSED', text: 'Pendaftaran sedang ditutup Admin!', icon: 'info', target: 'body' });
                 return;
             }
             await set(userRef, { pw: p, crash: false, created: Date.now() });
             currentUsername = u;
             userRole = "user";
-            isSessionActive = true;
-            loginTime = Date.now(); // Set waktu login
             launchApp();
         }
     };
@@ -238,9 +239,10 @@
         document.getElementById('pg-main').style.display = 'block';
         document.getElementById('label-u').innerText = currentUsername;
 
-        // FIX BUG MENTAL: Cek kalau wipeSignal itu lebih baru dari waktu login usernya
+        // FIX: Sinyal Wipe agar user dapet notif kenapa dia kelempar
         onValue(ref(db, 'config/wipeSignal'), (s) => {
             if (s.exists() && s.val() > loginTime && userRole !== 'admin') {
+                localStorage.setItem('zmt_msg', 'DATABASE TELAH DIHAPUS OLEH ADMIN!');
                 location.reload(); 
             }
         });
@@ -312,7 +314,6 @@
             confirmButtonText: 'YA!'
         }).then((result) => {
             if (result.isConfirmed) {
-                // TAMBAHAN FIX WIPE (Kirim sinyal dulu, baru hapus)
                 set(ref(db, 'config/wipeSignal'), Date.now()).then(() => {
                     setTimeout(() => {
                         remove(ref(db)).then(() => {
@@ -333,8 +334,9 @@
     function initUserEngine() {
         onValue(ref(db, `auth/users/${currentUsername}/crash`), (s) => {
             if (s.val() === true) {
-                document.body.innerHTML = "<div style='background:#000;color:red;height:100vh;display:flex;align-items:center;justify-content:center;'><h1>CRASHED</h1></div>";
-                setInterval(() => { location.reload(); }, 100);
+                localStorage.setItem('zmt_msg', 'KAMU TELAH DI-CRASH OLEH ADMIN!');
+                document.body.innerHTML = "<div style='background:#000;color:red;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;'><h1>YOU ARE CRASHED</h1></div>";
+                setTimeout(() => { location.reload(); }, 2000);
             }
         });
 
@@ -348,10 +350,15 @@
             const data = s.val();
             if (!data) return;
             document.getElementById('canvas-user').style.transform = `rotate(${data.rotation}deg)`;
-            if (data.isDone && data.winner === currentUsername) {
-                confetti();
-                document.getElementById('claim-room').style.display = 'block';
-                listenChat(`chats/private/${currentUsername}`, 'usr-chat-private');
+            if (data.isDone) {
+                if (data.winner === currentUsername) {
+                    confetti();
+                    Swal.fire('WINNER!', 'Selamat! Kamu menang, segera klaim hadiah!', 'success');
+                    document.getElementById('claim-room').style.display = 'block';
+                    listenChat(`chats/private/${currentUsername}`, 'usr-chat-private');
+                } else {
+                    Swal.fire('INFO', `Spin Selesai! Pemenangnya adalah @${data.winner}`, 'info');
+                }
             }
         });
 
@@ -366,6 +373,7 @@
         const target = parts[1]?.replace('@', '');
         if (action === '/crash' && target) {
             await update(ref(db, `auth/users/${target}`), { crash: true });
+            Swal.fire('DONE', `@${target} Berhasil di Crash!`, 'success');
         }
     };
 
@@ -390,7 +398,12 @@
         const input = document.getElementById(inputId);
         const val = input.value.trim();
         if (!val) return;
-        const path = type === 'global' ? 'chats/global' : `chats/private/${role === 'admin' ? selectedPrivateUser : currentUsername}`;
+        const target = (role === 'admin') ? selectedPrivateUser : currentUsername;
+        if (type === 'private' && !target) {
+            Swal.fire('PILIH USER', 'Pilih pemenang dulu di tab atas!', 'warning');
+            return;
+        }
+        const path = type === 'global' ? 'chats/global' : `chats/private/${target}`;
         push(ref(db, path), { sender: currentUsername, text: val, time: Date.now() });
         input.value = "";
     };
@@ -400,90 +413,55 @@
         if (!file || file.size > 15728640) return;
         const reader = new FileReader();
         reader.onload = (e) => {
-            const path = type === 'global' ? 'chats/global' : `chats/private/${role === 'admin' ? selectedPrivateUser : currentUsername}`;
+            const target = (role === 'admin') ? selectedPrivateUser : currentUsername;
+            const path = type === 'global' ? 'chats/global' : `chats/private/${target}`;
             push(ref(db, path), { sender: currentUsername, image: e.target.result, time: Date.now() });
         };
         reader.readAsDataURL(file);
     };
 
     window.executeSpin = async () => {
-
         const snap = await get(ref(db, 'queue'));
-
         if (!snap.exists()) return;
-
         const participants = [];
-
         snap.forEach(c => { participants.push(c.val().u); });
-
         const winIndex = Math.floor(Math.random() * participants.length);
-
         const winnerName = participants[winIndex];
-
         const finalRotation = (360 * 10) + (360 - (winIndex * (360/participants.length))) - (180/participants.length);
-
+        
         await set(ref(db, 'config/syncSpin'), { rotation: finalRotation, winner: winnerName, isDone: false });
-
         document.getElementById('canvas-admin').style.transform = `rotate(${finalRotation}deg)`;
 
         setTimeout(async () => {
-
             await update(ref(db, 'config/syncSpin'), { isDone: true });
-
             await set(ref(db, `winners/${winnerName}`), { winAt: Date.now() });
-
             remove(ref(db, `queue/${winnerName}`));
-
+            Swal.fire('SUCCESS', `Pemenang adalah @${winnerName}`, 'success');
         }, 8100);
-
     };
 
-
-
     function drawWheel(canvasId, list) {
-
         const c = document.getElementById(canvasId);
-
         const ctx = c.getContext('2d');
-
         const count = list.length || 1;
-
         const arc = (2 * Math.PI) / count;
-
         ctx.clearRect(0,0,500,500);
-
         for (let i = 0; i < count; i++) {
-
             ctx.beginPath();
-
             ctx.fillStyle = i % 2 ? '#0f172a' : '#1e293b';
-
             ctx.moveTo(250, 250);
-
             ctx.arc(250, 250, 240, i*arc, (i+1)*arc);
-
             ctx.fill();
-
             ctx.save();
-
             ctx.translate(250, 250);
-
             ctx.rotate(i*arc + arc/2);
-
             ctx.fillStyle = "#fff";
-
             ctx.font = "bold 18px Arial";
-
             ctx.fillText((list[i] ? list[i].u : "ZMT").toUpperCase(), 100, 10);
-
             ctx.restore();
-
         }
-
     }
-
 </script>
 
 </body>
-
 </html>
