@@ -200,6 +200,15 @@ function setupNavUI() {
   if (u.role === 'admin' || u.role === 'owner') {
     document.getElementById('nav-admin').classList.remove('hidden');
     document.getElementById('nav-winner-chat').classList.remove('hidden');
+  } else {
+    // User biasa: cek apakah pemenang, baru tampilkan winner chat
+    db.ref('winners').once('value', snap => {
+      const winners = snap.val() || {};
+      const isWinner = Object.values(winners).some(w => w.username === u.username);
+      if (isWinner) {
+        document.getElementById('nav-winner-chat').classList.remove('hidden');
+      }
+    });
   }
 }
 
@@ -711,8 +720,17 @@ function checkWinnerAccess() {
   db.ref('winners').once('value', snap => {
     const winners = snap.val() || {};
     const isWinner = Object.values(winners).some(w => w.username === currentUser.username);
+    // Pastikan nav winner chat muncul jika pemenang
+    if (isWinner) {
+      document.getElementById('nav-winner-chat').classList.remove('hidden');
+    }
     const area = document.querySelector('#page-winner-chat .chat-input-area');
     if (area) area.style.display = isWinner ? '' : 'none';
+    // Jika bukan pemenang, redirect ke dashboard
+    if (!isWinner) {
+      showToast('Hanya pemenang yang bisa mengakses halaman ini.', 'error');
+      showPage('dashboard');
+    }
   });
 }
 
