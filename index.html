@@ -1,1233 +1,414 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ZMT SPIN - Login Giveaway</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230D47A1'/%3E%3Cpath d='M14 20h12L14 32h12M26 20l6 22M32 20l12 22M32 20h12' stroke='%23fff' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;500;600;700&display=swap');
-:root{
-  --b1:#1565C0;--b2:#1976D2;--b3:#0D47A1;
-  --p1:#4A148C;--p2:#6A1B9A;
-  --ac:#2979FF;--win:#00E5FF;
-  --bg:#050B18;--bg2:#080F20;
-  --card:#0D1B35;--card2:#101F3A;
-  --bdr:#1E3A6E;--bdr2:#243F75;
-  --tx:#E8F0FE;--tx2:#90A4AE;
-  --err:#EF5350;--ok:#00C853;
-  --r:16px;--rs:10px;
-}
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent!important;-webkit-touch-callout:none;outline:none!important;-webkit-font-smoothing:antialiased;;-webkit-font-smoothing:antialiased;}
-::selection{background:rgba(41,121,255,.25);color:#E8F0FE;}
-::-moz-selection{background:rgba(41,121,255,.25);color:#E8F0FE;}::selection{background:rgba(41,121,255,.25);color:var(--tx);}::-moz-selection{background:rgba(41,121,255,.25);color:var(--tx);}
-input,textarea,button,select,a{-webkit-tap-highlight-color:transparent!important;outline:none!important;}
-input:focus,textarea:focus,button:focus,select:focus{outline:none!important;box-shadow:none;}
-.fi2:focus{border-color:var(--ac)!important;box-shadow:0 0 0 3px rgba(41,121,255,.1)!important;outline:none!important;}
-.ci:focus{border-color:var(--ac)!important;outline:none!important;}
-body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;overflow-x:hidden;overflow-y:hidden;-webkit-tap-highlight-color:transparent;}
-body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(21,101,192,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(21,101,192,.06) 1px,transparent 1px);background-size:44px 44px;pointer-events:none;z-index:0;animation:gs 20s linear infinite;}
-@keyframes gs{to{background-position:44px 44px;}}
-.orb{position:fixed;border-radius:50%;filter:blur(100px);opacity:.14;pointer-events:none;z-index:0;}
-.orb1{width:550px;height:550px;background:var(--b1);top:-150px;left:-150px;animation:o1 12s ease-in-out infinite;}
-.orb2{width:500px;height:500px;background:var(--p1);bottom:-150px;right:-150px;animation:o2 15s ease-in-out infinite;}
-.orb3{width:340px;height:340px;background:var(--ac);top:45%;left:55%;animation:o3 10s ease-in-out infinite;}
-@keyframes o1{0%,100%{transform:translate(0,0)}50%{transform:translate(25px,18px)}}
-@keyframes o2{0%,100%{transform:translate(0,0)}50%{transform:translate(-22px,-28px)}}
-@keyframes o3{0%,100%{transform:translate(-50%,-50%)}50%{transform:translate(-50%,-38%)}}
-.page{display:none;position:relative;z-index:1;min-height:100vh;flex-direction:column;overflow-y:hidden;}
-.page.active{display:flex;}
-@keyframes fi{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-.ani{animation:fi .32s ease;}
-/* TOAST */
-#tw{position:fixed;top:16px;left:50%;transform:translateX(-50%);z-index:9999;display:flex;flex-direction:column;gap:7px;pointer-events:none;align-items:center;}
-.toast{background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rs);padding:10px 20px;font-weight:700;font-size:13px;box-shadow:0 8px 32px rgba(0,0,0,.5);opacity:0;transform:translateY(-18px) scale(.94);transition:opacity .28s,transform .28s;white-space:nowrap;max-width:90vw;text-align:center;}
-.toast.show{opacity:1;transform:translateY(0) scale(1);}
-.toast.s{border-color:var(--ok);color:var(--ok);}
-.toast.e{border-color:var(--err);color:var(--err);}
-.toast.i{border-color:var(--ac);color:var(--ac);}
-.toast.w{border-color:#FFA726;color:#FFA726;}
-/* CARD */
-.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:26px 22px;backdrop-filter:blur(12px);}
-/* FORM */
-.fg{display:flex;flex-direction:column;gap:5px;margin-bottom:13px;}
-.fl{font-size:11px;font-weight:700;color:var(--tx2);letter-spacing:1px;text-transform:uppercase;}
-.fi2{background:var(--bg2);border:1.5px solid var(--bdr);border-radius:var(--rs);padding:11px 15px;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:15px;font-weight:500;outline:none!important;transition:border-color .2s,box-shadow .2s;width:100%;}
-.fi2:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(41,121,255,.1);outline:none!important;}
-.fi2::placeholder{color:rgba(144,164,174,.4);}
-/* BTN */
-.btn{width:100%;padding:13px;border:none;border-radius:var(--rs);font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;position:relative;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,.08);opacity:0;transition:opacity .2s;}
-.btn:hover::after{opacity:1;}
-.btn:active{transform:scale(.97);}
-.bp{background:linear-gradient(135deg,var(--b3),var(--ac));color:#fff;box-shadow:0 4px 18px rgba(41,121,255,.28);}
-.bp:hover{box-shadow:0 6px 26px rgba(41,121,255,.46);}
-.bd{background:linear-gradient(135deg,#b71c1c,var(--err));color:#fff;}
-.bw{background:linear-gradient(135deg,var(--p1),var(--ac));color:#fff;box-shadow:0 4px 18px rgba(74,20,140,.3);}
-.bg2{background:transparent;color:var(--tx2);border:1.5px solid var(--bdr);font-family:'Rajdhani',sans-serif;font-size:14px;letter-spacing:.3px;}
-.bg2:hover{border-color:var(--ac);color:var(--tx);}
-/* LOGIN PAGE */
-#pl{justify-content:center;align-items:center;padding:24px;}
-.lw{width:100%;max-width:430px;display:flex;flex-direction:column;gap:16px;}
-.lt{font-family:'Orbitron',monospace;font-size:clamp(19px,5vw,28px);font-weight:900;background:linear-gradient(135deg,var(--ac),var(--win));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px;line-height:1.2;text-align:center;animation:tp 3s ease-in-out infinite;}
-@keyframes tp{0%,100%{filter:brightness(1)}50%{filter:brightness(1.16)}}
-.ls{font-size:12px;color:var(--err);font-weight:600;border:1px solid rgba(239,83,80,.28);padding:10px 13px;border-radius:var(--rs);background:rgba(239,83,80,.06);line-height:1.5;text-align:center;}
-.tabs{display:flex;gap:4px;background:var(--bg2);border-radius:var(--rs);padding:4px;margin-bottom:16px;}
-.tb{flex:1;padding:9px;border:none;border-radius:8px;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;background:transparent;color:var(--tx2);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.tb.active{background:var(--b1);color:#fff;box-shadow:0 2px 10px rgba(21,101,192,.35);}
-/* ADMIN CARD */
-.ac2{background:linear-gradient(135deg,rgba(74,20,140,.22),rgba(13,27,53,.8));border:1.5px solid rgba(74,20,140,.4);border-radius:var(--r);padding:17px 20px;display:flex;align-items:center;gap:13px;cursor:pointer;transition:all .25s;animation:ag 4s ease-in-out infinite;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-@keyframes ag{0%,100%{box-shadow:0 0 0 rgba(74,20,140,0)}50%{box-shadow:0 0 18px rgba(74,20,140,.22)}}
-.ac2:hover{border-color:var(--p2);box-shadow:0 0 26px rgba(74,20,140,.32);transform:translateY(-2px);}
-/* TOPBAR */
-.tb2{background:rgba(8,15,32,.92);border-bottom:1px solid var(--bdr);padding:0 20px;height:56px;display:flex;align-items:center;justify-content:space-between;backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;}
-.tbr{display:flex;align-items:center;gap:10px;}
-.ub{font-size:12px;font-weight:600;color:var(--tx2);background:var(--card2);border:1px solid var(--bdr);padding:4px 12px;border-radius:20px;}
-.lob{background:transparent;border:1px solid var(--bdr);color:var(--tx2);padding:5px 12px;border-radius:8px;font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.lob:hover{border-color:var(--err);color:var(--err);}
-.lm{display:flex;align-items:center;gap:9px;font-family:'Orbitron',monospace;font-weight:900;font-size:19px;letter-spacing:2px;}
-.lm .z{color:var(--ac);}.lm .s{color:var(--win);}
-/* NAV */
-.nt{display:flex;background:var(--bg2);border-bottom:1px solid var(--bdr);overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.nt::-webkit-scrollbar{display:none;}
-.nt-btn{padding:13px 17px;border:none;background:transparent;color:var(--tx2);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border-bottom:2.5px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:.5px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.nt-btn.active{color:var(--ac);border-bottom-color:var(--ac);}
-/* CONTENT */
-.ca{flex:1;padding:18px;max-width:900px;width:100%;margin:0 auto;overflow-y:auto;}
-.tc{animation:fi .28s ease;}
-/* SECTION TITLE */
-.st{font-family:'Orbitron',monospace;font-size:13px;font-weight:900;letter-spacing:1.5px;margin-bottom:14px;display:flex;align-items:center;gap:10px;color:var(--tx);}
-.st::after{content:'';flex:1;height:1px;background:var(--bdr);}
-/* SPIN */
-.sh{text-align:center;padding:18px 0 10px;}
-.sh h2{font-family:'Orbitron',monospace;font-size:clamp(17px,4vw,24px);font-weight:900;margin-bottom:5px;background:linear-gradient(135deg,var(--ac),var(--win));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
-.sh p{font-size:13px;color:var(--tx2);margin-bottom:16px;}
-.rsb{display:block;width:100%;max-width:290px;margin:0 auto;padding:14px;border:none;border-radius:var(--rs);font-family:'Orbitron',monospace;font-size:12px;font-weight:900;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,var(--b3),var(--ac));color:#fff;box-shadow:0 6px 28px rgba(41,121,255,.32);transition:all .2s;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.rsb:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 34px rgba(41,121,255,.48);}
-.rsb:disabled{opacity:.44;cursor:not-allowed;}
-.sw{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:22px;margin-top:16px;}
-.scw{display:flex;justify-content:center;position:relative;margin:14px 0 6px;}
-.sn{position:absolute;top:-13px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:12px solid transparent;border-right:12px solid transparent;border-top:30px solid var(--ac);filter:drop-shadow(0 0 8px var(--ac));z-index:10;animation:np 2s ease-in-out infinite;}
-@keyframes np{0%,100%{filter:drop-shadow(0 0 5px var(--ac))}50%{filter:drop-shadow(0 0 14px var(--ac))}}
-@keyframes spin360{to{transform:rotate(360deg)}}
-/* WINNERS */
-.wl{display:flex;flex-direction:column;gap:9px;}
-.wi{background:linear-gradient(135deg,rgba(0,229,255,.07),rgba(74,20,140,.07));border:1px solid rgba(0,229,255,.2);border-radius:var(--rs);padding:13px 17px;display:flex;align-items:center;justify-content:space-between;animation:fi .28s ease;transition:all .2s;}
-.wi:hover{border-color:rgba(0,229,255,.42);box-shadow:0 0 12px rgba(0,229,255,.09);}
-.wn{font-weight:700;font-size:15px;color:var(--win);}
-.wb{font-size:11px;font-weight:700;letter-spacing:1px;background:rgba(0,229,255,.1);color:var(--win);padding:3px 10px;border-radius:12px;border:1px solid rgba(0,229,255,.22);}
-.es{text-align:center;padding:36px;color:var(--tx2);font-size:14px;}
-/* CHAT */
-.cw{display:flex;flex-direction:column;height:calc(100vh - 188px);background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;}
-.ch{padding:12px 17px;border-bottom:1px solid var(--bdr);font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:1px;background:var(--card2);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.od{width:8px;height:8px;background:var(--ok);border-radius:50%;display:inline-block;margin-right:6px;box-shadow:0 0 6px var(--ok);animation:dp 2s ease-in-out infinite;}
-@keyframes dp{0%,100%{box-shadow:0 0 4px var(--ok)}50%{box-shadow:0 0 10px var(--ok)}}
-.cm{flex:1;overflow-y:auto;padding:13px;display:flex;flex-direction:column;gap:8px;}
-.cm::-webkit-scrollbar{width:3px;}
-.cm::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:4px;}
-.msg{display:flex;flex-direction:column;max-width:82%;animation:mi .22s ease;align-self:flex-start;align-items:flex-start;}
-@keyframes mi{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
-.msg.mine{align-self:flex-end;align-items:flex-end;}
-.msg.other{align-self:flex-start;}
-.msg.adm .mb{background:linear-gradient(135deg,rgba(74,20,140,.32),rgba(41,121,255,.14));border-color:rgba(74,20,140,.48);}
-.mn{font-size:11px;color:var(--tx2);margin-bottom:3px;font-weight:600;}
-.mb{background:var(--card2);border:1px solid var(--bdr);border-radius:14px;padding:9px 13px;font-size:14px;line-height:1.5;word-break:break-word;min-width:44px;max-width:100%;display:inline-block;}
-.msg.mine .mb{background:linear-gradient(135deg,var(--b3),rgba(41,121,255,.22));border-color:var(--b2);}
-.mb img{max-width:220px;max-height:220px;border-radius:10px;display:block;margin-top:4px;cursor:pointer;border:1px solid rgba(255,255,255,.08);}
-.mt{font-size:10px;color:var(--tx2);margin-top:2px;padding:0 3px;}
-.cia{padding:9px 12px;border-top:1px solid var(--bdr);background:var(--card2);display:flex;gap:7px;align-items:flex-end;flex-shrink:0;}
-.ci{flex:1;background:var(--bg2);border:1.5px solid var(--bdr);border-radius:10px;padding:8px 12px;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:14px;outline:none!important;resize:none;min-height:38px;max-height:86px;transition:border-color .2s;}
-.ci:focus{border-color:var(--ac);outline:none!important;}
-.cab{background:var(--card);border:1.5px solid var(--bdr);border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;color:var(--tx2);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.cab:hover{border-color:var(--ac);color:var(--ac);}
-.csb{background:var(--b1);border:none;border-radius:10px;width:38px;height:38px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s;flex-shrink:0;color:#fff;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.csb:hover{background:var(--ac);}
-.csb:active{transform:scale(.9);}
-/* WINNER CHAT */
-.wcl{display:flex;gap:11px;height:calc(100vh - 188px);}
-.wlp{width:185px;flex-shrink:0;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow-y:auto;}
-.wlpt{padding:10px 12px;font-family:'Orbitron',monospace;font-size:9px;font-weight:700;letter-spacing:1px;color:var(--tx2);border-bottom:1px solid var(--bdr);}
-.wci{padding:11px 12px;cursor:pointer;border-bottom:1px solid rgba(30,58,110,.22);transition:all .14s;font-weight:600;font-size:13px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.wci:hover{background:var(--card2);}
-.wci.sel{background:rgba(41,121,255,.11);color:var(--ac);}
-.wcm{flex:1;min-width:0;}
-/* MODAL */
-.mo{position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);z-index:1000;display:none;align-items:center;justify-content:center;padding:20px;}
-.mo.open{display:flex;}
-.mb2{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:26px;width:100%;max-width:350px;animation:mIn .24s cubic-bezier(.34,1.56,.64,1);}
-@keyframes mIn{from{opacity:0;transform:scale(.87)}to{opacity:1;transform:scale(1)}}
-.mb2 h3{font-family:'Orbitron',monospace;font-size:15px;margin-bottom:14px;}
-/* ADMIN STATS */
-.ag2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:16px;}
-@media(max-width:550px){.ag2{grid-template-columns:1fr;}}
-.asc{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:17px;transition:all .2s;}
-.asc:hover{border-color:var(--bdr2);transform:translateY(-1px);}
-.asl{font-size:11px;font-weight:700;letter-spacing:1px;color:var(--tx2);text-transform:uppercase;margin-bottom:5px;}
-.asv{font-family:'Orbitron',monospace;font-size:26px;font-weight:900;color:var(--ac);}
-.rtb{width:100%;padding:14px;border:none;border-radius:var(--rs);font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;transition:all .2s;margin-bottom:11px;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.ro{background:linear-gradient(135deg,#1b5e20,var(--ok));color:#fff;box-shadow:0 4px 18px rgba(0,200,83,.22);}
-.rc{background:linear-gradient(135deg,#b71c1c,var(--err));color:#fff;box-shadow:0 4px 18px rgba(239,83,80,.22);}
-.spab{margin:13px auto;display:block;padding:12px 38px;border:none;border-radius:var(--rs);font-family:'Orbitron',monospace;font-size:13px;font-weight:900;letter-spacing:2px;cursor:pointer;background:linear-gradient(135deg,var(--p1),var(--ac));color:#fff;box-shadow:0 6px 28px rgba(74,20,140,.32);transition:all .2s;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.spab:hover:not(:disabled){transform:translateY(-2px);}
-.spab:disabled{opacity:.5;cursor:not-allowed;}
-/* TABLE */
-.tw{overflow-x:auto;border-radius:var(--rs);border:1px solid var(--bdr);background:var(--card);}
-.dt{width:100%;border-collapse:collapse;font-size:13px;}
-.dt th{padding:9px 13px;text-align:left;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;letter-spacing:1px;color:var(--tx2);border-bottom:1px solid var(--bdr);background:var(--card2);}
-.dt td{padding:9px 13px;border-bottom:1px solid rgba(30,58,110,.22);color:var(--tx);font-weight:500;}
-.dt tr:hover td{background:rgba(41,121,255,.04);}
-/* CLOSED OVERLAY */
-.clo{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(10px);z-index:999;display:none;align-items:center;justify-content:center;padding:20px;text-align:center;}
-.clo.show{display:flex;}
-.clb{background:var(--card);border:2px solid var(--err);border-radius:var(--r);padding:38px 30px;max-width:340px;animation:mIn .3s ease;}
-.clb h2{font-family:'Orbitron',monospace;font-size:18px;color:var(--err);margin-bottom:8px;}
-.clb p{color:var(--tx2);font-size:14px;line-height:1.6;}
-/* IMAGE EDITOR FULLSCREEN */
-.iem{position:fixed;inset:0;background:#000;z-index:2000;display:none;flex-direction:column;}
-.iem.open{display:flex;}
-.ie-top{display:flex;align-items:center;gap:11px;padding:11px 15px;background:rgba(0,0,0,.85);border-bottom:1px solid rgba(255,255,255,.07);flex-shrink:0;}
-.ie-top h3{font-family:'Orbitron',monospace;font-size:12px;font-weight:700;flex:1;color:#fff;letter-spacing:1px;}
-.ie-ca{flex:1;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0a0a;}
-#ec{position:absolute;max-width:100%;max-height:100%;touch-action:none;}
-.ie-bar{background:rgba(10,10,10,.95);border-top:1px solid rgba(255,255,255,.07);padding:9px 13px;display:flex;flex-direction:column;gap:7px;flex-shrink:0;}
-.ie-tr{display:flex;gap:7px;align-items:center;overflow-x:auto;}
-.ie-tr::-webkit-scrollbar{display:none;}
-.ietb{padding:6px 13px;border:1.5px solid rgba(255,255,255,.13);border-radius:8px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.65);font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:600;cursor:pointer;transition:all .14s;white-space:nowrap;flex-shrink:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.ietb.active{border-color:var(--ac);color:var(--ac);background:rgba(41,121,255,.11);}
-.ietb:hover{border-color:rgba(255,255,255,.35);color:#fff;}
-.ie-or{display:flex;gap:7px;align-items:center;}
-.ie-col{width:28px;height:28px;border-radius:6px;border:2px solid rgba(255,255,255,.18);cursor:pointer;flex-shrink:0;}
-.ie-si{-webkit-appearance:none;appearance:none;height:4px;border-radius:2px;background:rgba(255,255,255,.2);accent-color:var(--ac);flex:1;cursor:pointer;}
-.ie-si::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--ac);cursor:pointer;}
-.ie-ti{flex:1;background:rgba(255,255,255,.04);border:1.5px solid rgba(255,255,255,.13);border-radius:7px;padding:6px 10px;color:#fff;font-size:13px;font-family:'Rajdhani',sans-serif;outline:none;min-width:90px;}
-.ie-ti::placeholder{color:rgba(255,255,255,.3);}
-.ie-act{display:flex;gap:7px;justify-content:flex-end;}
-.ie-send{padding:9px 26px;border:none;border-radius:var(--rs);font-family:'Orbitron',monospace;font-size:11px;font-weight:700;letter-spacing:1.5px;cursor:pointer;background:linear-gradient(135deg,var(--b3),var(--ac));color:#fff;transition:all .2s;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.ie-send:hover{box-shadow:0 4px 14px rgba(41,121,255,.38);}
-.ie-can{padding:9px 18px;border:1.5px solid rgba(255,255,255,.13);border-radius:var(--rs);background:transparent;color:rgba(255,255,255,.55);font-family:'Rajdhani',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;}
-.ie-can:hover{border-color:var(--err);color:var(--err);}
-.crop-ov{position:absolute;border:2px dashed rgba(255,255,255,.6);pointer-events:none;z-index:5;display:none;box-shadow:0 0 0 9999px rgba(0,0,0,.5);}
-/* SCROLLBAR */
-::-webkit-scrollbar{width:4px;height:4px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:4px;}
-@media(max-width:580px){
-  .ca{padding:11px;}
-  .card{padding:18px 14px;}
-  .wcl{flex-direction:column;height:auto;}
-  .wlp{width:100%;height:110px;}
-  .wcm .cw{height:calc(100vh - 430px);}
-  .cw{height:calc(100vh - 200px);}
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZMT Spin Giveaway</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-<div class="orb orb1"></div>
-<div class="orb orb2"></div>
-<div class="orb orb3"></div>
-<div id="tw"></div>
 
-<!-- CLOSED OVERLAY -->
-<div class="clo" id="clo" onclick="hideCLO()">
-  <div class="clb" onclick="event.stopPropagation()">
-    <h2>PENDAFTARAN DITUTUP</h2>
-    <p>Admin telah menutup pendaftaran untuk sementara waktu.<br>Silakan tunggu hingga pendaftaran dibuka kembali.</p>
-    <button onclick="hideCLO()" style="margin-top:18px;width:100%;padding:12px;border:none;border-radius:10px;background:linear-gradient(135deg,#b71c1c,#EF5350);color:#fff;font-family:'Orbitron',monospace;font-size:12px;font-weight:700;letter-spacing:1.5px;cursor:pointer;">TUTUP</button>
-  </div>
+<!-- LOADING SCREEN -->
+<div id="loading-screen" class="loading-screen">
+  <div class="loading-spinner"></div>
+  <p>Memuat sistem...</p>
 </div>
 
-<!-- IMAGE EDITOR FULLSCREEN -->
-<div class="iem" id="iem">
-  <div class="ie-top">
-    <h3>EDIT GAMBAR</h3>
-    <button class="ie-can" onclick="cancelIE()">Batal</button>
+<!-- ===================== LOGIN PAGE ===================== -->
+<div id="page-login" class="page hidden">
+  <div class="login-bg">
+    <div class="login-particles" id="login-particles"></div>
   </div>
-  <div class="ie-ca" id="ieca">
-    <canvas id="ec"></canvas>
-    <div class="crop-ov" id="cov"></div>
-  </div>
-  <div class="ie-bar">
-    <div class="ie-tr">
-      <button class="ietb active" id="it-draw" onclick="setTool('draw')">Gambar</button>
-      <button class="ietb" id="it-text" onclick="setTool('text')">Teks</button>
-      <button class="ietb" id="it-arrow" onclick="setTool('arrow')">Panah</button>
-      <button class="ietb" id="it-crop" onclick="setTool('crop')">Crop</button>
-      <button class="ietb" onclick="ieUndo()">Undo</button>
-      <button class="ietb" onclick="ieReset()">Reset</button>
-    </div>
-    <div class="ie-or">
-      <input type="color" class="ie-col" id="iec" value="#FF1744">
-      <input type="range" class="ie-si" id="ies" min="1" max="22" value="4">
-      <input type="text" class="ie-ti" id="iet" placeholder="Teks / label panah...">
-    </div>
-    <div class="ie-act">
-      <button class="ie-send" onclick="sendImg()">KIRIM SEKARANG</button>
-    </div>
-  </div>
-</div>
-
-<!-- LOGIN PAGE -->
-<div class="page active" id="pl">
-  <div style="display:flex;justify-content:center;align-items:center;min-height:100vh;padding:24px;" class="ani">
-    <div class="lw">
-      <!-- Logo -->
-      <div style="display:flex;justify-content:center;">
-        <svg width="78" height="78" viewBox="0 0 78 78" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="39" cy="39" r="35" fill="url(#ll1)" stroke="url(#ll2)" stroke-width="2"/>
-          <path d="M21 27h13L21 39h13M34 27l7 24M41 27l13 24M41 27h13" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-          <circle cx="39" cy="39" r="35" fill="url(#lr)" opacity=".11"/>
-          <defs>
-            <linearGradient id="ll1" x1="0" y1="0" x2="78" y2="78" gradientUnits="userSpaceOnUse"><stop stop-color="#0D47A1"/><stop offset="1" stop-color="#4A148C"/></linearGradient>
-            <linearGradient id="ll2" x1="0" y1="0" x2="78" y2="78" gradientUnits="userSpaceOnUse"><stop stop-color="#2979FF"/><stop offset="1" stop-color="#7B1FA2"/></linearGradient>
-            <radialGradient id="lr" cx="30%" cy="30%"><stop stop-color="#fff" stop-opacity=".32"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-          </defs>
-        </svg>
+  <div class="login-container">
+    <div class="login-brand">
+      <div class="brand-icon">
+        <div class="brand-hex"></div>
+        <span class="brand-letter">Z</span>
       </div>
-      <div class="lt">LOGIN GIVE AWAY!</div>
-      <div class="ls">JANGAN SAMPAI LUPA USERNAME DAN PASSWORDNYA JIKA TIDAK KAMU TIDAK BISA MENGAMBIL HADIAH!</div>
+      <h1 class="brand-title">ZMT SPIN</h1>
+      <p class="brand-subtitle">Giveaway System</p>
+    </div>
+
+    <!-- User Login Card -->
+    <div class="login-card" id="card-user">
+      <div class="card-header">
+        <div class="card-icon user-icon"></div>
+        <div>
+          <h2>Login Pengguna</h2>
+          <p>Masuk untuk ikut giveaway</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="user-username" placeholder="Masukkan username" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="user-password" placeholder="Masukkan password" />
+      </div>
+      <button class="btn btn-primary btn-full" onclick="loginUser()">DAFTAR / LOGIN</button>
+      <p id="user-login-error" class="error-msg hidden"></p>
+    </div>
+
+    <!-- Admin Login Card -->
+    <div class="login-card login-card-admin" id="card-admin-toggle">
+      <button class="btn btn-outline btn-full" onclick="toggleAdminForm()">
+        <span class="admin-btn-icon"></span>
+        LOGIN ADMIN / OWNER
+      </button>
+    </div>
+
+    <div class="login-card hidden" id="card-admin">
+      <div class="card-header">
+        <div class="card-icon admin-icon"></div>
+        <div>
+          <h2>Login Admin / Owner</h2>
+          <p>Akses panel kontrol</p>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="admin-username" placeholder="Masukkan username" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="admin-password" placeholder="Masukkan password" />
+      </div>
+      <div class="form-group">
+        <label>Key Akses</label>
+        <input type="text" id="admin-key" placeholder="Masukkan key" autocomplete="off" />
+      </div>
+      <button class="btn btn-secondary btn-full" onclick="loginAdmin()">MASUK SEBAGAI ADMIN</button>
+      <p id="admin-login-error" class="error-msg hidden"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== MAIN APP ===================== -->
+<div id="app" class="hidden">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar" class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-icon-sm">
+        <div class="brand-hex-sm"></div>
+        <span class="brand-letter-sm">Z</span>
+      </div>
+      <span>ZMT SPIN</span>
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="nav-avatar"></div>
+      <div class="user-info">
+        <span id="nav-username">-</span>
+        <span class="role-badge" id="nav-role-badge">user</span>
+      </div>
+    </div>
+    <ul class="nav-links">
+      <li><a href="#" onclick="showPage('dashboard')" data-page="dashboard"><span class="nav-icon icon-home"></span>Dashboard</a></li>
+      <li><a href="#" onclick="showPage('spin')" data-page="spin"><span class="nav-icon icon-spin"></span>Spin Wheel</a></li>
+      <li><a href="#" onclick="showPage('chat')" data-page="chat"><span class="nav-icon icon-chat"></span>Global Chat</a></li>
+      <li id="nav-winner-chat" class="hidden"><a href="#" onclick="showPage('winner-chat')" data-page="winner-chat"><span class="nav-icon icon-trophy"></span>Chat Pemenang</a></li>
+      <li id="nav-admin" class="hidden"><a href="#" onclick="showPage('admin')" data-page="admin"><span class="nav-icon icon-admin"></span>Admin Panel</a></li>
+    </ul>
+    <button class="btn btn-danger btn-logout" onclick="logout()">KELUAR</button>
+  </nav>
+
+  <!-- MOBILE HEADER -->
+  <div class="mobile-header">
+    <button class="menu-btn" onclick="toggleSidebar()">
+      <span></span><span></span><span></span>
+    </button>
+    <span class="mobile-title">ZMT SPIN</span>
+    <div class="mobile-avatar" id="mobile-avatar"></div>
+  </div>
+  <div class="sidebar-overlay hidden" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+  <!-- PAGE CONTENT -->
+  <main class="main-content">
+
+    <!-- ===== DASHBOARD PAGE ===== -->
+    <div id="page-dashboard" class="inner-page hidden">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <p>Selamat datang di ZMT Spin Giveaway</p>
+      </div>
+
+      <!-- Countdown -->
+      <div class="card countdown-card">
+        <div class="countdown-label" id="countdown-label">Status Event</div>
+        <div class="countdown-display" id="countdown-display">
+          <div class="countdown-unit"><span id="cd-days">00</span><label>Hari</label></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-unit"><span id="cd-hours">00</span><label>Jam</label></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-unit"><span id="cd-mins">00</span><label>Menit</label></div>
+          <div class="countdown-sep">:</div>
+          <div class="countdown-unit"><span id="cd-secs">00</span><label>Detik</label></div>
+        </div>
+        <div class="event-status-badge" id="event-status-badge">Menunggu Info</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon icon-users"></div>
+          <div class="stat-info">
+            <span class="stat-num" id="stat-total-users">0</span>
+            <span class="stat-label">Total Peserta</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-spin-small"></div>
+          <div class="stat-info">
+            <span class="stat-num" id="stat-spin-count">0</span>
+            <span class="stat-label">Total Spin</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon icon-trophy-small"></div>
+          <div class="stat-info">
+            <span class="stat-num" id="stat-winner-count">0</span>
+            <span class="stat-label">Pemenang</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Winners -->
       <div class="card">
-        <div class="tabs">
-          <button class="tb active" onclick="swTab('login')">MASUK</button>
-          <button class="tb" onclick="swTab('register')">DAFTAR</button>
+        <div class="card-title">Pemenang Terakhir</div>
+        <div id="winner-list-dashboard" class="winner-list">
+          <p class="empty-state">Belum ada pemenang</p>
         </div>
-        <div id="t-login">
-          <div class="fg"><label class="fl">Username</label><input class="fi2" type="text" id="lu" placeholder="masukkan username" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()"></div>
-          <div class="fg"><label class="fl">Password</label><input class="fi2" type="password" id="lp" placeholder="masukkan password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-          <button class="btn bp" onclick="doLogin()">MASUK</button>
-        </div>
-        <div id="t-reg" style="display:none;">
-          <div class="fg"><label class="fl">Username</label><input class="fi2" type="text" id="ru" placeholder="buat username (min 3 karakter)" autocomplete="off" onkeydown="if(event.key==='Enter')doReg()"></div>
-          <div class="fg"><label class="fl">Password</label><input class="fi2" type="password" id="rp" placeholder="buat password" onkeydown="if(event.key==='Enter')doReg()"></div>
-          <button class="btn bp" onclick="doReg()">DAFTAR AKUN</button>
-        </div>
-      </div>
-      <!-- Admin Card -->
-      <div class="ac2" onclick="openAdminM()">
-        <div style="width:54px;height:54px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-          <svg width="54" height="54" viewBox="0 0 54 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="27" cy="27" r="25" fill="rgba(74,20,140,.22)" stroke="rgba(106,27,154,.5)" stroke-width="1.5"/>
-            <!-- Tameng / shield admin -->
-            <path d="M27 12 L38 17 L38 27 C38 33 33 38 27 41 C21 38 16 33 16 27 L16 17 Z" fill="rgba(74,20,140,.5)" stroke="#CE93D8" stroke-width="1.5"/>
-            <!-- Bintang di dalam shield -->
-            <path d="M27 19 L28.5 24 L33.5 24 L29.5 27 L31 32 L27 29 L23 32 L24.5 27 L20.5 24 L25.5 24 Z" fill="#CE93D8"/>
-          </svg>
-        </div>
-        <div style="flex:1;">
-          <div style="font-family:'Orbitron',monospace;font-size:12px;font-weight:700;color:#CE93D8;letter-spacing:1px;margin-bottom:3px;">LOGIN ADMIN</div>
-          <div style="font-size:12px;color:var(--tx2);">Masuk sebagai administrator dengan password khusus</div>
-        </div>
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(206,147,216,.45)" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- USER PAGE -->
-<div class="page" id="pu">
-  <div class="tb2">
-    <div class="lm">
-      <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="15" fill="url(#ul1)" stroke="url(#ul2)" stroke-width="1.5"/><path d="M9 11h7L9 17h7M16 11l4 12M20 11l7 12M20 11h7" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="ul1" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#0D47A1"/><stop offset="1" stop-color="#4A148C"/></linearGradient><linearGradient id="ul2" x1="0" y1="0" x2="34" y2="34" gradientUnits="userSpaceOnUse"><stop stop-color="#2979FF"/><stop offset="1" stop-color="#7B1FA2"/></linearGradient></defs></svg>
-      <span><span class="z">ZMT</span><span class="s">SPIN</span></span>
-    </div>
-    <div class="tbr"><span class="ub" id="tbu">-</span><button class="lob" onclick="doLogout()">Keluar</button></div>
-  </div>
-  <div class="nt">
-    <button class="nt-btn active" onclick="uTab(this,'spin')">SPIN</button>
-    <button class="nt-btn" onclick="uTab(this,'winners')">PEMENANG</button>
-    <button class="nt-btn" onclick="uTab(this,'global')">CHAT GLOBAL</button>
-    <button class="nt-btn" id="twc" style="display:none;" onclick="uTab(this,'winchat')">CHAT PEMENANG</button>
-  </div>
-  <div class="ca">
-    <!-- SPIN -->
-    <div id="u-spin" class="tc">
-      <div class="sh"><h2>DAFTAR SPIN!</h2><p>ADMIN YANG SPIN - KAMU HANYA PERLU DAFTAR</p>
-        <button class="rsb" id="rsb" onclick="regSpin()">DAFTAR SEKARANG</button>
-        <div id="ss" style="margin-top:9px;font-size:13px;color:var(--tx2);"></div>
+    <!-- ===== SPIN PAGE ===== -->
+    <div id="page-spin" class="inner-page hidden">
+      <div class="page-header">
+        <h1>Spin Wheel</h1>
+        <p>Putar roda keberuntungan</p>
       </div>
-      <div class="sw"><div class="st">RODA SPIN (LIVE)</div>
-        <div class="scw"><div class="sn"></div><canvas id="sc" width="265" height="265"></canvas></div>
-        <p style="text-align:center;font-size:12px;color:var(--tx2);margin-top:3px;">Hanya admin yang dapat memutar roda</p>
-      </div>
-    </div>
-    <!-- WINNERS -->
-    <div id="u-winners" class="tc" style="display:none;">
-      <div class="st">DAFTAR PEMENANG</div>
-      <div class="wl" id="uwl"><div class="es">Belum ada pemenang</div></div>
-    </div>
-    <!-- GLOBAL CHAT -->
-    <div id="u-global" class="tc" style="display:none;">
-      <div class="cw">
-        <div class="ch"><span><span class="od"></span>CHAT GLOBAL</span><span style="font-size:10px;color:var(--tx2);">Semua terhubung</span></div>
-        <div class="cm" id="gm"></div>
-        <div class="cia">
-          <label class="cab"><input type="file" accept="image/*" style="display:none;" onchange="handleImg(this,'global')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></label>
-          <textarea class="ci" id="gi" placeholder="Tulis pesan..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendGUser();}"></textarea>
-          <button class="csb" onclick="sendGUser()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg></button>
-        </div>
-      </div>
-    </div>
-    <!-- WINNER CHAT USER -->
-    <div id="u-winchat" class="tc" style="display:none;">
-      <div class="cw">
-        <div class="ch" style="color:var(--win);">CHAT PEMENANG - SELAMAT ANDA MENANG!</div>
-        <div class="cm" id="wcmu"></div>
-        <div class="cia">
-          <label class="cab"><input type="file" accept="image/*" style="display:none;" onchange="handleImg(this,'win_user')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></label>
-          <textarea class="ci" id="wiu" placeholder="Tulis pesan kepada admin..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendW('user');}"></textarea>
-          <button class="csb" onclick="sendW('user')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg></button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-<!-- ADMIN PAGE -->
-<div class="page" id="pa">
-  <div class="tb2">
-    <div class="lm">
-      <svg width="34" height="34" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="15" fill="url(#al1)" stroke="url(#al2)" stroke-width="1.5"/><path d="M9 11h7L9 17h7M16 11l4 12M20 11l7 12M20 11h7" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><defs><linearGradient id="al1" x1="0" y1="0" x2="34" y2="34"><stop stop-color="#0D47A1"/><stop offset="1" stop-color="#4A148C"/></linearGradient><linearGradient id="al2" x1="0" y1="0" x2="34" y2="34"><stop stop-color="#2979FF"/><stop offset="1" stop-color="#7B1FA2"/></linearGradient></defs></svg>
-      <span><span class="z">ZMT</span><span class="s">SPIN</span></span>
-    </div>
-    <div class="tbr"><span style="font-size:12px;font-weight:700;color:#CE93D8;background:rgba(74,20,140,.2);border:1px solid rgba(74,20,140,.38);padding:4px 12px;border-radius:20px;">ADMIN</span><button class="lob" onclick="doLogout()">Keluar</button></div>
-  </div>
-  <div class="nt">
-    <button class="nt-btn active" onclick="aTab(this,'dash')">DASHBOARD</button>
-    <button class="nt-btn" onclick="aTab(this,'spin')">SPIN</button>
-    <button class="nt-btn" onclick="aTab(this,'reg')">PENDAFTAR</button>
-    <button class="nt-btn" onclick="aTab(this,'acc')">AKUN</button>
-    <button class="nt-btn" onclick="aTab(this,'win')">PEMENANG</button>
-    <button class="nt-btn" onclick="aTab(this,'glob')">CHAT GLOBAL</button>
-    <button class="nt-btn" onclick="aTab(this,'wch')">CHAT PEMENANG</button>
-  </div>
-  <div class="ca">
-    <!-- DASHBOARD -->
-    <div id="a-dash" class="tc">
-      <div class="ag2">
-        <div class="asc"><div class="asl">Total Akun</div><div class="asv" id="sacc">0</div></div>
-        <div class="asc"><div class="asl">Pendaftar Spin</div><div class="asv" id="sreg">0</div></div>
-        <div class="asc"><div class="asl">Pemenang</div><div class="asv" id="swin">0</div></div>
-        <div class="asc"><div class="asl">Status Daftar</div><div class="asv" id="sstat" style="font-size:18px;margin-top:3px;"></div></div>
-      </div>
-      <button class="rtb ro" id="rtb" onclick="toggleReg()">TUTUP PENDAFTARAN</button>
-      <button class="btn bd" onclick="confClear()">CLEAR ALL DATABASE</button>
-    </div>
-    <!-- SPIN ADMIN -->
-    <div id="a-spin" class="tc" style="display:none;text-align:center;">
-      <div class="st">RODA SPIN</div>
-      <div class="scw"><div class="sn"></div><canvas id="asc2" width="295" height="295"></canvas></div>
-      <button class="spab" id="aspb" onclick="adminSpin()">PUTAR!</button>
-      <div id="asr" style="margin-top:11px;font-size:16px;font-weight:700;color:var(--win);min-height:20px;"></div>
-      <p style="font-size:12px;color:var(--tx2);margin-top:3px;">Pemenang otomatis ditambahkan ke daftar pemenang</p>
-    </div>
-    <!-- REGISTERED -->
-    <div id="a-reg" class="tc" style="display:none;">
-      <div class="st">DAFTAR PENDAFTAR SPIN</div>
-      <div class="tw"><table class="dt"><thead><tr><th>#</th><th>USERNAME</th><th>WAKTU DAFTAR</th></tr></thead><tbody id="regtb"></tbody></table></div>
-    </div>
-    <!-- ACCOUNTS -->
-    <div id="a-acc" class="tc" style="display:none;">
-      <div class="st">DAFTAR AKUN</div>
-      <div class="tw"><table class="dt"><thead><tr><th>#</th><th>USERNAME : PASSWORD</th><th>BERGABUNG</th></tr></thead><tbody id="acctb"></tbody></table></div>
-    </div>
-    <!-- WINNERS ADMIN -->
-    <div id="a-win" class="tc" style="display:none;">
-      <div class="st">DAFTAR PEMENANG</div>
-      <div class="wl" id="awl"><div class="es">Belum ada pemenang</div></div>
-    </div>
-    <!-- CHAT GLOBAL ADMIN -->
-    <div id="a-glob" class="tc" style="display:none;">
-      <div class="cw">
-        <div class="ch"><span><span class="od"></span>CHAT GLOBAL</span><span style="font-size:10px;color:var(--tx2);">Semua pengguna terhubung</span></div>
-        <div class="cm" id="agm"></div>
-        <div class="cia">
-          <label class="cab"><input type="file" accept="image/*" style="display:none;" onchange="handleImg(this,'global')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></label>
-          <textarea class="ci" id="agi" placeholder="Tulis pesan sebagai ADMIN..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendGAdmin();}"></textarea>
-          <button class="csb" onclick="sendGAdmin()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg></button>
+      <div class="spin-layout">
+        <div class="spin-wheel-section">
+          <div class="wheel-wrapper">
+            <div class="wheel-pointer"></div>
+            <canvas id="spin-canvas" width="420" height="420"></canvas>
+          </div>
+          <div class="spin-controls" id="spin-controls-admin">
+            <button class="btn btn-primary btn-spin" id="spin-btn" onclick="startSpin()">PUTAR SEKARANG</button>
+          </div>
         </div>
-      </div>
-    </div>
-    <!-- WINNER CHAT ADMIN -->
-    <div id="a-wch" class="tc" style="display:none;">
-      <div class="st">CHAT PEMENANG</div>
-      <div class="wcl">
-        <div class="wlp"><div class="wlpt">PILIH PEMENANG</div><div id="awcl"></div></div>
-        <div class="wcm">
-          <div class="cw">
-            <div class="ch"><span id="achn" style="color:var(--tx2);">Pilih pemenang</span></div>
-            <div class="cm" id="awm"></div>
-            <div class="cia">
-              <label class="cab"><input type="file" accept="image/*" style="display:none;" onchange="handleImg(this,'win_admin')"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></label>
-              <textarea class="ci" id="awi" placeholder="Tulis pesan kepada pemenang..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendW('admin');}"></textarea>
-              <button class="csb" onclick="sendW('admin')"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 2L11 13"/><path d="M22 2L15 22l-4-9-9-4z"/></svg></button>
+        <div class="spin-side">
+          <div class="card">
+            <div class="card-title">Daftar Peserta</div>
+            <div class="participants-list" id="participants-list">
+              <p class="empty-state">Belum ada peserta</p>
             </div>
+          </div>
+          <div class="card" id="winner-result-card" style="display:none">
+            <div class="card-title">Pemenang</div>
+            <div class="winner-announce" id="winner-announce"></div>
           </div>
         </div>
       </div>
     </div>
+
+    <!-- ===== CHAT PAGE ===== -->
+    <div id="page-chat" class="inner-page hidden">
+      <div class="page-header">
+        <h1>Global Chat</h1>
+        <p>Chat realtime semua peserta</p>
+      </div>
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+          <p class="empty-state">Belum ada pesan</p>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-input-row">
+            <input type="text" id="chat-input" placeholder="Tulis pesan..." onkeypress="chatEnter(event)" />
+            <label class="btn btn-outline btn-icon" for="chat-img-input" title="Kirim Gambar">
+              <span class="icon-image"></span>
+            </label>
+            <input type="file" id="chat-img-input" accept="image/*" style="display:none" onchange="sendChatImage(this)" />
+            <button class="btn btn-primary" onclick="sendChatMessage()">Kirim</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== WINNER CHAT PAGE ===== -->
+    <div id="page-winner-chat" class="inner-page hidden">
+      <div class="page-header">
+        <h1>Chat Pemenang</h1>
+        <p>Hanya pemenang yang bisa mengakses</p>
+      </div>
+      <div class="chat-container">
+        <div class="chat-messages" id="winner-chat-messages">
+          <p class="empty-state">Belum ada pesan</p>
+        </div>
+        <div class="chat-input-area">
+          <div class="chat-input-row">
+            <input type="text" id="winner-chat-input" placeholder="Tulis pesan..." onkeypress="winnerChatEnter(event)" />
+            <label class="btn btn-outline btn-icon" for="winner-img-input" title="Kirim Gambar">
+              <span class="icon-image"></span>
+            </label>
+            <input type="file" id="winner-img-input" accept="image/*" style="display:none" onchange="sendWinnerChatImage(this)" />
+            <button class="btn btn-primary" onclick="sendWinnerChatMessage()">Kirim</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ADMIN PANEL ===== -->
+    <div id="page-admin" class="inner-page hidden">
+      <div class="page-header">
+        <h1>Admin Panel</h1>
+        <p>Kontrol penuh sistem giveaway</p>
+      </div>
+
+      <!-- Admin Tabs -->
+      <div class="admin-tabs">
+        <button class="tab-btn active" onclick="switchAdminTab('users', this)">Pengguna</button>
+        <button class="tab-btn" onclick="switchAdminTab('event', this)">Event</button>
+        <button class="tab-btn" onclick="switchAdminTab('winners', this)">Pemenang</button>
+        <button class="tab-btn admin-only-tab hidden" onclick="switchAdminTab('keys', this)">Admin Keys</button>
+        <button class="tab-btn" onclick="switchAdminTab('danger', this)">Bahaya</button>
+      </div>
+
+      <!-- Tab: Users -->
+      <div class="admin-tab-content" id="tab-users">
+        <div class="card">
+          <div class="card-title-row">
+            <span class="card-title">Daftar Pengguna</span>
+            <span class="user-count-badge" id="admin-user-count">0 pengguna</span>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table" id="users-table">
+              <thead>
+                <tr>
+                  <th>Username</th>
+                  <th>Password</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <tr><td colspan="5" class="empty-state">Memuat data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Event -->
+      <div class="admin-tab-content hidden" id="tab-event">
+        <div class="card">
+          <div class="card-title">Pengaturan Event</div>
+          <div class="form-group">
+            <label>Status Pendaftaran</label>
+            <div class="toggle-row">
+              <span id="reg-status-label">Ditutup</span>
+              <div class="toggle-switch" id="reg-toggle" onclick="toggleRegistration()">
+                <div class="toggle-knob"></div>
+              </div>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="card-title">Countdown Event</div>
+          <div class="form-group">
+            <label>Waktu Mulai</label>
+            <input type="datetime-local" id="event-start" />
+          </div>
+          <div class="form-group">
+            <label>Waktu Selesai</label>
+            <input type="datetime-local" id="event-end" />
+          </div>
+          <button class="btn btn-primary" onclick="saveEventSettings()">SIMPAN PENGATURAN</button>
+        </div>
+      </div>
+
+      <!-- Tab: Winners -->
+      <div class="admin-tab-content hidden" id="tab-winners">
+        <div class="card">
+          <div class="card-title">Daftar Pemenang</div>
+          <div id="admin-winner-list" class="winner-list">
+            <p class="empty-state">Belum ada pemenang</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Admin Keys (Owner only) -->
+      <div class="admin-tab-content hidden" id="tab-keys">
+        <div class="card">
+          <div class="card-title">Kelola Admin Key</div>
+          <div class="form-row">
+            <input type="text" id="new-key-input" placeholder="Key baru untuk admin..." />
+            <button class="btn btn-primary" onclick="addAdminKey()">TAMBAH KEY</button>
+          </div>
+          <div class="key-list" id="key-list">
+            <p class="empty-state">Belum ada key admin</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Danger Zone -->
+      <div class="admin-tab-content hidden" id="tab-danger">
+        <div class="card danger-card">
+          <div class="card-title danger-title">Zona Bahaya</div>
+          <p class="danger-desc">Tindakan di bawah ini tidak dapat dibatalkan. Pastikan Anda yakin sebelum melanjutkan.</p>
+          <div class="danger-actions">
+            <div class="danger-item">
+              <div>
+                <strong>Hapus Semua Database</strong>
+                <p>Menghapus semua data: pengguna, chat, pemenang, pengaturan, dan key admin.</p>
+              </div>
+              <button class="btn btn-danger" onclick="clearAllDatabase()">CLEAR ALL DATABASE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end admin page -->
+
+  </main>
+</div><!-- end app -->
+
+<!-- ===================== MODALS ===================== -->
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3 id="modal-title">Konfirmasi</h3>
+      <button class="modal-close" onclick="closeModal()"></button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal()">Batal</button>
+      <button class="btn btn-danger" id="modal-confirm-btn">Konfirmasi</button>
+    </div>
   </div>
 </div>
 
-<!-- MODALS -->
-<div class="mo" id="m-admin">
-  <div class="mb2"><h3 style="color:#CE93D8;">LOGIN ADMIN</h3>
-    <div class="fg"><label class="fl">Password Admin</label><input class="fi2" type="password" id="ap" placeholder="masukkan password admin" onkeydown="if(event.key==='Enter')doAdminLogin()"></div>
-    <div style="display:flex;gap:8px;"><button class="btn bw" onclick="doAdminLogin()" style="flex:1;">MASUK</button><button class="btn bg2" onclick="closeM('m-admin')" style="flex:.5;padding:13px;">Batal</button></div>
+<!-- TOAST -->
+<div id="toast-container"></div>
+
+<!-- WINNER POPUP -->
+<div id="winner-popup" class="winner-popup hidden">
+  <div class="winner-popup-inner">
+    <div class="confetti-container" id="confetti-container"></div>
+    <div class="winner-popup-icon"></div>
+    <h2>SELAMAT!</h2>
+    <p>Pemenang Giveaway</p>
+    <div class="winner-popup-name" id="winner-popup-name"></div>
+    <button class="btn btn-primary" onclick="closeWinnerPopup()">TUTUP</button>
   </div>
 </div>
-<div class="mo" id="m-clear">
-  <div class="mb2"><h3 style="color:var(--err);">KONFIRMASI HAPUS SEMUA</h3>
-    <p style="color:var(--tx2);font-size:14px;margin-bottom:18px;line-height:1.6;">Tindakan ini akan menghapus SEMUA data: akun, pendaftar, pemenang, dan pesan chat. Tidak dapat dibatalkan!</p>
-    <div style="display:flex;gap:8px;"><button class="btn bd" onclick="doClear()" style="flex:1;">HAPUS SEMUA</button><button class="btn bg2" onclick="closeM('m-clear')" style="flex:.5;padding:13px;">Batal</button></div>
-  </div>
-</div>
-<div class="mo" id="m-winner">
-  <div class="mb2" style="text-align:center;">
-    <div style="margin-bottom:12px;"><svg width="60" height="60" viewBox="0 0 60 60" fill="none"><circle cx="30" cy="30" r="28" fill="rgba(0,229,255,.1)" stroke="var(--win)" stroke-width="2.5"/><path d="M18 30l9 9 15-16" stroke="var(--win)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-    <h3 style="color:var(--win);font-family:'Orbitron',monospace;font-size:17px;margin-bottom:7px;">PEMENANG!</h3>
-    <p id="wmn" style="font-size:22px;font-weight:700;color:var(--tx);margin-bottom:5px;"></p>
-    <p style="color:var(--tx2);font-size:13px;margin-bottom:18px;">Selamat telah menjadi pemenang!</p>
-    <button class="btn bp" onclick="closeM('m-winner')">TUTUP</button>
-  </div>
-</div>
-<div class="mo" id="m-imgview" onclick="closeM('m-imgview')" style="align-items:center;justify-content:center;flex-direction:column;gap:12px;">
-  <button onclick="event.stopPropagation();closeM('m-imgview')" style="position:fixed;top:16px;right:16px;background:rgba(0,0,0,.7);border:2px solid rgba(255,255,255,.3);border-radius:50%;width:40px;height:40px;color:#fff;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:9999;line-height:1;">&#x2715;</button>
-  <div onclick="event.stopPropagation()" style="max-width:94vw;max-height:90vh;display:flex;align-items:center;justify-content:center;">
-    <img id="ivs" src="" alt="" style="max-width:94vw;max-height:88vh;border-radius:10px;display:block;object-fit:contain;box-shadow:0 0 40px rgba(0,0,0,.8);">
-  </div>
-  <p style="color:rgba(255,255,255,.4);font-size:12px;margin-top:4px;">Klik di luar foto untuk tutup</p>
-</div>
 
-<script type="module">
-import{initializeApp}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import{getDatabase,ref,set,get,push,onValue,remove}from'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
-
-const FC={
-  apiKey:"AIzaSyBqTm0G0UR-UA-GzqWjHXWFNiJoVeg5Krk",
-  authDomain:"zmtspin.firebaseapp.com",
-  databaseURL:"https://zmtspin-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId:"zmtspin",storageBucket:"zmtspin.firebasestorage.app",
-  messagingSenderId:"305119744319",
-  appId:"1:305119744319:web:2cc44fd4dbf785cf3c838a"
-};
-const app=initializeApp(FC);
-const db=getDatabase(app);
-
-/* ── STATE ── */
-let CU=null, IA=false, IW=false;
-let SP=[], SA=0, pendImg=null, WCR=null;
-
-/* ── TOAST ── */
-window.showT=function(msg,t){
-  t=t||'i';
-  const w=document.getElementById('tw');
-  const el=document.createElement('div');
-  el.className='toast '+t; el.textContent=msg;
-  w.appendChild(el);
-  requestAnimationFrame(function(){requestAnimationFrame(function(){el.classList.add('show');});});
-  setTimeout(function(){el.classList.remove('show');setTimeout(function(){el.remove();},320);},3500);
-};
-
-/* ── UTILS ── */
-function san(s){return String(s||'').replace(/[<>&"]/g,function(c){return{'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c];});}
-function ts(t){return new Date(t).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
-function sb(id){var el=document.getElementById(id);if(el)setTimeout(function(){el.scrollTop=el.scrollHeight;},60);}
-function hEmoji(s){return /[\u{1F000}-\u{1FFFF}\u{2600}-\u{27FF}]/u.test(String(s));}
-window.openM=function(id){document.getElementById(id).classList.add('open');};
-window.closeM=function(id){document.getElementById(id).classList.remove('open');};
-window.openAdminM=function(){document.getElementById('ap').value='';window.openM('m-admin');setTimeout(function(){document.getElementById('ap').focus();},180);};
-
-/* ── PAGE TABS ── */
-window.swTab=function(t){
-  document.getElementById('t-login').style.display=t==='login'?'':'none';
-  document.getElementById('t-reg').style.display=t==='register'?'':'none';
-  document.querySelectorAll('.tabs .tb').forEach(function(b,i){b.classList.toggle('active',(t==='login'&&i===0)||(t==='register'&&i===1));});
-};
-window.uTab=function(btn,t){
-  document.querySelectorAll('#pu .tc').forEach(function(el){el.style.display='none';});
-  document.getElementById('u-'+t).style.display='';
-  document.querySelectorAll('#pu .nt-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  if(t==='global')sb('gm');
-  if(t==='winchat')sb('wcmu');
-};
-window.aTab=function(btn,t){
-  document.querySelectorAll('#pa .tc').forEach(function(el){el.style.display='none';});
-  document.getElementById('a-'+t).style.display='';
-  document.querySelectorAll('#pa .nt-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  if(t==='spin')drawW('asc2',SP);
-  if(t==='reg')loadRegT();
-  if(t==='acc')loadAccT();
-  if(t==='win')loadAW();
-  if(t==='dash')loadDash();
-  if(t==='wch')loadAWCL();
-  if(t==='glob')sb('agm');
-};
-
-/* ── PAGES ── */
-function showPg(id){
-  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
-  document.getElementById(id).classList.add('active');
-}
-
-/* ── AUTH ── */
-window.doLogin=async function(){
-  var u=document.getElementById('lu').value.trim();
-  var p=document.getElementById('lp').value;
-  if(!u||!p)return showT('Isi username dan password!','e');
-  if(hEmoji(u)||hEmoji(p))return showT('Emoji tidak diizinkan!','e');
-  var ro=await checkRO();
-  if(!ro){showT('Pendaftaran ditutup!','w');showCLO();return;}
-  try{
-    var snap=await get(ref(db,'accounts/'+u));
-    if(!snap.exists())return showT('Akun tidak ditemukan!','e');
-    if(snap.val().password!==p)return showT('Password salah!','e');
-    CU=u; IA=false;
-    enterU();
-    showT('Selamat datang, '+u+'!','s');
-  }catch(e){showT('Error: '+e.message,'e');}
-};
-window.doReg=async function(){
-  var u=document.getElementById('ru').value.trim();
-  var p=document.getElementById('rp').value;
-  if(!u||!p)return showT('Isi semua field!','e');
-  if(hEmoji(u)||hEmoji(p))return showT('Emoji tidak diizinkan!','e');
-  if(u.length<3)return showT('Username minimal 3 karakter!','e');
-  if(/\s/.test(u))return showT('Username tidak boleh ada spasi!','e');
-  var ro=await checkRO();
-  if(!ro){showT('Pendaftaran ditutup!','w');showCLO();return;}
-  try{
-    var snap=await get(ref(db,'accounts/'+u));
-    if(snap.exists())return showT('Username sudah dipakai!','e');
-    await set(ref(db,'accounts/'+u),{password:p,joinedAt:Date.now()});
-    CU=u; IA=false;
-    enterU();
-    showT('Akun berhasil dibuat!','s');
-  }catch(e){showT('Error: '+e.message,'e');}
-};
-window.doAdminLogin=async function(){
-  var p=document.getElementById('ap').value;
-  try{
-    var snap=await get(ref(db,'adminConfig/password'));
-    var correct=snap.exists()?snap.val():'zmtxxx';
-    if(p!==correct)return showT('Password admin salah!','e');
-    closeM('m-admin'); IA=true; CU='ADMIN';
-    enterA();
-    showT('Login admin berhasil!','s');
-  }catch(e){
-    // Fallback jika DB rules belum diset
-    if(p==='zmtxxx'){closeM('m-admin');IA=true;CU='ADMIN';enterA();showT('Login admin berhasil!','s');}
-    else showT('Password admin salah!','e');
-  }
-};
-window.doLogout=function(){
-  CU=null; IA=false; IW=false; WCR=null;
-  // Reset flags supaya listeners dipasang ulang saat login berikutnya
-  gListening=false; spListening=false; wListening=false; rwListening={};
-  showPg('pl');
-  showT('Berhasil keluar','i');
-};
-
-async function checkRO(){
-  try{
-    var s=await get(ref(db,'settings/registrationOpen'));
-    return s.exists()?s.val():true;
-  }catch(e){return true;}
-}
-var cloDismissed=false;
-function showCLO(){
-  cloDismissed=false;
-  document.getElementById('clo').classList.add('show');
-}
-function hideCLO(){
-  cloDismissed=true;
-  document.getElementById('clo').classList.remove('show');
-}
-// Expose ke global supaya onclick HTML bisa akses
-window.hideCLO=hideCLO;
-window.showCLO=showCLO;
-
-// Realtime listener - status pendaftaran
-onValue(ref(db,'settings/registrationOpen'),function(snap){
-  var open=snap.exists()?snap.val():true;
-  if(!open&&!CU&&!IA&&!cloDismissed) showCLO();
-  else if(open) { cloDismissed=false; hideCLO(); }
-  // Kalau closed tapi user sudah dismiss - biarkan, jangan paksa show lagi
-  if(IA) updRegBtn(open);
-});
-
-/* ── ENTER PAGES ── */
-function enterU(){
-  showPg('pu');
-  document.getElementById('tbu').textContent=CU;
-  // Reset msgCount supaya chat rebuild dengan CU yang benar
-  msgCount={gm:0,agm:0,wcmu:0,awm:0};
-  checkIW(); listenG(); listenW(); listenSP();
-  drawW('sc',SP);
-}
-function enterA(){
-  showPg('pa');
-  // Reset msgCount supaya chat rebuild dengan IA yang benar
-  msgCount={gm:0,agm:0,wcmu:0,awm:0};
-  loadDash(); listenSP(); listenRegSet(); listenG(); listenW();
-}
-
-/* ── REGISTRATION TOGGLE ── */
-window.toggleReg=async function(){
-  try{
-    var s=await get(ref(db,'settings/registrationOpen'));
-    var cur=s.exists()?s.val():true;
-    await set(ref(db,'settings/registrationOpen'),!cur);
-    showT(cur?'Pendaftaran ditutup!':'Pendaftaran dibuka!',cur?'w':'s');
-  }catch(e){showT('Error: '+e.message,'e');}
-};
-function updRegBtn(open){
-  var b=document.getElementById('rtb'),st=document.getElementById('sstat');
-  if(b){b.textContent=open?'TUTUP PENDAFTARAN':'BUKA PENDAFTARAN';b.className='rtb '+(open?'ro':'rc');}
-  if(st){st.textContent=open?'BUKA':'TUTUP';st.style.color=open?'var(--ok)':'var(--err)';}
-}
-function listenRegSet(){
-  onValue(ref(db,'settings/registrationOpen'),function(s){updRegBtn(s.exists()?s.val():true);});
-}
-
-/* ── CLEAR ALL ── */
-window.confClear=function(){window.openM('m-clear');};
-window.doClear=async function(){
-  closeM('m-clear');
-  try{
-    await Promise.all([
-      remove(ref(db,'accounts')),remove(ref(db,'spinRegistered')),
-      remove(ref(db,'winners')),remove(ref(db,'globalChat')),remove(ref(db,'winnerChats'))
-    ]);
-    await set(ref(db,'settings/registrationOpen'),true);
-    showT('Semua data dihapus!','s'); loadDash();
-  }catch(e){showT('Error: '+e.message,'e');}
-};
-
-/* ── SPIN REGISTER ── */
-window.regSpin=async function(){
-  if(!CU)return;
-  try{
-    var safeKey=CU.replace(/[.#$\[\]]/g,'_');
-    var s=await get(ref(db,'spinRegistered/'+safeKey));
-    if(s.exists())return showT('Kamu sudah terdaftar!','i');
-    await set(ref(db,'spinRegistered/'+safeKey),{username:CU,registeredAt:Date.now()});
-    document.getElementById('rsb').disabled=true;
-    document.getElementById('ss').textContent='Terdaftar! Tunggu admin spin.';
-    showT('Berhasil daftar spin!','s');
-  }catch(e){showT('Error: '+e.message,'e');}
-};
-
-/* ── LISTEN SPIN ── */
-function listenSP(){
-  if(spListening)return;
-  spListening=true;
-  onValue(ref(db,'spinRegistered'),function(snap){
-    SP=[];
-    if(snap.exists())snap.forEach(function(c){SP.push(c.val().username);});
-    drawW('sc',SP);
-    if(IA){drawW('asc2',SP);document.getElementById('sreg').textContent=SP.length;}
-    if(!IA&&CU){
-      var reg=SP.includes(CU);
-      var b=document.getElementById('rsb'); if(b)b.disabled=reg;
-      var ss=document.getElementById('ss'); if(ss)ss.textContent=reg?'Terdaftar! Tunggu admin spin.':'';
-    }
-  });
-}
-
-/* ── SPIN WHEEL DRAW ── */
-var WC=['#1565C0','#4A148C','#1976D2','#6A1B9A','#0D47A1','#7B1FA2','#2979FF','#9C27B0','#1E88E5','#AB47BC','#1348A0','#5C1195'];
-function drawW(id,parts){
-  var canvas=document.getElementById(id); if(!canvas)return;
-  var ctx=canvas.getContext('2d');
-  var W=canvas.width,H=canvas.height,cx=W/2,cy=H/2,r=Math.min(W,H)/2-10;
-  ctx.clearRect(0,0,W,H);
-  if(!parts||parts.length===0){
-    ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.fillStyle='#0D1B35';ctx.fill();
-    ctx.strokeStyle='#1E3A6E';ctx.lineWidth=3;ctx.stroke();
-    ctx.fillStyle='#90A4AE';ctx.font='bold 13px Rajdhani,sans-serif';
-    ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Belum ada peserta',cx,cy);
-    return;
-  }
-  var sl=(2*Math.PI)/parts.length;
-  parts.forEach(function(p,i){
-    var s=SA+i*sl, e=s+sl;
-    ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,e);ctx.closePath();
-    ctx.fillStyle=WC[i%WC.length];ctx.fill();
-    ctx.strokeStyle='rgba(0,0,0,.2)';ctx.lineWidth=1.5;ctx.stroke();
-    ctx.save();ctx.translate(cx,cy);ctx.rotate(s+sl/2);
-    ctx.textAlign='right';ctx.textBaseline='middle';ctx.fillStyle='#fff';
-    var fs=Math.max(9,Math.min(13,170/parts.length));
-    ctx.font='bold '+fs+'px Rajdhani,sans-serif';
-    ctx.fillText(p.length>11?p.slice(0,10)+'..':p,r-10,0);
-    ctx.restore();
-  });
-  ctx.beginPath();ctx.arc(cx,cy,19,0,Math.PI*2);ctx.fillStyle='#050B18';ctx.fill();
-  ctx.strokeStyle='#2979FF';ctx.lineWidth=2.5;ctx.stroke();
-}
-
-/* ── ADMIN SPIN (AKURAT) ── */
-window.adminSpin=function(){
-  if(SP.length===0)return showT('Belum ada peserta!','e');
-  var btn=document.getElementById('aspb'); btn.disabled=true;
-  document.getElementById('asr').textContent='';
-  // Pilih winner random dari SP saat ini
-  var wi=Math.floor(Math.random()*SP.length);
-  var sl=(2*Math.PI)/SP.length;
-  var needleAngle=-Math.PI/2;
-  var SA_final=needleAngle-wi*sl-sl/2;
-  while(SA_final<SA+8*2*Math.PI) SA_final+=2*Math.PI;
-  SA_final+=Math.floor(Math.random()*4)*2*Math.PI;
-  var tgt=SA_final, start=performance.now(), dur=5500, init=SA;
-  // Simpan winner di closure sebelum animasi mulai
-  var winnerName=SP[wi];
-  function anim(now){
-    var prog=Math.min((now-start)/dur,1);
-    var ease=1-Math.pow(1-prog,4);
-    SA=init+ease*(tgt-init);
-    drawW('asc2',SP);
-    if(prog<1){requestAnimationFrame(anim);return;}
-    // Animasi selesai
-    SA=SA_final; drawW('asc2',SP);
-    document.getElementById('asr').textContent='PEMENANG: '+winnerName;
-    document.getElementById('wmn').textContent=winnerName;
-    window.openM('m-winner');
-    // Await addW sebelum enable tombol spin lagi
-    addW(winnerName).then(function(){
-      btn.disabled=false;
-    }).catch(function(e){
-      showT('Error: '+e.message,'e');
-      btn.disabled=false;
-    });
-  }
-  requestAnimationFrame(anim);
-};
-async function addW(u){
-  // Cek apakah sudah menang sebelumnya
-  var s=await get(ref(db,'winners/'+u));
-  if(s.exists()){
-    // Sudah menang - tetap hapus dari spin kalau masih ada
-    SP=SP.filter(function(x){return x!==u;});
-    drawW('asc2',SP); drawW('sc',SP);
-    return;
-  }
-  // Simpan ke winners
-  await set(ref(db,'winners/'+u),{username:u,wonAt:Date.now()});
-  // Hapus dari spinRegistered - coba raw key dan safeKey
-  var safeKey=u.replace(/[.#$\[\]]/g,'_');
-  try{ await remove(ref(db,'spinRegistered/'+u)); }catch(e){}
-  try{ await remove(ref(db,'spinRegistered/'+safeKey)); }catch(e){}
-  // Update SP array langsung (tidak tunggu Firebase sync)
-  SP=SP.filter(function(x){return x!==u;});
-  drawW('asc2',SP);
-  drawW('sc',SP);
-  // Announce ke global chat
-  try{
-    await push(ref(db,'globalChat'),{username:'SYSTEM',text:u+' Memenangkan Give Away!',ts:Date.now(),winAnnounce:true});
-  }catch(e){}
-}
-
-/* ── WINNERS ── */
-function listenW(){
-  if(wListening)return;
-  wListening=true;
-  onValue(ref(db,'winners'),function(snap){
-    var w=[]; if(snap.exists())snap.forEach(function(c){w.push(c.val());});
-    renderW(w,'uwl');
-    if(IA){renderW(w,'awl');document.getElementById('swin').textContent=w.length;}
-    if(!IA&&CU){
-      var won=w.some(function(x){return x.username===CU;});
-      if(won!==IW){
-        IW=won;
-        var t=document.getElementById('twc'); if(t)t.style.display=IW?'':'none';
-        if(IW)listenWC(CU,'user');
-      }
-    }
-  });
-}
-function renderW(winners,lid){
-  var el=document.getElementById(lid); if(!el)return;
-  if(!winners.length){el.innerHTML='<div class="es">Belum ada pemenang</div>';return;}
-  el.innerHTML=winners.map(function(w,i){
-    return '<div class="wi"><span class="wn">'+san(w.username)+'</span><span class="wb">PEMENANG #'+(i+1)+'</span></div>';
-  }).join('');
-}
-async function checkIW(){
-  try{
-    var s=await get(ref(db,'winners/'+CU));
-    IW=s.exists();
-    var t=document.getElementById('twc'); if(t)t.style.display=IW?'':'none';
-    if(IW)listenWC(CU,'user');
-  }catch(e){}
-}
-
-/* ── GLOBAL CHAT ── */
-var gListening=false, spListening=false, wListening=false, rwListening={};
-// Track jumlah pesan per container - hindari re-render yang tidak perlu
-var msgCount={gm:0, agm:0, wcmu:0, awm:0};
-
-function buildMsgHTML(m, isGlobal){
-  if(m.winAnnounce||m.username==='SYSTEM'){
-    return '<div style="display:flex;justify-content:center;width:100%;margin:8px 0;"><div style="background:linear-gradient(135deg,rgba(0,229,255,.14),rgba(74,20,140,.2));border:1px solid rgba(0,229,255,.5);border-radius:20px;padding:8px 20px;font-size:13px;font-weight:700;color:var(--win);">'+san(m.text||'')+'</div></div>';
-  }
-  var sender=String(isGlobal?(m.username||''):(m.sender||'')).trim();
-  var me=String(IA?'ADMIN':(CU||'')).trim();
-  var mine=(sender===me);
-  var adm=(sender==='ADMIN')&&!mine;
-  var nc=mine?'var(--ac)':adm?'#CE93D8':'var(--tx2)';
-  var imgH=m.img?'<img src="'+m.img+'" style="max-width:200px;max-height:200px;border-radius:10px;display:block;margin-top:4px;cursor:pointer;" onclick="window.viewI(this.src)" onerror="this.style.display=\'none\'">':'';
-  var txtH=m.text?'<span>'+san(m.text)+'</span>':'';
-  // mine = kanan (biru), other = kiri (abu)
-  var sideClass=mine?' mine':' other';
-  var html='<div class="msg'+sideClass+(adm?' adm':'')+'">';
-  // Nama pengirim - kiri punya nama, kanan tidak perlu (sudah jelas milik kita)
-  if(!mine) html+='<div class="mn" style="color:'+nc+';font-size:11px;margin-bottom:3px;font-weight:700;">'+san(sender)+'</div>';
-  html+='<div class="mb">'+imgH+txtH+'</div>';
-  html+='<div class="mt">'+ts(m.ts)+'</div>';
-  html+='</div>';
-  return html;
-}
-
-function smartRender(msgs, containerId, isGlobal){
-  var el=document.getElementById(containerId); if(!el)return;
-  var prev=msgCount[containerId]||0;
-  var cur=msgs.length;
-  if(cur===0){
-    el.innerHTML=''; msgCount[containerId]=0; return;
-  }
-  // Kalau prev=0 tapi el sudah ada isi (dari session lama), clear dulu
-  if(prev===0){
-    el.innerHTML=msgs.map(function(m){return buildMsgHTML(m,isGlobal);}).join('');
-    msgCount[containerId]=cur;
-    sb(containerId);
-    return;
-  }
-  if(cur===prev) return; // sama persis, skip
-  if(cur>prev){
-    // Append pesan baru saja
-    for(var i=prev;i<cur;i++){
-      var tmp=document.createElement('div');
-      tmp.innerHTML=buildMsgHTML(msgs[i],isGlobal);
-      var child=tmp.firstChild;
-      if(child) el.appendChild(child);
-    }
-  } else {
-    // Jumlah berkurang (pesan dihapus) - full rebuild
-    el.innerHTML=msgs.map(function(m){return buildMsgHTML(m,isGlobal);}).join('');
-  }
-  msgCount[containerId]=cur;
-  sb(containerId);
-}
-
-function listenG(){
-  if(gListening)return;
-  gListening=true;
-  onValue(ref(db,'globalChat'),function(snap){
-    var msgs=[]; if(snap.exists())snap.forEach(function(c){msgs.push(c.val());});
-    smartRender(msgs,'gm',true);
-    smartRender(msgs,'agm',true);
-  });
-}
-
-function renderG(msgs,containerId){
-  smartRender(msgs,containerId,true);
-}
-
-// SEND CHAT USER
-window.sendGUser=async function(){
-  if(!CU){showT('Belum login!','e');return;}
-  var inp=document.getElementById('gi');
-  if(!inp)return;
-  var txt=inp.value.trim();
-  if(!txt)return;
-  inp.value='';
-  try{
-    await push(ref(db,'globalChat'),{username:CU,text:txt,ts:Date.now()});
-  }catch(e){
-    inp.value=txt; // kembalikan teks
-    showT('Gagal kirim! Cek Firebase DB rules','e');
-    console.error(e);
-  }
-};
-// SEND CHAT ADMIN
-window.sendGAdmin=async function(){
-  var inp=document.getElementById('agi');
-  if(!inp)return;
-  var txt=inp.value.trim();
-  if(!txt)return;
-  inp.value='';
-  try{
-    await push(ref(db,'globalChat'),{username:'ADMIN',text:txt,ts:Date.now()});
-  }catch(e){
-    inp.value=txt;
-    showT('Gagal kirim! Cek Firebase DB rules','e');
-    console.error(e);
-  }
-};
-
-/* ── WINNER CHAT ── */
-function listenWC(w,mode){
-  WCR='winnerChats/'+w;
-  if(rwListening[w+mode])return;
-  rwListening[w+mode]=true;
-  onValue(ref(db,WCR),function(snap){
-    var msgs=[]; if(snap.exists())snap.forEach(function(c){msgs.push(c.val());});
-    if(mode==='user')renderWCU(msgs);
-    else renderWCA(msgs);
-  });
-}
-function renderWCU(msgs){
-  smartRender(msgs,'wcmu',false);
-}
-function renderWCA(msgs){
-  // Reset count kalau ganti pemenang (awm di-clear manual)
-  var el=document.getElementById('awm');
-  if(el&&el.children.length===0) msgCount['awm']=0;
-  smartRender(msgs,'awm',false);
-}
-window.sendW=async function(mode){
-  if(!WCR){showT('Pilih pemenang dulu!','w');return;}
-  var id=mode==='user'?'wiu':'awi';
-  var inp=document.getElementById(id);
-  if(!inp)return;
-  var txt=inp.value.trim(); if(!txt)return;
-  inp.value='';
-  try{
-    await push(ref(db,WCR),{sender:mode==='admin'?'ADMIN':CU,text:txt,ts:Date.now()});
-  }catch(e){inp.value=txt;showT('Gagal kirim: '+e.message,'e');}
-};
-
-/* ── ADMIN WINNER CHAT LIST ── */
-async function loadAWCL(){
-  var s=await get(ref(db,'winners'));
-  var el=document.getElementById('awcl');
-  if(!s.exists()){el.innerHTML='<div style="padding:12px;font-size:12px;color:var(--tx2);">Belum ada pemenang</div>';return;}
-  var ws=[];s.forEach(function(c){ws.push(c.val());});
-  el.innerHTML=ws.map(function(w){
-    return '<div class="wci" onclick="window.selWC(this.dataset.u)" data-u="'+san(w.username)+'">'+san(w.username)+'</div>';
-  }).join('');
-}
-window.selWC=function(w){
-  WCR='winnerChats/'+w;
-  document.querySelectorAll('.wci').forEach(function(el){el.classList.toggle('sel',el.textContent===w);});
-  document.getElementById('achn').textContent='Chat dengan: '+w;
-  document.getElementById('achn').style.color='var(--win)';
-  document.getElementById('awm').innerHTML='';
-  msgCount['awm']=0; // reset count supaya render ulang penuh
-  delete rwListening[w+'admin'];
-  listenWC(w,'admin');
-};
-
-/* ── DASHBOARD ── */
-async function loadDash(){
-  try{
-    var r=await Promise.all([get(ref(db,'accounts')),get(ref(db,'spinRegistered')),get(ref(db,'winners')),get(ref(db,'settings/registrationOpen'))]);
-    document.getElementById('sacc').textContent=r[0].exists()?Object.keys(r[0].val()).length:0;
-    document.getElementById('sreg').textContent=r[1].exists()?Object.keys(r[1].val()).length:0;
-    document.getElementById('swin').textContent=r[2].exists()?Object.keys(r[2].val()).length:0;
-    updRegBtn(r[3].exists()?r[3].val():true);
-  }catch(e){showT('Error load dashboard: '+e.message,'e');}
-}
-async function loadRegT(){
-  var s=await get(ref(db,'spinRegistered'));
-  var tb=document.getElementById('regtb'); if(!tb)return;
-  if(!s.exists()){tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--tx2);padding:16px;">Kosong</td></tr>';return;}
-  var i=1,rows=[];
-  s.forEach(function(c){var d=c.val();rows.push('<tr><td>'+i+++'</td><td>'+san(d.username)+'</td><td>'+(d.registeredAt?new Date(d.registeredAt).toLocaleString('id-ID'):'-')+'</td></tr>');});
-  tb.innerHTML=rows.join('');
-}
-async function loadAccT(){
-  var s=await get(ref(db,'accounts'));
-  var tb=document.getElementById('acctb'); if(!tb)return;
-  if(!s.exists()){tb.innerHTML='<tr><td colspan="3" style="text-align:center;color:var(--tx2);padding:16px;">Kosong</td></tr>';return;}
-  var i=1,rows=[];
-  s.forEach(function(c){var d=c.val();rows.push('<tr><td>'+i+++'</td><td style="font-family:monospace;">'+san(c.key)+' : '+san(d.password)+'</td><td>'+(d.joinedAt?new Date(d.joinedAt).toLocaleString('id-ID'):'-')+'</td></tr>');});
-  tb.innerHTML=rows.join('');
-}
-async function loadAW(){
-  var s=await get(ref(db,'winners'));
-  var w=[]; if(s.exists())s.forEach(function(c){w.push(c.val());});
-  renderW(w,'awl');
-}
-
-/* ── IMAGE EDITOR ── */
-var ieCtx=null,ieTool='draw',ieHist=[],ieDrawing=false,ieLX=0,ieLY=0;
-var ieCropS=null,ieCropE=null,ieOrigData=null,ieArrowS=null;
-
-window.handleImg=function(input,target){
-  if(!input.files[0])return;
-  pendImg=target;
-  var f=input.files[0]; input.value='';
-  var reader=new FileReader();
-  reader.onload=function(e){var img=new Image();img.onload=function(){initIE(img);};img.src=e.target.result;};
-  reader.readAsDataURL(f);
-};
-function initIE(img){
-  document.getElementById('iem').classList.add('open');
-  var canvas=document.getElementById('ec');
-  var area=document.getElementById('ieca');
-  var maxW=area.clientWidth||window.innerWidth;
-  var maxH=area.clientHeight||(window.innerHeight-220);
-  var w=img.width,h=img.height;
-  var ratio=Math.min(maxW/w,maxH/h,1);
-  w=Math.floor(w*ratio); h=Math.floor(h*ratio);
-  canvas.width=w; canvas.height=h;
-  canvas.style.width=w+'px'; canvas.style.height=h+'px';
-  ieCtx=canvas.getContext('2d');
-  ieCtx.drawImage(img,0,0,w,h);
-  ieOrigData=ieCtx.getImageData(0,0,w,h);
-  ieHist=[ieCtx.getImageData(0,0,w,h)];
-  ieTool='draw';
-  document.querySelectorAll('.ietb').forEach(function(b){b.classList.remove('active');});
-  document.getElementById('it-draw').classList.add('active');
-  canvas.style.cursor='crosshair';
-  setupIE(canvas);
-}
-function gpos(e,canvas){
-  var rect=canvas.getBoundingClientRect();
-  var sx=canvas.width/rect.width, sy=canvas.height/rect.height;
-  var cx=e.touches?e.touches[0].clientX:e.clientX;
-  var cy=e.touches?e.touches[0].clientY:e.clientY;
-  return{x:(cx-rect.left)*sx,y:(cy-rect.top)*sy};
-}
-function setupIE(canvas){
-  canvas.onmousedown=canvas.ontouchstart=function(e){
-    e.preventDefault();var p=gpos(e,canvas);
-    ieDrawing=true; ieLX=p.x; ieLY=p.y;
-    if(ieTool==='text'){
-      var txt=document.getElementById('iet').value.trim();
-      if(!txt){showT('Isi teks dulu!','w');ieDrawing=false;return;}
-      var sz=parseInt(document.getElementById('ies').value);
-      ieCtx.fillStyle=document.getElementById('iec').value;
-      ieCtx.font='bold '+(sz*3+10)+'px Rajdhani,sans-serif';
-      ieCtx.fillText(txt,p.x,p.y);
-      ieHist.push(ieCtx.getImageData(0,0,canvas.width,canvas.height));
-      ieDrawing=false;
-    }
-    if(ieTool==='arrow') ieArrowS={x:p.x,y:p.y};
-    if(ieTool==='crop'){ieCropS={x:p.x,y:p.y};ieCropE={x:p.x,y:p.y};updCropOv(canvas);}
-  };
-  canvas.onmousemove=canvas.ontouchmove=function(e){
-    e.preventDefault(); if(!ieDrawing)return;
-    var p=gpos(e,canvas);
-    if(ieTool==='draw'){
-      ieCtx.strokeStyle=document.getElementById('iec').value;
-      ieCtx.lineWidth=parseInt(document.getElementById('ies').value);
-      ieCtx.lineCap='round'; ieCtx.lineJoin='round';
-      ieCtx.beginPath(); ieCtx.moveTo(ieLX,ieLY); ieCtx.lineTo(p.x,p.y); ieCtx.stroke();
-    }
-    if(ieTool==='crop'){ieCropE={x:p.x,y:p.y};updCropOv(canvas);}
-    ieLX=p.x; ieLY=p.y;
-  };
-  canvas.onmouseup=canvas.ontouchend=function(e){
-    if(!ieDrawing)return;
-    if(ieTool==='draw') ieHist.push(ieCtx.getImageData(0,0,canvas.width,canvas.height));
-    if(ieTool==='arrow'&&ieArrowS){
-      var p=gpos(e,canvas)||{x:ieLX,y:ieLY};
-      drawArrow(ieArrowS,p.x,p.y);
-      ieHist.push(ieCtx.getImageData(0,0,canvas.width,canvas.height));
-      ieArrowS=null;
-    }
-    if(ieTool==='crop'&&ieCropS&&ieCropE) applyCrop(canvas);
-    ieDrawing=false;
-  };
-}
-function drawArrow(from,tx,ty){
-  var col=document.getElementById('iec').value;
-  var lw=parseInt(document.getElementById('ies').value);
-  ieCtx.strokeStyle=col; ieCtx.fillStyle=col; ieCtx.lineWidth=lw; ieCtx.lineCap='round';
-  ieCtx.beginPath(); ieCtx.moveTo(from.x,from.y); ieCtx.lineTo(tx,ty); ieCtx.stroke();
-  var ang=Math.atan2(ty-from.y,tx-from.x), hs=lw*4+9;
-  ieCtx.beginPath(); ieCtx.moveTo(tx,ty);
-  ieCtx.lineTo(tx-hs*Math.cos(ang-Math.PI/6),ty-hs*Math.sin(ang-Math.PI/6));
-  ieCtx.lineTo(tx-hs*Math.cos(ang+Math.PI/6),ty-hs*Math.sin(ang+Math.PI/6));
-  ieCtx.closePath(); ieCtx.fill();
-}
-function updCropOv(canvas){
-  if(!ieCropS||!ieCropE)return;
-  var rect=canvas.getBoundingClientRect();
-  var sx=rect.width/canvas.width, sy=rect.height/canvas.height;
-  var x=Math.min(ieCropS.x,ieCropE.x)*sx, y=Math.min(ieCropS.y,ieCropE.y)*sy;
-  var w=Math.abs(ieCropE.x-ieCropS.x)*sx, h=Math.abs(ieCropE.y-ieCropS.y)*sy;
-  var ar=document.getElementById('ieca').getBoundingClientRect();
-  var ov=document.getElementById('cov');
-  ov.style.display='block';
-  ov.style.left=(rect.left-ar.left+x)+'px'; ov.style.top=(rect.top-ar.top+y)+'px';
-  ov.style.width=w+'px'; ov.style.height=h+'px';
-}
-function applyCrop(canvas){
-  if(!ieCropS||!ieCropE)return;
-  var x=Math.round(Math.min(ieCropS.x,ieCropE.x)), y=Math.round(Math.min(ieCropS.y,ieCropE.y));
-  var w=Math.round(Math.abs(ieCropE.x-ieCropS.x)), h=Math.round(Math.abs(ieCropE.y-ieCropS.y));
-  if(w<5||h<5)return;
-  var data=ieCtx.getImageData(x,y,w,h);
-  canvas.width=w; canvas.height=h; canvas.style.width=w+'px'; canvas.style.height=h+'px';
-  ieCtx.putImageData(data,0,0);
-  ieHist.push(ieCtx.getImageData(0,0,w,h));
-  document.getElementById('cov').style.display='none';
-  ieCropS=null; ieCropE=null;
-  showT('Crop berhasil!','s');
-}
-window.setTool=function(t){
-  ieTool=t;
-  document.querySelectorAll('.ietb').forEach(function(b){b.classList.remove('active');});
-  var b=document.getElementById('it-'+t); if(b)b.classList.add('active');
-  document.getElementById('ec').style.cursor=t==='text'?'text':'crosshair';
-  if(t==='crop'){ieCropS=null;ieCropE=null;}
-};
-window.ieUndo=function(){
-  if(ieHist.length<=1)return;
-  ieHist.pop();
-  var canvas=document.getElementById('ec');
-  var prev=ieHist[ieHist.length-1];
-  canvas.width=prev.width; canvas.height=prev.height;
-  canvas.style.width=prev.width+'px'; canvas.style.height=prev.height+'px';
-  ieCtx.putImageData(prev,0,0);
-};
-window.ieReset=function(){
-  if(!ieOrigData)return;
-  var canvas=document.getElementById('ec');
-  canvas.width=ieOrigData.width; canvas.height=ieOrigData.height;
-  canvas.style.width=ieOrigData.width+'px'; canvas.style.height=ieOrigData.height+'px';
-  ieCtx.putImageData(ieOrigData,0,0);
-  ieHist=[ieCtx.getImageData(0,0,canvas.width,canvas.height)];
-  document.getElementById('cov').style.display='none';
-};
-window.cancelIE=function(){
-  document.getElementById('iem').classList.remove('open');
-  document.getElementById('cov').style.display='none';
-  pendImg=null;
-};
-window.sendImg=async function(){
-  var canvas=document.getElementById('ec');
-  var MAX=900, w=canvas.width, h=canvas.height;
-  var tmp=document.createElement('canvas');
-  if(w>MAX){var r=MAX/w; w=MAX; h=Math.floor(h*r);}
-  tmp.width=w; tmp.height=h;
-  var tmpCtx=tmp.getContext('2d');
-  tmpCtx.imageSmoothingEnabled=true;
-  tmpCtx.imageSmoothingQuality='high';
-  tmpCtx.drawImage(canvas,0,0,w,h);
-  var dataUrl=tmp.toDataURL('image/jpeg',0.92);
-  document.getElementById('iem').classList.remove('open');
-  document.getElementById('cov').style.display='none';
-  var target=pendImg; pendImg=null;
-  var sender=IA?'ADMIN':CU;
-  showT('Mengirim gambar...','i');
-  try{
-    if(target==='global'){
-      await push(ref(db,'globalChat'),{username:sender,img:dataUrl,ts:Date.now()});
-    }else if((target==='win_user'||target==='win_admin')&&WCR){
-      var s2=target==='win_admin'?'ADMIN':CU;
-      await push(ref(db,WCR),{sender:s2,img:dataUrl,ts:Date.now()});
-    }else{showT('Target tidak valid','e');return;}
-    showT('Gambar terkirim!','s');
-  }catch(e){showT('Gagal kirim gambar: '+e.message,'e');}
-};
-
-/* ── IMAGE VIEW ── */
-window.viewI=function(src){document.getElementById('ivs').src=src;window.openM('m-imgview');};
-
-</script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
