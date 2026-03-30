@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>ZMT Spin Giveaway</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -109,6 +109,7 @@
       <li><a href="#" onclick="showPage('chat')" data-page="chat"><span class="nav-icon icon-chat"></span>Global Chat</a></li>
       <li id="nav-winner-chat" class="hidden"><a href="#" onclick="showPage('winner-chat')" data-page="winner-chat"><span class="nav-icon icon-trophy"></span>Chat Pemenang</a></li>
       <li id="nav-admin" class="hidden"><a href="#" onclick="showPage('admin')" data-page="admin"><span class="nav-icon icon-admin"></span>Admin Panel</a></li>
+
     </ul>
     <button class="btn btn-danger btn-logout" onclick="logout()">KELUAR</button>
   </nav>
@@ -195,8 +196,13 @@
             <div class="wheel-pointer"></div>
             <canvas id="spin-canvas" width="420" height="420"></canvas>
           </div>
-          <div class="spin-controls" id="spin-controls-admin" style="display:none">
+          <!-- Hanya admin/owner yang lihat tombol ini -->
+          <div class="spin-controls hidden" id="spin-controls-admin">
             <button class="btn btn-primary btn-spin" id="spin-btn" onclick="startSpin()">PUTAR SEKARANG</button>
+          </div>
+          <!-- Admin/Owner bisa daftarkan diri ke spin -->
+          <div class="spin-controls hidden" id="spin-register-section">
+            <button class="btn btn-outline" id="spin-register-btn" onclick="toggleSelfRegister()">DAFTARKAN DIRI KE SPIN</button>
           </div>
         </div>
         <div class="spin-side">

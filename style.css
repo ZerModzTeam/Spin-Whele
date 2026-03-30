@@ -44,13 +44,27 @@ html, body {
   font-family: 'Inter', sans-serif;
   font-size: 15px;
   line-height: 1.6;
-  overflow-x: hidden;
+  overflow: hidden;           /* Disable outer scroll */
+  touch-action: pan-y;        /* Allow vertical touch but no pinch-zoom */
   overscroll-behavior: none;
-  touch-action: pan-x pan-y;
-  -webkit-text-size-adjust: 100%;
-  -ms-text-size-adjust: 100%;
-  user-select: none;
+  -webkit-overflow-scrolling: touch;
+  user-select: none;          /* No text selection on UI */
   -webkit-user-select: none;
+}
+/* Allow text selection only inside chat and tables */
+.chat-messages, .data-table, .msg-bubble, input, textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
+/* App fills full screen, scrolls only within main-content */
+#app {
+  height: 100vh;
+  overflow: hidden;
+}
+.main-content {
+  height: 100vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 /* ============ SCROLLBAR ============ */
@@ -206,9 +220,6 @@ textarea {
   padding: 11px 14px;
   transition: var(--transition);
   width: 100%;
-  user-select: text;
-  -webkit-user-select: text;
-  touch-action: auto;
 }
 input:focus, textarea:focus {
   border-color: var(--primary);
